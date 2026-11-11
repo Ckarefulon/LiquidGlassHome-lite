@@ -194,7 +194,7 @@ fun HomeCardGroupScreen(
     // 液态玻璃的折射子项：只在 liquid 为真时有意义，关掉省一层离屏位移采样（见 HomeLayoutStore）
     // 顶栏排法：开（默认）= 改造前那套（左侧「交小西」头像、三个圆钮统一在右、不画居中标题）；
     // 关 = 本分支那套（扫码靠左、标题绝对居中、右侧只留搜索与通知）
-    val topActionsRight = remember(settingsRevision) { settings.homeTopActionsRight }
+    // 顶栏排法只有一种（左右各一排圆钮）：模板不再读 `homeTopActionsRight`，等价于永远「关」
     // 背景样式：主题底色 / 主题色渐变 / 自定义图片（取值与经典版同一套字符串）
     val backgroundMode = remember(settingsRevision) { settings.homeBackground }
     // 只有自定义图片这一档才去读那串 Base64（完整壁纸能有几百 KB）：其余两档读了也没人用，
@@ -1235,7 +1235,7 @@ fun HomeCardGroupScreen(
                     },
                     alignWithGreeting = masthead,
                     // 「功能按钮统一右对齐」开着 = 整个顶栏回到改造前那套（头像 / 三钮 / 无居中标题）
-                    devTopBar = topActionsRight,
+                    devTopBar = false,
                 )
             }
         }

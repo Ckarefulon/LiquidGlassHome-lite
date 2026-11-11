@@ -266,7 +266,16 @@ fun GlassBottomTabs(
 
         Row(
             Modifier
-                .graphicsLayer { translationX = panelOffset }
+                // 按下时的轻微放大（progress 驱动）也放在外层 graphicsLayer：
+                // 写进 drawBackdrop 的 layerBlock 只会缩放「采样层」，胶囊本体不动，
+                // 按住拖动时两层错开就是重影。
+                .graphicsLayer {
+                    translationX = panelOffset
+                    val progress = dampedDrag.pressProgress
+                    val scale = lerp(1f, 1f + 16.dp.toPx() / size.width, progress)
+                    scaleX = scale
+                    scaleY = scale
+                }
                 .then(
                     if (glass) {
                         Modifier.drawBackdrop(
@@ -280,12 +289,6 @@ fun GlassBottomTabs(
                                 // 折射只在按住 / 拖动时随进度出现，静止时省掉这一遍着色器
                                 val progress = dampedDrag.pressProgress
                                 lens(24.dp.toPx() * progress, 24.dp.toPx() * progress)
-                            },
-                            layerBlock = {
-                                val progress = dampedDrag.pressProgress
-                                val scale = lerp(1f, 1f + 16.dp.toPx() / size.width, progress)
-                                scaleX = scale
-                                scaleY = scale
                             },
                             exportedBackdrop = exportedBackdrop,
                             // 悬浮胶囊是真的浮在内容上面，该有影子；但不要 kyant 默认那圈
@@ -356,10 +359,17 @@ fun GlassBottomTabs(
                 Box(
                     Modifier
                         .padding(horizontal = 4.dp)
+                        // 形变（按下放大、拖动拉长）**只由外层 graphicsLayer 承担**。
+                        // 之前把缩放写进 drawBackdrop 的 layerBlock，而滑块本体尺寸由
+                        // height/fillMaxWidth 决定、不经过那个 layer —— 于是「滑块本体」和
+                        // 「它折射出来的采样层」用的是两套尺寸，按住拖动时两层错开，看着就是重影。
                         .graphicsLayer {
                             translationX =
                                 if (isLtr) dampedDrag.value * tabWidthPx + panelOffset
                                 else size.width - (dampedDrag.value + 1f) * tabWidthPx + panelOffset
+                            val v = abs(dampedDrag.velocity) / 10f
+                            scaleX = dampedDrag.scaleX / (1f - (v * 0.75f).coerceIn(0f, 0.2f))
+                            scaleY = dampedDrag.scaleY * (1f - (v * 0.25f).coerceIn(0f, 0.2f))
                         }
                         .then(interactiveHighlight.gestureModifier)
                         .then(dampedDrag.modifier)
@@ -375,19 +385,7 @@ fun GlassBottomTabs(
                                 lens(10.dp.toPx() * progress, 14.dp.toPx() * progress)
                             },
                             highlight = { Highlight.Default.copy(alpha = dampedDrag.pressProgress) },
-                            layerBlock = {
-                                scaleX = dampedDrag.scaleX
-                                scaleY = dampedDrag.scaleY
-                                // 速度取绝对值：拖得快就横向拉长、纵向压扁，**两个方向一样**。
-                                // 原来用的是带符号速度，往右 scaleX 被放大、往左反而被压窄；
-                                // 而 backdrop 采样只按 LayoutCoordinates 定位，不反解 layerBlock
-                                // 的缩放（见 DrawBackdropNode：layerBlock 是 placeWithLayer 施加的），
-                                // 于是滑块本体和它透出的强调色层对不齐——表现就是从右往左拖时
-                                // 蓝色块稳定偏移，往右拖却看不出来。
-                                val v = abs(dampedDrag.velocity) / 10f
-                                scaleX /= 1f - (v * 0.75f).coerceIn(0f, 0.2f)
-                                scaleY *= 1f - (v * 0.25f).coerceIn(0f, 0.2f)
-                            },
+                            // layerBlock 留空：任何额外缩放都会让采样层与本体错位
                             onDrawSurface = {
                                 val progress = dampedDrag.pressProgress
                                 drawRect(restTint, alpha = 1f - progress)

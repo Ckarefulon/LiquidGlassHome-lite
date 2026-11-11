@@ -30,7 +30,6 @@ import androidx.compose.material.icons.filled.FolderOpen
 import androidx.compose.material.icons.filled.GridOn
 import androidx.compose.material.icons.filled.Layers
 import androidx.compose.material.icons.filled.RestartAlt
-import androidx.compose.material.icons.filled.SwapHoriz
 import androidx.compose.material.icons.filled.Wallpaper
 import androidx.compose.material.icons.filled.WaterDrop
 import androidx.compose.material.icons.filled.Widgets
@@ -122,7 +121,6 @@ private fun HomeSettingsBody(onDismiss: () -> Unit, showTopBarStyle: Boolean) {
     val revision = HomeLayoutRevision.current
 
     var liquid by remember(revision) { mutableStateOf(settings.homeLiquidGlass) }
-    var topActionsRight by remember(revision) { mutableStateOf(settings.homeTopActionsRight) }
     var grid by remember { mutableStateOf(store.grid) }
     var corner by remember { mutableIntStateOf(store.cardCorner) }
     var opacity by remember { mutableIntStateOf(store.backgroundOpacity) }
@@ -234,28 +232,9 @@ private fun HomeSettingsBody(onDismiss: () -> Unit, showTopBarStyle: Boolean) {
             ThemeColorPreference(startAction = { SettingsIcon(Icons.Default.WaterDrop, cTeal) })
         }
 
-        // ── 顶栏 ──
-        // 排法只有 :app 真的画得出两种（桌面 / web 的首页顶栏在外壳里，`showTopBarStyle` 为假）
-        if (showTopBarStyle) {
-            SmallTitle("顶栏")
-            HomeSettingsCard {
-                SwitchPreference(
-                    title = "功能按钮统一右对齐",
-                    summary = if (topActionsRight) {
-                        "三颗圆钮都在右侧、左侧是头像、不画标题（旧版顶栏）"
-                    } else {
-                        "左右各一排圆钮，中间不画标题（默认）"
-                    },
-                    checked = topActionsRight,
-                    startAction = { SettingsIcon(Icons.Default.SwapHoriz, cPurple) },
-                    onCheckedChange = {
-                        topActionsRight = it
-                        settings.homeTopActionsRight = it
-                        HomeLayoutRevision.bump()
-                    },
-                )
-            }
-        }
+        // 顶栏排法不再提供开关：模板固定用「左右各一排圆钮」这一种。
+        // `SettingsStore.homeTopActionsRight` 仍保留（老存档里可能存着 true），
+        // 但主页不再读它，等价于永远是「关」。
 
         // ── 网格与重置 ──
         run {
@@ -433,7 +412,7 @@ private fun HomeSettingsBody(onDismiss: () -> Unit, showTopBarStyle: Boolean) {
  * 从同一个位置挑回来最省事；真要留多份，用户自己在文件管理器里改名就行了。
  * 内容就是 `HomeLayoutCodec` 的落盘格式，`.txt` 保险（各家文件管理器都认得、能直接看）。
  */
-private const val HOME_LAYOUT_FILE_NAME = "xjtu-toolbox-home-layout.txt"
+private const val HOME_LAYOUT_FILE_NAME = "liquidglass-home-layout.txt"
 
 /**
  * 主页设置里所有滑动条的**唯一**写法：直接用 MIUIX 自带的 [SliderPreference]。

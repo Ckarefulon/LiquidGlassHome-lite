@@ -25,6 +25,7 @@ import com.ckarefulon.liquidglasshome.home.HomeScreen
 import com.ckarefulon.liquidglasshome.home.LocalHomeBarBackdrop
 import com.ckarefulon.liquidglasshome.nav.AppRoute
 import com.ckarefulon.liquidglasshome.shell.ShellPageInsets
+import com.ckarefulon.liquidglasshome.ui.components.CountBadge
 import com.ckarefulon.liquidglasshome.ui.components.pressScale
 import com.ckarefulon.liquidglasshome.ui.theme.LocalIsDarkTheme
 import com.kyant.backdrop.drawBackdrop
@@ -89,13 +90,13 @@ fun LiteHomeTab(
                             modifier = Modifier.size(22.dp),
                         )
                     }
-                    // 未读数：默认 1
-                    Box(
-                        Modifier
+                    // 未读数角标：**液态玻璃小圆**里固定显示数字 1（不是纯圆点）。
+                    // 画在圆钮外面这一层：圆钮本身的玻璃会把内容裁成圆形。
+                    CountBadge(
+                        count = 1,
+                        modifier = Modifier
                             .align(Alignment.TopEnd)
-                            .offset(x = (-2).dp, y = 4.dp)
-                            .size(9.dp)
-                            .background(Color(0xFFE53935), CircleShape),
+                            .offset(x = 4.dp, y = (-2).dp),
                     )
                 }
             }
