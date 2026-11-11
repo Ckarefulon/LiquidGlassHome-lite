@@ -24,7 +24,7 @@ internal val Project.flatName: String
  * 没有任何 jvm / wasmJs 消费方。上游那套 `kmp.jvm()` + `wasmBrowser()` 在这里只会
  * 拖慢 CI、并让一堆没人用的 actual 保持「必须能编译」的状态。
  *
- * JVM 21、compileSdk 37、minSdk 31、namespace = com.xjtu.toolbox.<模块路径>。
+ * JVM 21、compileSdk 37、minSdk 31、namespace = com.ckarefulon.liquidglasshome.<模块路径>。
  */
 internal fun Project.configureKmpLibrary() {
     with(pluginManager) {
@@ -43,7 +43,7 @@ internal fun Project.configureKmpLibrary() {
     val kotlinExtensions = (kmp as ExtensionAware).extensions
     val android = (kotlinExtensions.findByName("android") ?: kotlinExtensions.getByName("androidLibrary"))
         as KotlinMultiplatformAndroidLibraryTarget
-    android.namespace = "com.xjtu.toolbox." + path.removePrefix(":").replace(':', '.')
+    android.namespace = "com.ckarefulon.liquidglasshome." + path.removePrefix(":").replace(':', '.')
     android.compileSdk = 37
     android.minSdk = 31
 

@@ -20,3 +20,7 @@ build/
 # Generated files
 output.json
 output-metadata.json
+# 发布签名（绝不入库）
+keystore.properties
+*.jks
+*.keystore
