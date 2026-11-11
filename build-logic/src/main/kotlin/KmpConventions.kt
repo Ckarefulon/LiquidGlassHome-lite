@@ -5,7 +5,6 @@ import org.gradle.api.artifacts.VersionCatalogsExtension
 import org.gradle.api.plugins.BasePluginExtension
 import org.gradle.api.plugins.ExtensionAware
 import org.gradle.api.tasks.testing.Test
-import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
@@ -19,10 +18,15 @@ internal val Project.flatName: String
     get() = path.removePrefix(":").replace(':', '-')
 
 /**
- * android（AGP 9 KMP 库插件）+ jvm（+ 可选 wasmJs）三端的公共配置，与原 `:core` / `:data` 的写法逐项一致：
+ * android（AGP 9 KMP 库插件）单端的公共配置。
+ *
+ * **只建 Android 目标**：本仓库是主页 UI 的展示仓库，产物只有 `:app` 这一个 APK，
+ * 没有任何 jvm / wasmJs 消费方。上游那套 `kmp.jvm()` + `wasmBrowser()` 在这里只会
+ * 拖慢 CI、并让一堆没人用的 actual 保持「必须能编译」的状态。
+ *
  * JVM 21、compileSdk 37、minSdk 31、namespace = com.xjtu.toolbox.<模块路径>。
  */
-internal fun Project.configureKmpLibrary(wasm: Boolean) {
+internal fun Project.configureKmpLibrary() {
     with(pluginManager) {
         apply("org.jetbrains.kotlin.multiplatform")
         apply("com.android.kotlin.multiplatform.library")
@@ -43,9 +47,9 @@ internal fun Project.configureKmpLibrary(wasm: Boolean) {
     android.compileSdk = 37
     android.minSdk = 31
 
-    kmp.jvm()
-
-    if (wasm) kmp.wasmBrowser()
+    // AGP 9 的 KMP library 插件**默认不建 host test compilation**：不写这一行，
+    // commonTest 里的用例既不会被编译、也不会被执行（任务名 `testAndroidHostTest`）。
+    android.withHostTestBuilder {}.configure {}
 
     val catalog = libs
     kmp.sourceSets.getByName("commonMain").dependencies {
@@ -65,7 +69,7 @@ internal fun Project.configureKmpLibrary(wasm: Boolean) {
         if (!name.contains("Test")) compilerOptions.moduleName.set(moduleName)
     }
 
-    // 键值落盘根：每次 jvmTest 前清空（与原 :core / :data 一致）。
+    // 键值落盘根：每次 jvmTest 前清空。
     tasks.withType(Test::class.java).configureEach {
         if (name == "jvmTest") {
             val root = layout.buildDirectory.dir("testStoreRoot")
@@ -76,9 +80,3 @@ internal fun Project.configureKmpLibrary(wasm: Boolean) {
 }
 
 private fun kotlinModule(module: String) = "org.jetbrains.kotlin:kotlin-$module"
-
-/** 不声明 wasm 测试环境：依赖 Compose ui-graphics 后 nodejs 测试会因 skiko.mjs 报 ERR_MODULE_NOT_FOUND。 */
-@OptIn(ExperimentalWasmDsl::class)
-private fun KotlinMultiplatformExtension.wasmBrowser() {
-    wasmJs { browser() }
-}

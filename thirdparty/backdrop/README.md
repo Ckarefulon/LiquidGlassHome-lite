@@ -36,8 +36,9 @@ configurations.configureEach {
    是 JVM-only 的 jar，放在 commonMain 会拖一条不兼容的依赖进来；注解只影响 IDE 高亮，删除无行为影响。
 2. 去掉 androidMain `Platform.kt` 上的 `@ChecksSdkIntAtLeast`（只给 lint 用），免得为它引入
    `androidx.annotation:annotation-experimental`。两个函数的判等逻辑与上游一致。
-3. 上游把 jvm 与 wasmJs 共用的实现放在 `skikoMain` 这个中间源集，而本仓库的约定插件只建
-   `jvmMain` / `wasmJsMain`，所以 `build.gradle.kts` 里补一个同名中间源集让两者 `dependsOn` 它。
+3. 上游把 jvm 与 wasmJs 共用的实现放在 `skikoMain` 这个中间源集，而本仓库只构建 Android
+   一端（`skikoMain` / `jvmMain` / `wasmJsMain` 都已移除，见根 `build-logic/src/main/kotlin/KmpConventions.kt`），
+   所以上游那些纯 skiko 实现不再需要。
 4. **删掉折射的色散（`chromaticAberration`）**（2026-11 维护者定：「色散永远不会用到」）：
    `effects/Lens.kt` 只剩一个不带色散的折射 shader，`internal/Shaders.kt` 里
    `RoundedRectRefractionWithDispersionShaderString` 整块删除。省得非常直接——那个 shader 对每个
@@ -70,7 +71,7 @@ configurations.configureEach {
 
 ## 升级上游
 
-重新拉两个 sources jar 覆盖 `src/`，然后把「哪些改过」逐条重放：构建相关三处（注解、`skikoMain`）、
+重新拉两个 sources jar 覆盖 `src/`，然后把「哪些改过」逐条重放：构建相关（注解、删掉非 Android 的实现）、
 删色散、`sampling`、`LayerBackdropNode` 的单遍绘制、两处 `BlurMaskFilter` 缓存。
 **不要**直接改绘制代码而不同步到这里，否则下次升级会丢。
 

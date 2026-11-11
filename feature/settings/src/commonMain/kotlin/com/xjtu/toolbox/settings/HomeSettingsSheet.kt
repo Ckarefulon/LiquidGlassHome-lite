@@ -77,7 +77,7 @@ import top.yukonga.miuix.kmp.window.WindowDialog
  * 两套首页布局共用这一个抽屉，因为有三组设置是**跨布局共用**的——背景（壁纸 / 模糊）、
  * 卡片材质（液态玻璃）、顶栏排法，它们落在 [SettingsStore] 里；只有卡片组才有的几项
  * （网格开关、折射子开关、卡片圆角、背景不透明度、导出 / 导入布局、恢复默认分组和布局）落在
- * [com.xjtu.toolbox.home.HomeLayoutStore] 里，切到经典分类卡时整块不画。
+ * [com.xjtu.toolbox.home.HomeLayoutStore] 里。
  *
  * 做成底部抽屉而不是二级页，是因为它要能从两处打开——全局设置里的那一行，和首页编辑态的齿轮；
  * 两处挂的是**同一个** `HomeSettingsSheet`，从哪儿打开看到的都是同一套状态。
@@ -105,11 +105,7 @@ fun HomeSettingsSheet(
 
 /** 主页设置那一行的摘要文案：「卡片组 · 主题色渐变」这种。 */
 internal fun homeSettingsSummary(store: SettingsStore): String = listOf(
-    when (store.homeLayout) {
-        SettingsStore.HOME_LAYOUT_CLASSIC -> "经典分类卡"
-        // 只有两个取值，其余一律是卡片组（老存档的 widgets 也被读成 cards）
-        else -> "卡片组"
-    },
+    "卡片组",
     when (store.homeBackground) {
         "solid" -> "主题色"
         "image" -> "自定义图片"
@@ -125,7 +121,6 @@ private fun HomeSettingsBody(onDismiss: () -> Unit, showTopBarStyle: Boolean) {
     val settings = remember { SettingsStore() }
     val revision = HomeLayoutRevision.current
 
-    var layout by remember(revision) { mutableStateOf(settings.homeLayout) }
     var liquid by remember(revision) { mutableStateOf(settings.homeLiquidGlass) }
     var topActionsRight by remember(revision) { mutableStateOf(settings.homeTopActionsRight) }
     var grid by remember { mutableStateOf(store.grid) }
@@ -136,8 +131,7 @@ private fun HomeSettingsBody(onDismiss: () -> Unit, showTopBarStyle: Boolean) {
     var confirmGrid by remember { mutableStateOf(false) }
     // 从文件读回来、等用户确认的那份布局；非 null = 导入确认弹窗开着
     var pendingImport by remember { mutableStateOf<HomeLayout?>(null) }
-    val cards = layout == SettingsStore.HOME_LAYOUT_CARDS
-    // 只有在卡片组 + 自定义图片这一档，不透明度才有可调的对象
+    // 只有在自定义图片这一档，不透明度才有可调的对象
     val wallpaper = remember(revision) {
         settings.homeBackground == HomeLayoutStore.BACKGROUND_IMAGE && settings.homeWallpaperImage.isNotEmpty()
     }
@@ -171,32 +165,12 @@ private fun HomeSettingsBody(onDismiss: () -> Unit, showTopBarStyle: Boolean) {
             .verticalScroll(rememberScrollState())
             .navigationBarsPadding(),
     ) {
-        // ── 首页功能区：经典分类卡（回落）/ 卡片组（合并了原「小组件」能力的实现） ──
-        SmallTitle("首页功能区")
-        HomeSettingsCard {
-            OverlayDropdownPreference(
-                title = "布局",
-                summary = when (layout) {
-                    SettingsStore.HOME_LAYOUT_CLASSIC -> "刊头 + 头卡 + 分类卡，功能按分类排"
-                    else -> "长按进入编辑：可自由摆放、缩放、分组"
-                },
-                items = HOME_LAYOUT_LABELS,
-                selectedIndex = HOME_LAYOUT_VALUES.indexOf(layout).coerceAtLeast(0),
-                startAction = { SettingsIcon(Icons.Default.Dashboard, cBlue) },
-                onSelectedIndexChange = { index ->
-                    layout = HOME_LAYOUT_VALUES[index]
-                    settings.homeLayout = layout
-                    HomeLayoutRevision.bump()
-                },
-            )
-        }
-
-        // ── 背景（三套布局共用） ──
+        // ── 背景 ──
         SmallTitle("背景")
         HomeSettingsCard {
             HomeBackgroundPreference(settings, startAction = { SettingsIcon(Icons.Default.Wallpaper, cPurple) })
-            // 卡片组独有：壁纸再盖一层主题底色，文字对比度不够时自己往下拨
-            if (cards && wallpaper) {
+            // 壁纸再盖一层主题底色，文字对比度不够时自己往下拨
+            if (wallpaper) {
                 SettingsSliderRow(
                     title = "背景不透明度",
                     valueText = "$opacity%",
@@ -217,29 +191,26 @@ private fun HomeSettingsBody(onDismiss: () -> Unit, showTopBarStyle: Boolean) {
         SmallTitle("卡片")
         HomeSettingsCard {
             // 圆角排在材质**上面**：先定「长什么样」（形状），再定「用什么材质」。
-            // 圆角只有卡片组有（经典分类卡 / 小组件那两套的圆角是写死的）；
             // 编辑态那条悬浮条**恒为全圆**，不吃这个值
-            if (cards) {
-                SettingsSliderRow(
-                    title = "卡片圆角",
-                    valueText = when (corner) {
-                        0 -> "直角"
-                        HomeLayoutStore.CARD_CORNER_MAX -> "圆饼"
-                        else -> "$corner dp"
-                    },
-                    value = corner.toFloat(),
-                    range = HomeLayoutStore.CARD_CORNER_MIN.toFloat()..HomeLayoutStore.CARD_CORNER_MAX.toFloat(),
-                    icon = Icons.Default.Widgets,
-                    color = cTeal,
-                    onChange = {
-                        corner = it.roundToInt()
-                        store.cardCorner = corner
-                    },
-                    // 松手才通知首页重读：拖的时候逐帧 bump 会把整页（含一圈液态玻璃）重组几十次，
-                    // 而这段连续值本来就只写盘、不逐帧刷新（同 notifyChanged 的约定）
-                    onValueChangeFinished = { store.notifyChanged() },
-                )
-            }
+            SettingsSliderRow(
+                title = "卡片圆角",
+                valueText = when (corner) {
+                    0 -> "直角"
+                    HomeLayoutStore.CARD_CORNER_MAX -> "圆饼"
+                    else -> "$corner dp"
+                },
+                value = corner.toFloat(),
+                range = HomeLayoutStore.CARD_CORNER_MIN.toFloat()..HomeLayoutStore.CARD_CORNER_MAX.toFloat(),
+                icon = Icons.Default.Widgets,
+                color = cTeal,
+                onChange = {
+                    corner = it.roundToInt()
+                    store.cardCorner = corner
+                },
+                // 松手才通知首页重读：拖的时候逐帧 bump 会把整页（含一圈液态玻璃）重组几十次，
+                // 而这段连续值本来就只写盘、不逐帧刷新（同 notifyChanged 的约定）
+                onValueChangeFinished = { store.notifyChanged() },
+            )
             SwitchPreference(
                 title = "液态玻璃",
                 summary = when {
@@ -280,8 +251,8 @@ private fun HomeSettingsBody(onDismiss: () -> Unit, showTopBarStyle: Boolean) {
             }
         }
 
-        // ── 网格与重置：只有卡片组有格位这个概念 ──
-        if (cards) {
+        // ── 网格与重置 ──
+        run {
             SmallTitle("网格")
             HomeSettingsCard {
                 SwitchPreference(
@@ -545,17 +516,6 @@ private fun SimpleRow(
         }
     }
 }
-
-/**
- * 「首页功能区」二选一：经典分类卡（回落）/ 卡片组。
- *
- * 显示顺序与落盘值必须一一对应。原来的「小组件」不再是独立选项——那套实现已经并进卡片组。
- */
-private val HOME_LAYOUT_VALUES = listOf(
-    SettingsStore.HOME_LAYOUT_CLASSIC,
-    SettingsStore.HOME_LAYOUT_CARDS,
-)
-private val HOME_LAYOUT_LABELS = listOf("经典分类卡", "卡片组")
 
 @Composable
 private fun HomeSettingsCard(content: @Composable ColumnScope.() -> Unit) {

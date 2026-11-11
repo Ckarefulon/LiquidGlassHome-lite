@@ -7,7 +7,6 @@ import com.xjtu.toolbox.auth.AccountType
 import com.xjtu.toolbox.home.EXAM_KEY
 import com.xjtu.toolbox.home.HomeCard
 import com.xjtu.toolbox.home.HomeGlanceItem
-import com.xjtu.toolbox.home.HomeHero
 import com.xjtu.toolbox.home.HomeHost
 import com.xjtu.toolbox.home.HomeIcons
 import com.xjtu.toolbox.home.HomeInboxSummary
@@ -16,13 +15,13 @@ import com.xjtu.toolbox.home.HomeStat
 import com.xjtu.toolbox.home.HomeStatusLine
 import com.xjtu.toolbox.home.HomeTone
 import com.xjtu.toolbox.nav.AppRoute
-import com.xjtu.toolbox.schedule.CourseItem
-import com.xjtu.toolbox.util.todayOnCampus
-import kotlinx.datetime.LocalDate
 
 /**
- * 占位宿主：首页的全部业务数据都从这里来，一律是假数据。
- * 「下一项安排」与「第 N 周」仍走真实的本地推算（[HomeHero]），只是喂的是占位课表。
+ * 占位宿主：首页的全部业务数据都从这里来。
+ *
+ * **一律硬编码**，不做任何本地推算——包括「第 N 周」与「下一项安排」。展示仓库不该让周次跟着
+ * 日历漂（上游那套是 `HomeHero.weekNumber(开学日期)`，今天跑出来会是「第 10 周」，看着像真数据），
+ * 也不该依赖时区 / 学期表。想看真实推算逻辑请回上游仓库。
  */
 class LiteHomeHost(
     private val onNavigate: (AppRoute) -> Unit,
@@ -46,63 +45,51 @@ class LiteHomeHost(
 
     override val greetingName: String = "同学"
 
-    override val dateLabel: String
-        get() {
-            val today = todayOnCampus()
-            return "${today.month.ordinal + 1}月${today.day}日 · ${WEEKDAY_LABELS[today.dayOfWeek.ordinal]}"
-        }
+    /** 固定文案，不读系统时间。 */
+    override val dateLabel: String = "10月12日 · 周一"
 
-    override val weekNumber: Int get() = HomeHero.weekNumber(TERM_START)
+    /** 固定「第 4 周」，不由开学日期推算。 */
+    override val weekNumber: Int = 4
 
     override val statusLine: HomeStatusLine =
         HomeStatusLine("校园网 · 子系统 6/6 就绪", "占位数据：所有子系统连接正常", HomeTone.NORMAL)
 
-    override val nextUp: HomeNextUp?
-        get() = HomeHero.find(
-            courses = PLACEHOLDER_COURSES,
-            startOfTerm = TERM_START,
-            route = AppRoute.Schedule,
-        ) ?: HomeNextUp(
-            icon = HomeHero.EMPTY_ICON,
-            title = HomeHero.NOTHING_TITLE,
-            detail = "点这里看整学期",
-            route = AppRoute.Schedule,
-        )
+    /** 固定的一节课，不用 `HomeHero.find` 按当前时刻去找。 */
+    override val nextUp: HomeNextUp = HomeNextUp(
+        icon = HomeIcons.of(AppRoute.Schedule),
+        title = "高等数学（占位）",
+        timeLabel = "14:00",
+        timeCaption = "至 15:40",
+        eta = "还有 1 小时",
+        detail = "教2-101 · 张老师",
+        route = AppRoute.Schedule,
+    )
 
-    override val glances: List<HomeGlanceItem>
-        get() = buildList {
-            add(
-                HomeGlanceItem(
-                    icon = HomeIcons.of(AppRoute.CampusCard),
-                    label = "校园卡",
-                    value = "¥123.45",
-                    caption = "占位余额",
-                    number = 123.45,
-                    route = AppRoute.CampusCard,
-                )
-            )
-            add(
-                HomeGlanceItem(
-                    icon = HomeIcons.of(AppRoute.Community),
-                    label = "社区",
-                    value = "聊两句",
-                    caption = "提建议 · 报问题",
-                    route = AppRoute.Community,
-                )
-            )
-            stats[EXAM_KEY]?.let { exam ->
-                add(
-                    HomeGlanceItem(
-                        icon = HomeHero.EXAM_ICON,
-                        label = exam.detail?.substringBefore(" · ")?.ifBlank { null } ?: "下一场考试",
-                        value = exam.value,
-                        caption = exam.detail?.substringAfter(" · ", "")?.ifBlank { null },
-                        tone = HomeTone.ACCENT,
-                        route = AppRoute.Schedule,
-                    )
-                )
-            }
-        }
+    override val glances: List<HomeGlanceItem> = listOf(
+        HomeGlanceItem(
+            icon = HomeIcons.of(AppRoute.CampusCard),
+            label = "校园卡",
+            value = "¥123.45",
+            caption = "占位余额",
+            number = 123.45,
+            route = AppRoute.CampusCard,
+        ),
+        HomeGlanceItem(
+            icon = HomeIcons.of(AppRoute.Community),
+            label = "社区",
+            value = "聊两句",
+            caption = "提建议 · 报问题",
+            route = AppRoute.Community,
+        ),
+        HomeGlanceItem(
+            icon = HomeIcons.of(AppRoute.SchoolCalendar),
+            label = "高数",
+            value = "12 天",
+            caption = "11-23 09:00",
+            tone = HomeTone.ACCENT,
+            route = AppRoute.Schedule,
+        ),
+    )
 
     override var quickRoutes: List<AppRoute> by mutableStateOf(
         listOf(AppRoute.Schedule, AppRoute.JwappScore, AppRoute.Library, AppRoute.CampusCard)
@@ -147,24 +134,4 @@ class LiteHomeHost(
     }
 
     override val hasHomeSettings: Boolean = true
-
-    companion object {
-        /** 占位开学日期：教学周与「下一项安排」都按它推算。 */
-        private val TERM_START = LocalDate(2026, 9, 7)
-
-        private val WEEKDAY_LABELS = listOf("周一", "周二", "周三", "周四", "周五", "周六", "周日")
-
-        private const val ALL_WEEKS = "11111111111111111111"
-
-        private val PLACEHOLDER_COURSES = listOf(
-            CourseItem("高等数学（占位）", "张老师", "教2-101", ALL_WEEKS, 1, 1, 2),
-            CourseItem("大学英语（占位）", "李老师", "外文楼-203", ALL_WEEKS, 1, 3, 4),
-            CourseItem("数据结构（占位）", "王老师", "主楼A-302", ALL_WEEKS, 2, 1, 2),
-            CourseItem("大学物理（占位）", "赵老师", "教2-205", ALL_WEEKS, 2, 5, 6),
-            CourseItem("思政（占位）", "陈老师", "主楼B-101", ALL_WEEKS, 3, 3, 4),
-            CourseItem("体育（占位）", "刘老师", "东南田径场", ALL_WEEKS, 4, 5, 6),
-            CourseItem("程序设计实践（占位）", "孙老师", "计算中心-401", ALL_WEEKS, 5, 1, 2),
-            CourseItem("线性代数（占位）", "周老师", "教2-108", ALL_WEEKS, 5, 3, 4),
-        )
-    }
 }

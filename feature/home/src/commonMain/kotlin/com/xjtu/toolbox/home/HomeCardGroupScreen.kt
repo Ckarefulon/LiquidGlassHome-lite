@@ -141,7 +141,7 @@ import top.yukonga.miuix.kmp.window.WindowDialog
  * 合并时从小组件那套搬过来的能力：材质四态里的纯色 / 渐变薄底（§1）、
  * 一镜到底接线（`HomeTileBoard` 的 `tileOpen`、本文件的 `rowOf` 里 `onSeamlessClick`）、
  * 校园卡大卡的付款码（`HomeTileBoard` 的 `PaymentCodeOverlay`）。
- * 只剩「经典分类卡」作为回落，见 [HomeClassicScreen]；入口分派在 [HomeScreen]。
+ * 只剩卡片组这一套（原「小组件」那套已并进它，经典分类卡在本仓库整条移除）；入口在 [HomeScreen]。
  */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -179,7 +179,9 @@ fun HomeCardGroupScreen(
     // 背景不透明度才是卡片组独有的，留在 `HomeLayoutStore` 里。
     val settings = remember { SettingsStore() }
     val settingsRevision = SettingsRevision.current
-    val revision = HomeLayoutRevision.current
+    // 布局与主页设置共用同一个计数器（合并前是 `home.HomeLayoutRevision` 与
+    // `settings.HomeLayoutRevision` 两个对象，只有前者被写、后者被读，等于改了设置首页不重读）
+    val revision = settingsRevision
     val editing = remember { HomeEditState() }
     val stored = remember(revision, host.audience, host.quickRoutes) {
         layoutStore.load(host.audience, host.quickRoutes)

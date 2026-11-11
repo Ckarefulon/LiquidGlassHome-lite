@@ -127,26 +127,11 @@ class SettingsStore(private val store: KeyValueStore = keyValueStore(APP_SETTING
         set(value) = store.putInt("hero_image_brightness", value.coerceIn(HERO_IMAGE_BRIGHTNESS_MIN, HERO_IMAGE_BRIGHTNESS_MAX))
 
     /**
-     * 首页功能区用哪一套：`classic` = 经典分类卡（回落），`cards` = 卡片组（合并了原「小组件」那套
-     * 能力的唯一现代实现）。
-     *
-     * 老存档里的 `widgets`（dev 上那套小组件）**没有独立选项了**：它已经并进卡片组，读到就当成
-     * `cards`，升级后用户看到的是合并后的新实现；没设置过的也按 `cards` 走。
-     */
-    var homeLayout: String
-        get() = when (store.getString("home_layout")) {
-            HOME_LAYOUT_CLASSIC -> HOME_LAYOUT_CLASSIC
-            else -> HOME_LAYOUT_CARDS
-        }
-        set(value) = store.putString("home_layout", value.takeIf { it in HOME_LAYOUTS } ?: HOME_LAYOUT_CARDS)
-
-    /**
      * **历史键**：原「小组件」那套布局的分组与尺寸（每组一行 `#id\t标题\t颜色`，下面跟本组的
      * `路由id:尺寸`）；null = 没编辑过。
      *
-     * 小组件那套实现已经并进卡片组（见 `HOME_LAYOUT_CARDS`），卡片组用的是 `HomeLayoutStore` 里
-     * 那份整页快照，所以这个键现在**只读不写**，留着是为了不删用户硬盘上的旧数据、将来要迁移
-     * 旧布局时还有得读。
+     * 小组件那套实现已经并进卡片组，卡片组用的是 `HomeLayoutStore` 里那份整页快照，所以这个键
+     * 现在**只读不写**，留着是为了不删用户硬盘上的旧数据、将来要迁移旧布局时还有得读。
      */
     var homeWidgets: List<String>?
         get() = store.getString("home_widgets")?.split('\n')?.filter { it.isNotBlank() }
@@ -221,17 +206,22 @@ class SettingsStore(private val store: KeyValueStore = keyValueStore(APP_SETTING
         }
         /** 非敏感的应用设置（外观、协议、更新……），普通 SharedPreferences。 */
         const val APP_SETTINGS_FILE = "app_settings"
+
+        /**
+         * 历史值：`home_layout` 键上曾经出现过的取值。本仓库只剩卡片组一套布局，
+         * 键本身已不再读写；保留这几个常量只为认旧存档。
+         */
         const val HOME_LAYOUT_CLASSIC = "classic"
         const val HOME_LAYOUT_CARDS = "cards"
 
         /**
-         * 历史值：dev 上那套「小组件」布局。它已经并进 [HOME_LAYOUT_CARDS]，不再是可选项，
+         * 历史值：dev 上那套「小组件」布局。它已经并进卡片组，不再是可选项，
          * 只在读老存档时被认出来并映射过去。
          */
         const val HOME_LAYOUT_WIDGETS = "widgets"
 
-        /** 合法的首页布局取值（写盘校验用）；`widgets` 只进不出。 */
-        val HOME_LAYOUTS = setOf(HOME_LAYOUT_CLASSIC, HOME_LAYOUT_CARDS)
+        /** 历史取值集合（本仓库不再有布局切换，仅存档兼容用）。 */
+        val HOME_LAYOUTS = setOf(HOME_LAYOUT_CLASSIC, HOME_LAYOUT_CARDS, HOME_LAYOUT_WIDGETS)
         const val WIDGET_MATERIAL_PAPER = "paper"
 
         const val HERO_IMAGE_BLUR_MIN = 0

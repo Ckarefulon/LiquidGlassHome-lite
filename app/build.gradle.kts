@@ -21,7 +21,17 @@ android {
 
     buildTypes {
         release {
-            // 展示用仓库：不混淆，崩溃堆栈直接可读。
+            // material-icons-extended 有 2000+ 个图标 composable，全量进包能到 60MB+。
+            // 只展示主页不需要全部图标，必须靠 R8 裁掉用不到的那些。
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro",
+            )
+        }
+        debug {
+            // 本机排查用；CI 只出 release。
             isMinifyEnabled = false
         }
     }

@@ -7,6 +7,7 @@ import com.xjtu.toolbox.auth.AccountType
 import com.xjtu.toolbox.nav.AppRoute
 import com.xjtu.toolbox.platform.KeyValueStore
 import com.xjtu.toolbox.platform.keyValueStore
+import com.xjtu.toolbox.settings.HomeLayoutRevision
 import com.xjtu.toolbox.settings.SettingsStore
 
 /**
@@ -331,8 +332,8 @@ class HomeLayoutStore(
         const val CARD_CORNER_MAX = 40
         const val CARD_CORNER_DEFAULT = 22
 
-        // 注意键名：`SettingsStore.homeLayout` 也用「首页布局」这个意思，但存的是**模式**
-        // （classic / widgets / cards）落在 `home_layout` 上；这里存的是卡片组那一整页的分组
+        // 注意键名：`home_layout` 键上曾存过**模式**（classic / widgets / cards），本仓库只剩
+        // 卡片组一套、那个键已不再读写；这里存的是卡片组那一整页的分组
         // 与格位快照，必须换个键，否则两边会互相覆盖（合并 dev 时踩到过）。
         private const val KEY_LAYOUT = "home_cards_layout"
 
@@ -349,19 +350,6 @@ private const val KEY_CARD_CORNER = "home_card_corner"
         private const val KEY_BACKGROUND_IMAGE = "home_background_image"
         private const val KEY_BACKGROUND_BLUR = "home_background_blur"
         private const val KEY_BACKGROUND_OPACITY = "home_background_opacity"
-    }
-}
-
-/**
- * 首页布局改过之后的进程内信号（和 `HeroAppearanceRevision` 一个套路）：
- * 主页设置面板、编辑态、首页自己各持一份状态，靠它一起重读，不依赖谁还留在组合里。
- */
-object HomeLayoutRevision {
-    var current by mutableIntStateOf(0)
-        private set
-
-    internal fun bump() {
-        current++
     }
 }
 

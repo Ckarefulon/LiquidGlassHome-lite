@@ -14,14 +14,6 @@ plugins {
 
 kotlin {
     sourceSets {
-        // 上游把 jvm 与 wasmJs 共用的实现（org.jetbrains.skia 那套）放在 skikoMain 这个中间源集，
-        // 而约定插件只建了 jvmMain / wasmJsMain，所以这里补一个同名源集让两者共用
-        val skikoMain = create("skikoMain") {
-            dependsOn(commonMain.get())
-        }
-        jvmMain.get().dependsOn(skikoMain)
-        wasmJsMain.get().dependsOn(skikoMain)
-
         commonMain.dependencies {
             api(libs.jb.compose.ui)
             api(libs.compose.ui.graphics)

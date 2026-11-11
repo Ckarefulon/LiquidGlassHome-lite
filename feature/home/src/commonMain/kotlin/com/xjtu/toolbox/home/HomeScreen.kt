@@ -1,25 +1,17 @@
 package com.xjtu.toolbox.home
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.xjtu.toolbox.settings.HomeLayoutRevision
-import com.xjtu.toolbox.settings.SettingsStore
 import top.yukonga.miuix.kmp.basic.ScrollBehavior
 
 /**
- * 首页入口：按「主页设置 → 首页功能区」选中的那一套分派。
+ * 首页入口。
  *
- * 只有两套，因为**原来那套「小组件」已经并进卡片组**——两边本来就是同一个功能的两代，
- * 合成一套之后位置模型/拖拽/分组用卡片组的，材质、一镜到底、付款码这些能力从小组件那边
- * 搬了过来（见 [HomeCardGroupScreen] 的类头）：
- *
- * - [SettingsStore.HOME_LAYOUT_CLASSIC]：经典分类卡（回落）→ [HomeClassicScreen]
- * - [SettingsStore.HOME_LAYOUT_CARDS]：卡片组 → [HomeCardGroupScreen]
- *
- * 两套屏的参数表逐字相同，所以这里只做一件事：读一次落盘的布局键，然后整屏转交。
+ * 只剩卡片组这一套（原「小组件」那套早已并进它，经典分类卡在本仓库里整条移除）：
+ * 位置模型 / 拖拽 / 分组用卡片组的，材质、一镜到底、付款码这些能力从小组件那边搬了过来
+ * （见 [HomeCardGroupScreen] 的类头）。
  */
 @Composable
 fun HomeScreen(
@@ -37,29 +29,14 @@ fun HomeScreen(
     /** 顶栏右侧那一排（`:app` 是「搜索」+「通知」）。null = 这一端没有顶栏。 */
     topActions: (@Composable () -> Unit)? = null,
 ) {
-    val store = remember { SettingsStore() }
-    val layout = remember(HomeLayoutRevision.current) { store.homeLayout }
-    if (layout == SettingsStore.HOME_LAYOUT_CLASSIC) {
-        HomeClassicScreen(
-            host = host,
-            modifier = modifier,
-            scrollBehavior = scrollBehavior,
-            extraBottomPadding = extraBottomPadding,
-            contentTopPadding = contentTopPadding,
-            contentTopShift = contentTopShift,
-            topLeading = topLeading,
-            topActions = topActions,
-        )
-    } else {
-        HomeCardGroupScreen(
-            host = host,
-            modifier = modifier,
-            scrollBehavior = scrollBehavior,
-            extraBottomPadding = extraBottomPadding,
-            contentTopPadding = contentTopPadding,
-            contentTopShift = contentTopShift,
-            topLeading = topLeading,
-            topActions = topActions,
-        )
-    }
+    HomeCardGroupScreen(
+        host = host,
+        modifier = modifier,
+        scrollBehavior = scrollBehavior,
+        extraBottomPadding = extraBottomPadding,
+        contentTopPadding = contentTopPadding,
+        contentTopShift = contentTopShift,
+        topLeading = topLeading,
+        topActions = topActions,
+    )
 }

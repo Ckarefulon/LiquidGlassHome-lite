@@ -1,11 +1,17 @@
 package com.xjtu.toolbox.settings
 
-import com.xjtu.toolbox.platform.keyValueStore
+import com.xjtu.toolbox.platform.KeyValueStore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-/** 设置偏好的键名与默认值。 */
+/**
+ * 设置偏好的键名与默认值。
+ *
+ * 用 [InMemoryStore] 而不是 `keyValueStore(...)`：本仓库只建 Android 目标，`commonTest` 跑在
+ * Android host JVM 上，而 Android 的 `keyValueStore` 要 `Application` 交进来的 `Context`——
+ * 单测里没有。这里验证的是键名与默认值，不是平台持久化，内存实现足够，也不必引 Robolectric。
+ */
 class SettingsStoreTest {
     @Test
     fun `头卡外观跨实例保留且无效偏好回退`() {
@@ -34,8 +40,9 @@ class SettingsStoreTest {
         settings.heroImageData = "aGVsbG8="
         assertEquals("custom", SettingsStore(raw).heroBackground, "自定义背景也要能落盘")
         assertEquals("aGVsbG8=", SettingsStore(raw).heroImageData, "自定义图片要跟着背景一起落盘")
-        raw.putString("hero_background", "unknown")
+        settings.heroBackground = "不认识的值"
         assertEquals("liquid", SettingsStore(raw).heroBackground, "认不出的背景回退到液体")
+
         raw.putString("hero_palette", "unknown")
         raw.putString("hero_motion", "unknown")
         raw.putString("hero_color_hex", "not a color")
@@ -101,7 +108,7 @@ class SettingsStoreTest {
         assertEquals("#112233", reopened.heroColorHex(true), "没单独选过的深色回退到旧键")
     }
 
-    private fun freshStore() = keyValueStore("settings_store_unit_test").apply { clear() }
+    private fun freshStore(): KeyValueStore = InMemoryStore()
 
     @Test
     fun `默认值与 app 逐条对齐，且写进去的是同名键`() {
@@ -146,8 +153,45 @@ class SettingsStoreTest {
         assertEquals("direct", SettingsStore.NETWORK_DIRECT)
         assertEquals("vpn", SettingsStore.NETWORK_VPN)
         assertEquals("jwxt", SettingsStore.SCHEDULE_SOURCE_JWXT)
-        // 旧版考勤（bkkq）的取值：不能改
         assertEquals("bkkq", SettingsStore.SCHEDULE_SOURCE_ATTENDANCE)
         assertEquals("app_settings", SettingsStore.APP_SETTINGS_FILE)
+    }
+}
+
+/** `commonTest` 用的内存键值存储：只存在于测试进程，不碰任何平台 API。 */
+internal class InMemoryStore : KeyValueStore {
+    private val values = linkedMapOf<String, Any>()
+
+    override fun getString(key: String): String? = values[key] as? String
+    override fun putString(key: String, value: String?) {
+        if (value == null) values.remove(key) else values[key] = value
+    }
+
+    override fun getBoolean(key: String, default: Boolean): Boolean = values[key] as? Boolean ?: default
+    override fun putBoolean(key: String, value: Boolean) {
+        values[key] = value
+    }
+
+    override fun getInt(key: String, default: Int): Int = values[key] as? Int ?: default
+    override fun putInt(key: String, value: Int) {
+        values[key] = value
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    override fun getStringSet(key: String): Set<String>? = values[key] as? Set<String>
+    override fun putStringSet(key: String, value: Set<String>) {
+        values[key] = value.toSet()
+    }
+
+    override fun remove(key: String) {
+        values.remove(key)
+    }
+
+    override fun contains(key: String): Boolean = key in values
+
+    override fun keys(): Set<String> = values.keys
+
+    override fun clear() {
+        values.clear()
     }
 }

@@ -15,8 +15,5 @@ kotlin {
             implementation(libs.androidx.core.ktx)
             implementation(libs.androidx.activity.compose)
         }
-        wasmJsMain.dependencies {
-            implementation(libs.kotlinx.browser)
-        }
     }
 }

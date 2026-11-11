@@ -17,14 +17,15 @@ plugins {
     id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
 }
 dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)
+    // FAIL_ON_PROJECT_REPOS：子工程再声明仓库会当场报错，不会像 PREFER_SETTINGS 那样静默忽略
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
         google()
         mavenCentral()
     }
 }
 
-rootProject.name = "LiquidGlassHome"
+rootProject.name = "LiquidGlassHome-lite"
 
 include(":app")
 // 三端共用的应用外壳（顶栏 + 底栏 / 侧栏 + 玻璃采样层）

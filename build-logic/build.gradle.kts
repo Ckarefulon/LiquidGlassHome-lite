@@ -22,10 +22,6 @@ gradlePlugin {
             id = "toolbox.kmp.library"
             implementationClass = "KmpLibraryConventionPlugin"
         }
-        register("kmpJvmAndroid") {
-            id = "toolbox.kmp.jvm-android"
-            implementationClass = "KmpJvmAndroidConventionPlugin"
-        }
         register("kmpCompose") {
             id = "toolbox.kmp.compose"
             implementationClass = "KmpComposeConventionPlugin"

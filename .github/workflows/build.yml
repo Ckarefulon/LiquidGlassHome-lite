@@ -23,19 +23,25 @@ jobs:
         run: chmod +x gradlew
 
       - name: Accept Android SDK licenses
-        run: yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
+        # 不加 `|| true`：许可没接受就要当场失败，否则后面会给出看不懂的错误
+        run: yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses
 
       - name: Install Android SDK 37
-        # 与 app/build.gradle.kts 的 compileSdk 37 保持一致；36 供 targetSdk 使用
-        run: $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "platforms;android-37.0" "build-tools;37.0.0" "platforms;android-36" "build-tools;36.0.0" --channel=3
+        # 与 app/build.gradle.kts 的 compileSdk 37 保持一致（MIUIX 的 AAR metadata 要求）
+        run: $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "platforms;android-37.0" "build-tools;37.0.0" --channel=3
 
-      - name: Build debug APK
-        run: ./gradlew :app:assembleDebug --stacktrace
+      - name: Unit tests (host JVM)
+        # 本仓库只建 Android 目标，没有 jvm 目标 ⇒ 没有 jvmTest 任务；
+        # 单元测试统一落在各模块的 commonTest，由 host-JVM 变体执行。
+        run: ./gradlew testDebugUnitTest --stacktrace
 
-      - name: Unit tests (JVM)
-        run: ./gradlew :shared:model:jvmTest :shared:navigation:jvmTest :feature:home:jvmTest :core:jvmTest --stacktrace
+      - name: Build release APK
+        run: ./gradlew :app:assembleRelease --stacktrace
+
+      - name: Report APK size
+        run: ls -lh app/build/outputs/apk/release/
 
       - uses: actions/upload-artifact@v7
         with:
-          name: LiquidGlassHome-debug
-          path: app/build/outputs/apk/debug/app-debug.apk
+          name: LiquidGlassHome-release
+          path: app/build/outputs/apk/release/*.apk
