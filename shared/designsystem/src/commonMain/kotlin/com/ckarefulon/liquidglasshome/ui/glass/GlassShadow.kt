@@ -7,7 +7,7 @@ import androidx.compose.ui.unit.dp
 import com.kyant.backdrop.shadow.Shadow
 
 /**
- * 悬浮玻璃（底栏胶囊、屁岱气泡这类真正浮在内容上面的东西）的阴影。
+ * 悬浮玻璃（底栏胶囊、助手气泡这类真正浮在内容上面的东西）的阴影。
  *
  * 阴影只给「浮起来」的东西：贴边的顶栏不投影（见 [topBarScrim]），卡片用
  * [com.ckarefulon.liquidglasshome.ui.components.appCardShadow]。

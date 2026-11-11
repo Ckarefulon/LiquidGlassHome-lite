@@ -27,7 +27,7 @@ class HolidayFilterTest {
         assertEquals("101", out.weekBits)
     }
 
-    /** 屁岱在中秋那周加的一次性日程：以前被滤掉，表现为「出现半秒就消失」。 */
+    /** 助手在中秋那周加的一次性日程：以前被滤掉，表现为「出现半秒就消失」。 */
     @Test
     fun `自建日程落在假日也不滤`() {
         // 造数据从 `CustomCourseEntity`（Room 实体，留在 `:app`）换成 `CustomCourse`

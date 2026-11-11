@@ -2,7 +2,7 @@ package com.ckarefulon.liquidglasshome.bus
 
 import kotlinx.datetime.LocalDate
 
-/** 校车（`xjbus.xjtu.edu.cn`）的数据模型。上游响应里的乘客名单有意不建模，见 `BusApi`。 */
+/** 校车的数据模型。上游响应里的乘客名单有意不建模，见 `BusApi`。 */
 data class BusStop(
     val name: String,
     /** 上游多数站点没有时间，只有发车站和个别站点有。 */
@@ -15,7 +15,7 @@ data class BusRun(
     val lineName: String,
     /** 发车时间 `HH:mm`。 */
     val time: String,
-    /** 「创新港班车」「兴庆班车」。 */
+    /** 「示例校区 C 班车」「示例校区班车」。 */
     val category: String,
     val seats: Int,
     val usedSeats: Int,
@@ -36,11 +36,11 @@ interface BusSource {
 }
 
 object BusRules {
-    /** 学生坐校车不用预约，页面和小岱都要这么说，别让人去找预约入口。 */
+    /** 学生坐校车不用预约，页面和助手都要这么说，别让人去找预约入口。 */
     const val BOARDING_TIP = "学生无需预约，留意余量，早点去排队"
 
-    /** 校区名不是站名：兴庆校区的站叫思源中心、思源南广场，雁塔校区的叫医学行政楼。 */
-    private val ALIASES = mapOf("兴庆" to listOf("思源"), "雁塔" to listOf("医学"))
+    /** 校区名不是站名：主校区的站叫「示例中心」「示例南广场」，另一校区的叫「示例行政楼」。 */
+    private val ALIASES = mapOf("示例校区" to listOf("示例"), "示例校区 B" to listOf("示例行政"))
     private val ROUTE_SEPARATOR = Regex("""\s*(?:到|至|→|->|-|\s)\s*""")
 
     private fun terms(query: String): List<String> {
@@ -59,7 +59,7 @@ object BusRules {
         return first < last
     }
 
-    /** 搜索框：「创新港 思源」「创新港到思源」按方向找；单个词匹配线路名、车牌或站点。 */
+    /** 搜索框：「示例校区 C 示例」「示例校区 C到示例」按方向找；单个词匹配线路名、车牌或站点。 */
     fun search(runs: List<BusRun>, query: String): List<BusRun> {
         val q = query.trim()
         if (q.isEmpty()) return runs
@@ -71,7 +71,7 @@ object BusRules {
         }
     }
 
-    /** 「1号线(三村西门-创新港)」→「1号线」：起终点卡片上另有一行，不用再说一遍。 */
+    /** 「1号线(三村西门-示例校区 C)」→「1号线」：起终点卡片上另有一行，不用再说一遍。 */
     fun shortLineName(name: String): String =
         name.substringBefore('(').substringBefore('（').trim().ifEmpty { name }
 

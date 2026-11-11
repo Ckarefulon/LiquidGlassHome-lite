@@ -12,7 +12,7 @@ import com.kyant.backdrop.internal.RuntimeShaderEffect
 import com.kyant.backdrop.isRuntimeShaderSupported
 import com.kyant.shapes.RoundedRectangularShape
 
-// [岱宗盒子 vendor 改动] 删掉了上游的 `chromaticAberration`（色散）：本仓库永远不用它，而它会
+// [本仓库 vendor 改动] 删掉了上游的 `chromaticAberration`（色散）：本仓库永远不用它，而它会
 // 把折射那一档从「每像素 1 次纹理采样」变成「7 次」（红橙黄绿青蓝紫七次 content.eval），
 // 是整页最贵的一层。现在这条路上只剩一个不带色散的折射 shader。
 fun BackdropEffectScope.lens(

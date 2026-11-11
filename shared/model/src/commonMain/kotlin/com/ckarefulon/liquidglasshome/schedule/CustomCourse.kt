@@ -3,7 +3,7 @@ package com.ckarefulon.liquidglasshome.schedule
 import kotlinx.serialization.Serializable
 import kotlin.time.Clock
 
-/** 用户自建的一条日程/课程（手动添加的实验课、临时排课，以及屁岱代加的日程）。 */
+/** 用户自建的一条日程/课程（手动添加的示例实践课、临时排课，以及助手代加的日程）。 */
 @Serializable
 data class CustomCourse(
     /** 表里的自增主键；0 = 还没落库（新增）。 */

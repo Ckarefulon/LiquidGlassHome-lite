@@ -5,7 +5,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-/** 屁岱配置的模型（存取在 `:data` 的 `AgentConfigStore`）。 */
+/** 助手配置的模型（存取在 `:data` 的 `AgentConfigStore`）。 */
 class AgentConfigTest {
 
     @Test
@@ -50,14 +50,15 @@ class AgentConfigTest {
 
     @Test
     fun `助手名折叠空白、超 12 字截断、空则回落默认`() {
-        assertEquals("小岱", sanitizeAgentTitle(""))
-        assertEquals("小岱", sanitizeAgentTitle("   "))
-        assertEquals("小 屁 岱", sanitizeAgentTitle("小 \n 屁\t岱"))
+        assertEquals("助手", sanitizeAgentTitle(""))
+        assertEquals("助手", sanitizeAgentTitle("   "))
+        // 换行与制表都折成一个空格（这是这条判据要守的东西）
+        assertEquals("助 手 名", sanitizeAgentTitle("助 \n 手\t名"))
         // 12 字（一/二/…/十/十/一）不截断，13 字开始截
         assertEquals("一二三四五六七八九十十一", sanitizeAgentTitle("一二三四五六七八九十十一"))
         assertEquals("一二三四五六七八九十十一…", sanitizeAgentTitle("一二三四五六七八九十十一十二"))
         // effectiveName 走的就是这条判据
-        assertEquals("小岱", AgentConfig(assistantName = "").effectiveName)
+        assertEquals("助手", AgentConfig(assistantName = "").effectiveName)
     }
 
     @Test

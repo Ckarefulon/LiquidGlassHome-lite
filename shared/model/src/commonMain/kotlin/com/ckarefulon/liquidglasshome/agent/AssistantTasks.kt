@@ -19,9 +19,9 @@ import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.put
 import kotlin.time.Clock
 
-/** 用户交给小岱的定时任务：到点由后台跑一次，结果进收纳和通知。 */
+/** 用户交给助手的定时任务：到点由后台跑一次，结果进收纳和通知。 */
 @Serializable
-data class PidaiTask(
+data class AssistantTask(
     val id: String,
     val prompt: String,
     val hour: Int,
@@ -31,19 +31,19 @@ data class PidaiTask(
     val lastRun: Long = 0L,
 )
 
-object PidaiTaskStore {
+object AssistantTaskStore {
     const val MAX_TASKS = 5
     private const val KEY = "tasks"
 
-    private val store get() = keyValueStore("pidai_tasks" + AccountContext.safeSuffix())
-    private val serializer = ListSerializer(PidaiTask.serializer())
+    private val store get() = keyValueStore("assistant_tasks" + AccountContext.safeSuffix())
+    private val serializer = ListSerializer(AssistantTask.serializer())
 
-    fun all(): List<PidaiTask> =
+    fun all(): List<AssistantTask> =
         store.getString(KEY)?.let { runCatching { AppJson.decodeFromString(serializer, it) }.getOrNull() }.orEmpty()
 
-    private fun save(tasks: List<PidaiTask>) = store.putString(KEY, AppJson.encodeToString(serializer, tasks))
+    private fun save(tasks: List<AssistantTask>) = store.putString(KEY, AppJson.encodeToString(serializer, tasks))
 
-    fun add(task: PidaiTask): Boolean {
+    fun add(task: AssistantTask): Boolean {
         val tasks = all()
         if (tasks.size >= MAX_TASKS) return false
         save(tasks + task)
@@ -54,16 +54,16 @@ object PidaiTaskStore {
 
     fun markRun(id: String, at: Long) = save(all().map { if (it.id == id) it.copy(lastRun = at) else it })
 
-    /** [now] 这一刻该跑的任务：今天在 [PidaiTask.days] 里、过了设定时刻、今天这一次还没跑过。 */
-    fun due(now: LocalDateTime, tasks: List<PidaiTask> = all()): List<PidaiTask> = tasks.filter { t ->
+    /** [now] 这一刻该跑的任务：今天在 [AssistantTask.days] 里、过了设定时刻、今天这一次还没跑过。 */
+    fun due(now: LocalDateTime, tasks: List<AssistantTask> = all()): List<AssistantTask> = tasks.filter { t ->
         if (t.days.isNotEmpty() && now.dayOfWeek.isoDayNumber !in t.days) return@filter false
         val slot = LocalDateTime(now.date, LocalTime(t.hour, t.minute))
         now >= slot && t.lastRun < slot.toInstant(CampusTimeZone).toEpochMilliseconds()
     }
 }
 
-/** 小岱管定时任务的三件工具：`schedule_task` / `list_tasks` / `cancel_task`。 */
-object PidaiTaskAgentTools : AgentTools {
+/** 助手管定时任务的三件工具：`schedule_task` / `list_tasks` / `cancel_task`。 */
+object AssistantTaskAgentTools : AgentTools {
 
     private val DAY_CODES = listOf("MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN")
 
@@ -85,16 +85,16 @@ object PidaiTaskAgentTools : AgentTools {
             listOf(
                 tool(
                     "schedule_task",
-                    "让小岱在后台定时做一件事（查公开通知、联网搜、看校园地图），到点把结果发到通知和「消息收纳」。" +
-                        "后台不登录学校系统，课表、成绩这类要登录的查不了。最多 ${PidaiTaskStore.MAX_TASKS} 个。",
+                    "让助手在后台定时做一件事（查公开通知、联网搜、看校园地图），到点把结果发到通知和「消息收纳」。" +
+                        "后台不登录学校系统，课表、成绩这类要登录的查不了。最多 ${AssistantTaskStore.MAX_TASKS} 个。",
                     mapOf(
-                        "prompt" to prop("到点要做的事，写成给自己的指令，如「看教务处和学生处有没有奖学金评选通知，有就列出来」。"),
+                        "prompt" to prop("到点要做的事，写成给自己的指令，如「看示例部门和学生处有没有奖学金评选通知，有就列出来」。"),
                         "time" to prop("每天几点，HH:mm。"),
                         "days" to prop("哪几天，逗号分隔：MON,TUE,WED,THU,FRI,SAT,SUN。缺省：每天。"),
                     ),
                     listOf("prompt", "time"),
                 ),
-                tool("list_tasks", "列出用户让小岱定时做的任务。", emptyMap(), emptyList()),
+                tool("list_tasks", "列出用户让助手定时做的任务。", emptyMap(), emptyList()),
                 tool("cancel_task", "取消一个定时任务。", mapOf("keyword" to prop("任务内容里的关键词。")), listOf("keyword")),
             ),
         ).toString()
@@ -114,26 +114,26 @@ object PidaiTaskAgentTools : AgentTools {
                 val days = arg("days")?.split(',')?.map { it.trim().uppercase() }?.filter { it.isNotEmpty() }?.map { code ->
                     DAY_CODES.indexOf(code).takeIf { it >= 0 }?.plus(1) ?: return ToolReply.badValue("days", DAY_CODES.joinToString(","))
                 }.orEmpty()
-                val task = PidaiTask(
+                val task = AssistantTask(
                     id = "t" + Clock.System.now().toEpochMilliseconds(),
                     prompt = prompt, hour = h, minute = m, days = days.distinct().sorted(),
                     // 今天已经过点的不补跑，从下一次开始
                     lastRun = Clock.System.now().toEpochMilliseconds(),
                 )
-                if (!PidaiTaskStore.add(task)) return "error: limit_reached; max: ${PidaiTaskStore.MAX_TASKS}"
+                if (!AssistantTaskStore.add(task)) return "error: limit_reached; max: ${AssistantTaskStore.MAX_TASKS}"
                 "ok: scheduled; time: $time; days: ${arg("days") ?: "every_day"}; prompt: $prompt"
             }
-            "list_tasks" -> PidaiTaskStore.all().takeIf { it.isNotEmpty() }?.joinToString("\n") { t ->
+            "list_tasks" -> AssistantTaskStore.all().takeIf { it.isNotEmpty() }?.joinToString("\n") { t ->
                 val days = if (t.days.isEmpty()) "每天" else t.days.joinToString(",") { DAY_CODES[it - 1] }
                 "- ${t.hour.toString().padStart(2, '0')}:${t.minute.toString().padStart(2, '0')} $days｜${t.prompt}"
             } ?: ToolReply.empty("tasks")
             "cancel_task" -> {
                 val kw = arg("keyword") ?: return ToolReply.missing("keyword")
-                val hits = PidaiTaskStore.all().filter { it.prompt.contains(kw) }
+                val hits = AssistantTaskStore.all().filter { it.prompt.contains(kw) }
                 when {
-                    hits.isEmpty() -> ToolReply.notFound("task", kw, PidaiTaskStore.all().map { it.prompt })
+                    hits.isEmpty() -> ToolReply.notFound("task", kw, AssistantTaskStore.all().map { it.prompt })
                     hits.size > 1 -> "error: ambiguous_match; param: keyword; candidates: ${hits.joinToString("；") { it.prompt }}"
-                    else -> { PidaiTaskStore.remove(hits.single().id); "ok: cancelled; prompt: ${hits.single().prompt}" }
+                    else -> { AssistantTaskStore.remove(hits.single().id); "ok: cancelled; prompt: ${hits.single().prompt}" }
                 }
             }
             else -> ToolReply.notFound("tool", name)

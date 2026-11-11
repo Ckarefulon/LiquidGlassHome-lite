@@ -72,7 +72,7 @@ class SelfTodoTest {
     @Test
     fun `自建待办过了截止还在，作业过了截止就没了`() {
         val self = SelfTodoRules.toInboxItem(todo("交报告", 0), nowMs)
-        val homework = InboxItem("lms:1:1", InboxCategories.LMS, "高数", "作业", time = nowMs, expiresAt = self.expiresAt)
+        val homework = InboxItem("lms:1:1", InboxCategories.LMS, "示例课", "作业", time = nowMs, expiresAt = self.expiresAt)
         val data = InboxData(todos = mapOf(InboxCategories.SELF to listOf(self), InboxCategories.LMS to listOf(homework)))
         val twoDaysLater = nowMs + 2 * day
         // 自建的 time 也得是「现在」，否则消息保留期会误伤——这里只测过期这一条规则
@@ -136,7 +136,7 @@ class SelfTodoTest {
     }
 
     @Test
-    fun `屁岱给的截止，只到天按全天，带时刻按具体时间，格式不对返回空`() {
+    fun `助手给的截止，只到天按全天，带时刻按具体时间，格式不对返回空`() {
         assertEquals("2026-10-16T23:59:00+0800" to true, SelfTodoRules.parseDue("2026-10-16"))
         assertEquals("2026-10-16T14:30:00+0800" to false, SelfTodoRules.parseDue("2026-10-16 14:30"))
         assertEquals("2026-10-16T08:05:00+0800" to false, SelfTodoRules.parseDue("2026-10-16T8:05"))

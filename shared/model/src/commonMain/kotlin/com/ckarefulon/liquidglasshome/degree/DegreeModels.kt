@@ -76,7 +76,7 @@ data class DegreeProgress(
     val calculatedAt: String?,
     val notes: String,
     val nodes: List<DegreeNode>,
-    /** 没归进方案的课：可能换了课程号、可能真是方案外，让用户和小岱判断。 */
+    /** 没归进方案的课：可能换了课程号、可能真是方案外，让用户和助手判断。 */
     val unplaced: List<DegreeLooseCourse>,
     val gpaEstimate: Double?,
     val failedCourses: List<String>,

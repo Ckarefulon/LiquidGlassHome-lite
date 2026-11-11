@@ -14,7 +14,7 @@ import com.kyant.backdrop.internal.recordLayer
 /**
  * 把这一棵子树「录一层」当别人的采样源。
  *
- * [drawOnce]（默认开）是岱宗盒子的 vendor 扩展：内容树**只渲染一遍**——先录进采样层，再把这一层
+ * [drawOnce]（默认开）是本模板的 vendor 扩展：内容树**只渲染一遍**——先录进采样层，再把这一层
  * 本身画到屏幕上。上游的写法是 `drawContent()` + 再录一遍，同一棵内容树渲染两次；这些层还是嵌套的
  * （壳的内容层 → 首页的内容层 → 卡片自己的采样层），首页最坏是 4 遍。传 false 可退回上游行为。
  */
@@ -66,7 +66,7 @@ private class LayerBackdropNode(
 ) : DrawModifierNode, GlobalPositionAwareModifierNode, Modifier.Node() {
 
     override fun ContentDrawScope.draw() {
-        // [岱宗盒子 vendor 改动] 内容只渲染一遍。
+        // [本仓库 vendor 改动] 内容只渲染一遍。
         //
         // 上游：
         //     drawContent()                                    // ① 上屏

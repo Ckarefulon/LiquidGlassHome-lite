@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.Density
 import com.kyant.backdrop.Backdrop
 import com.kyant.backdrop.internal.InverseLayerScope
 
-// [岱宗盒子 vendor 改动] private → internal：`LayerBackdropNode` 要靠「是不是这一份默认实现」
+// [本仓库 vendor 改动] private → internal：`LayerBackdropNode` 要靠「是不是这一份默认实现」
 // 判断能不能把采样层直接当屏幕内容画（见那边 draw() 的注释）。
 internal val DefaultOnDraw: ContentDrawScope.() -> Unit = { drawContent() }
 

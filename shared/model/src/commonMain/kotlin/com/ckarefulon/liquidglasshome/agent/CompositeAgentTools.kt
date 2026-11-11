@@ -9,7 +9,7 @@ import kotlinx.serialization.json.jsonPrimitive
 /**
  * 把几份工具层并成一份交给调度循环：工具清单首尾相接，执行按工具名找到报了它的那一份。
  *
- * 用途是让 feature 之间不互相依赖还能给屁岱加工具：比如 `:feature:notice` 的待办工具只实现 [AgentTools]，
+ * 用途是让 feature 之间不互相依赖还能给助手加工具：比如 `:feature:notice` 的待办工具只实现 [AgentTools]，
  * 由端的入口（`AgentHost.tools`）把它和主工具层并起来交给 `:feature:agent`。
  * 同名工具以排在前面的为准；卡片从每一份里收，用户画像、记忆只问 [primary]。
  */

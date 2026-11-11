@@ -80,7 +80,7 @@ fun AppShell(
 
     // 玻璃采样源只录 tab 内容区；录整个 Scaffold 会让底栏采样自己，RenderThread 直接崩
     val contentBackdrop = rememberLayerBackdrop()
-    // 底栏导出成一层，屁岱气泡尖角伸到底栏上时采的是「页面 + 底栏」
+    // 底栏导出成一层，助手气泡尖角伸到底栏上时采的是「页面 + 底栏」
     val barBackdrop = rememberLayerBackdrop()
     val handles = ShellHandles(
         contentBackdrop = contentBackdrop,

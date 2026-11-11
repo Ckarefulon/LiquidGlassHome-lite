@@ -146,7 +146,7 @@ class SettingsStoreTest {
         assertEquals("classic", SettingsStore.NAV_STYLE_CLASSIC)
         assertEquals("HOME", SettingsStore.TAB_HOME)
         assertEquals("COURSES", SettingsStore.TAB_COURSES)
-        assertEquals("PIDAI", SettingsStore.TAB_PIDAI)
+        assertEquals("ASSISTANT", SettingsStore.TAB_ASSISTANT)
         assertEquals("TOOLS", SettingsStore.TAB_TOOLS)
         assertEquals("PROFILE", SettingsStore.TAB_PROFILE)
         assertEquals("auto", SettingsStore.NETWORK_AUTO)

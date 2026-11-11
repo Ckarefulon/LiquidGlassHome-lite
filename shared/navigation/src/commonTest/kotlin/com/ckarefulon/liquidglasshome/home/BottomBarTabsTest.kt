@@ -12,7 +12,7 @@ class BottomBarTabsTest {
 
     @Test
     fun `没设置过就是原来的五格`() {
-        assertEquals(listOf("HOME", "COURSES", "PIDAI", "TOOLS", "PROFILE"), BottomBarTabs.barIds(null, ug))
+        assertEquals(listOf("HOME", "COURSES", "ASSISTANT", "TOOLS", "PROFILE"), BottomBarTabs.barIds(null, ug))
     }
 
     @Test
@@ -39,7 +39,7 @@ class BottomBarTabsTest {
     @Test
     fun `默认启动页不在底栏上就回首页`() {
         val bar = BottomBarTabs.barIds("schedule,notification", ug)
-        assertEquals("HOME", BottomBarTabs.defaultTab("PIDAI", bar))
+        assertEquals("HOME", BottomBarTabs.defaultTab("ASSISTANT", bar))
         assertEquals("notification", BottomBarTabs.defaultTab("notification", bar))
     }
 }

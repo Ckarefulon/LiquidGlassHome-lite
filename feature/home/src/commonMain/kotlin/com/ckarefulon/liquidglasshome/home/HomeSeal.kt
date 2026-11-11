@@ -7,14 +7,17 @@ import androidx.compose.ui.graphics.vector.addPathNodes
 import androidx.compose.ui.unit.dp
 
 /**
- * 「岱宗盒子」白文印。字形取自思源宋体 Heavy（SIL OFL 1.1）：粗宋撑住分量；
+ * 顶栏与刊头那枚白文印的**配色与几何**。字形不是字体渲染的，而是四条预烘焙的
+ * `ImageVector` 路径（见文件末尾的 `SQUARE_GLYPHS` / `TALL_GLYPHS`），所以模板里不依赖任何字体。
+ *
  * 外形是大圆角加一道细内框，和 App 的超椭圆卡片同一套语言，不做做旧斑驳。
+ * 换自己的字：把末尾两条路径换成你自己的描边即可，其余不用动。
  */
 object HomeSeal {
-    /** 方印：右列「岱宗」、左列「盒子」，按印章读序从右往左。折叠顶栏用。 */
+    /** 方印：右列一个字、左列一个字，按印章读序从右往左。折叠顶栏用。 */
     val Square: ImageVector by lazy { seal("SealSquare", 50f, 50f, 7f, 2.2f, SQUARE_GLYPHS) }
 
-    /** 竖长印：自上而下「岱宗盒子」。展开的刊头用。 */
+    /** 竖长印：自上而下四个字。展开的刊头用。 */
     val Tall: ImageVector by lazy { seal("SealTall", 22f, 80f, 3.6f, 1.4f, TALL_GLYPHS) }
 
     /** 印泥色。深浅色下同一个：朱砂偏沉，压得住纸面。 */

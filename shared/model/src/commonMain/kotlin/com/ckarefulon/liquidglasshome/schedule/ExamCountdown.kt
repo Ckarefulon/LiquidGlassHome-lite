@@ -10,14 +10,14 @@ import kotlinx.datetime.LocalTime
  * 考试的时间判断：「下一场考试还有几天」，以及每一场现在处于什么状态。
  *
  * 独立出来是因为消费者很多：日程页的考试卡片和列表、常驻的倒计时横幅、
- * 屁岱的倒计时气泡、今日栏的「接下来」。日期、时间的解析容错和「快考试了」的阈值
+ * 助手的倒计时气泡、今日栏的「接下来」。日期、时间的解析容错和「快考试了」的阈值
  * 都只该有一份，否则会出现气泡说「还有 3 天」、卡片却还没变红这种前后不一。
  */
 object ExamCountdown {
 
     /**
      * 「快考试了」的阈值：距今 1 到 [SOON_DAYS] 天算快了。
-     * 屁岱的考试提醒（ProactiveBubble 的 EXAM_AHEAD_DAYS）也引用它，两边在同一天变。
+     * 助手的考试提醒（ProactiveBubble 的 EXAM_AHEAD_DAYS）也引用它，两边在同一天变。
      */
     const val SOON_DAYS = 3
 

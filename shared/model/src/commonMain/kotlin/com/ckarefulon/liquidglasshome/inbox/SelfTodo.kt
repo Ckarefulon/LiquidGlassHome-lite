@@ -50,7 +50,7 @@ import kotlin.time.Instant
  *
  * 暂时没做的（留好了字段，没写逻辑）：重复规则展开、子任务界面、滴答同步。
  * 截止提醒由 [SelfTodoRules.reminderAt] 推算（截止前 48 小时，撞上 0–7 点顺延到 7 点），
- * 宿主经 [SelfTodoHooks] 接排期（Android 是 WorkManager 的一条待办一个任务）；屁岱的
+ * 宿主经 [SelfTodoHooks] 接排期（Android 是 WorkManager 的一条待办一个任务）；助手的
  * `add_todo` / `get_todos` / `complete_todo` 走 [SelfTodoStore]（工具本体在 `:feature:notice`
  * 的 `SelfTodoAgentTools`）。
  */
@@ -66,7 +66,7 @@ data class SelfTodo(
     /**
      * 滴答的优先级字段，只为读老数据与将来接滴答同步保留。
      *
-     * 界面和屁岱都不再写它：收纳里那条待办的「重要程度」是**用户对这条待办的标注**，
+     * 界面和助手都不再写它：收纳里那条待办的「重要程度」是**用户对这条待办的标注**，
      * 存在 [InboxData.importance]（学校推来的待办也能标），两者别混。
      */
     val priority: Int = 0,
@@ -80,7 +80,7 @@ data class SelfTodo(
     val createdTime: Long = 0L,
     val modifiedTime: Long = 0L,
     val externalId: String? = null,
-    /** 谁建的：`local` 用户手建，`agent` 屁岱代建，`dida` 从滴答同步来。 */
+    /** 谁建的：`local` 用户手建，`agent` 助手代建，`dida` 从滴答同步来。 */
     val source: String = "local",
     /**
      * 用户给这条待办挑的图标色（ARGB）。null = 用收纳里「我的待办」那一类的默认绿。
@@ -101,7 +101,7 @@ object SelfTodoRules {
     const val STATUS_DONE = 2
 
     /**
-     * 优先级：**界面和屁岱都不再生产它**（待办一律按截止时间排，见 [open]），
+     * 优先级：**界面和助手都不再生产它**（待办一律按截止时间排，见 [open]），
      * 常量与 [SelfTodo.priority] 字段只为对齐滴答的取值（0/1/3/5，不是连续数）与读老数据。
      */
     const val PRIORITY_NONE = 0
@@ -232,7 +232,7 @@ object SelfTodoRules {
     private val DUE_AT = Regex("""^(\d{4})-(\d{1,2})-(\d{1,2}) (\d{1,2}):(\d{2})$""")
 
     /**
-     * 解析屁岱给的截止：`yyyy-MM-dd`（只到天，记成当天 23:59 并算全天）或 `yyyy-MM-dd HH:mm`（也认 `T`）。
+     * 解析助手给的截止：`yyyy-MM-dd`（只到天，记成当天 23:59 并算全天）或 `yyyy-MM-dd HH:mm`（也认 `T`）。
      * 返回 (滴答格式的截止串, 是否全天)；格式不对返回 null。
      */
     fun parseDue(raw: String, zone: TimeZone = CampusTimeZone): Pair<String, Boolean>? {
@@ -327,7 +327,7 @@ object SelfTodoHooks {
  * 自建待办的存储：按账号一份 `keyValueStore("self_todos<账号后缀>")`，整份 JSON 读写。
  * 每次改动都把未办完的整块推给收纳（[InboxStore.setTodos]），办完的由收纳自己挪进「已完成」。
  *
- * **Agent 能力的接口**就是这里的 [create] / [open] / [complete] / [delete]：给屁岱加工具，
+ * **Agent 能力的接口**就是这里的 [create] / [open] / [complete] / [delete]：给助手加工具，
  * 直接调它们（`source = "agent"`），不用碰收纳。
  */
 object SelfTodoStore {

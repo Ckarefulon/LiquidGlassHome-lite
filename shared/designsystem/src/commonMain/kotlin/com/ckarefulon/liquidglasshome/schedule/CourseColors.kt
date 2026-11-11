@@ -26,7 +26,7 @@ import top.yukonga.miuix.kmp.basic.TextField
 import top.yukonga.miuix.kmp.window.WindowDialog
 
 /**
- * 课程自定义颜色：按课程名存、按账号分开。课表和思源学堂共用，同名课程改一处两处生效。
+ * 课程自定义颜色：按课程名存、按账号分开。课表和示例课堂共用，同名课程改一处两处生效。
  *
  * `of()` 用 `contains` 而不是「getInt 的默认值」来区分「用户设过色」与「没设过、按课名哈希
  * 取默认色」—— 后者区分不出来（用户完全可能正好把颜色设成默认色）。
@@ -106,7 +106,7 @@ fun CourseColorDialog(courseName: String, current: Color, agenda: Boolean = fals
     CourseColorPickerDialog(
         title = if (agenda) "日程颜色" else "课程颜色",
         // 按名称存，同名日程一起换
-        summary = if (agenda) "课表里所有「$courseName」一起换" else "课表和思源学堂里的「$courseName」一起换",
+        summary = if (agenda) "课表里所有「$courseName」一起换" else "课表和示例课堂里的「$courseName」一起换",
         initial = current,
         onDismiss = onDismiss,
         onConfirm = { picked ->

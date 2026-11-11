@@ -14,7 +14,7 @@ import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.put
 
 /**
- * 屁岱的 `campus_map`（校内地点、步行时间、附近的食堂/图书馆）与 `my_location`（定位到最近的楼）。
+ * 助手的 `campus_map`（校内地点、步行时间、附近的食堂/图书馆）与 `my_location`（定位到最近的楼）。
  * 纯本地，数据见 [CampusMaps]；模型给 show 时在回答下面出一张校区简图卡。
  *
  * @param locate 端上定位（返回 WGS-84 的纬度、经度；拿不到 / 没授权返回 null）。没有的端不画 `my_location`。
@@ -46,7 +46,7 @@ class CampusMapAgentTools(
             listOfNotNull(
                 tool(
                     "campus_map",
-                    "校内地图（兴庆、雁塔、曲江、创新港）：查地点在哪；给 to 时算两地步行几分钟和方向；给 near 时列 from 附近最近的食堂/图书馆等。" +
+                    "校内地图（示例校区、示例校区 B、曲江、示例校区 C）：查地点在哪；给 to 时算两地步行几分钟和方向；给 near 时列 from 附近最近的食堂/图书馆等。" +
                         "地点可写楼名或教室（主楼A-403）。$here 地图上没有的地点会如实说找不到。show 时附一张简图卡片。",
                     mapOf(
                         "from" to prop("string", "起点：楼名、教室、食堂、宿舍、校门。"),
@@ -56,7 +56,7 @@ class CampusMapAgentTools(
                             put("description", "列出起点附近最近的这类地点。")
                             put("enum", JsonArray(KINDS.keys.map { JsonPrimitive(it) }))
                         },
-                        "campus" to prop("string", "兴庆/雁塔/曲江/创新港。缺省：按地点名自动找。"),
+                        "campus" to prop("string", "示例校区/示例校区 B/曲江/示例校区 C。缺省：按地点名自动找。"),
                     ),
                     listOf("from"),
                 ),

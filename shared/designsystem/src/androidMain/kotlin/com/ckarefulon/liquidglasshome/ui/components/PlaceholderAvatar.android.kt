@@ -13,13 +13,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 
-private object JiaoxiaoxiAvatarAsset
+private object PlaceholderAvatarAsset
 
 @Composable
-actual fun JiaoxiaoxiAvatar(modifier: Modifier) {
+actual fun PlaceholderAvatar(modifier: Modifier) {
     val image = remember {
-        JiaoxiaoxiAvatarAsset::class.java.classLoader
-            ?.getResourceAsStream("daizong_avatar.webp")
+        PlaceholderAvatarAsset::class.java.classLoader
+            ?.getResourceAsStream("placeholder_avatar.webp")
             ?.use { stream -> BitmapFactory.decodeStream(stream)?.asImageBitmap() }
     }
     if (image != null) {

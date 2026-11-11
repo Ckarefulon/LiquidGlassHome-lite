@@ -119,7 +119,7 @@ class CodeMatrixParityJvmTest {
         "ABC123",
         "abc-123",
         "A1B2C3D4",
-        "XJTU-TOOLBOX-20261015",
+        "LIQUIDGLASS-20261015",
         " ",
         "~!@#\$%^&*()",
     )

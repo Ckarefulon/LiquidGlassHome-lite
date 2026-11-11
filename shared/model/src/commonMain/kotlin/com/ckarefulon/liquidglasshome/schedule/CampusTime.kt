@@ -5,11 +5,11 @@ import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalTime
 
 /**
- * 西安交通大学作息时间表
+ * 校园作息时间表
  * 冬季（10月-次年4月）和夏季（5月-9月）时间不同
- * 移植自 XJTUToolBox 的 xjtu_time.py
+ * 移植自 上游项目的课表脚本
  */
-object XjtuTime {
+object CampusTime {
 
     data class ClassTime(
         val start: LocalTime,

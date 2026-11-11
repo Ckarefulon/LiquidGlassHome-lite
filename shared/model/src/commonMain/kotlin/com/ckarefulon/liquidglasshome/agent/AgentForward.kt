@@ -6,7 +6,7 @@ import com.ckarefulon.liquidglasshome.lms.LmsCourseSummary
 import com.ckarefulon.liquidglasshome.notification.Notification
 
 /**
- * 「转给小岱」的提示词：[text] 进聊天气泡，[snapshot] 只发给模型。
+ * 「转给助手」的提示词：[text] 进聊天气泡，[snapshot] 只发给模型。
  * 快照里是通知标题、网页正文这类外部内容，一律标成数据（[ToolReply.EXTERNAL_DATA]）。
  */
 data class AgentForward(val text: String, val snapshot: String) {

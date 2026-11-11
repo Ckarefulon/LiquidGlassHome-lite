@@ -87,7 +87,7 @@ internal class HighlightNode(
     /**
      * 上一次设进 [paint] 的模糊半径。[Paint.blur] 每次都会 new 一个 `BlurMaskFilter`（原生对象，
      * 建它要现算核表），而半径在一帧之内几乎从不变——卡片多的时候这里是纯粹的垃圾产出，
-     * 半径没变就别重设（[岱宗盒子 vendor 改动]）。
+     * 半径没变就别重设（[本仓库 vendor 改动]）。
      */
     private var appliedBlurRadius = Float.NaN
 

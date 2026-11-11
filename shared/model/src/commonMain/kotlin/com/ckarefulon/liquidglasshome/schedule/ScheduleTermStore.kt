@@ -19,7 +19,7 @@ object ScheduleTermStore {
 
     fun display(code: String, live: Map<String, String>, disk: Map<String, String>): String {
         if (code.isBlank()) return ""
-        return officialName(code, live, disk) ?: XjtuTime.displayTerm(code)
+        return officialName(code, live, disk) ?: CampusTime.displayTerm(code)
     }
 
     fun read(cache: ScheduleCacheStore): Map<String, String> =

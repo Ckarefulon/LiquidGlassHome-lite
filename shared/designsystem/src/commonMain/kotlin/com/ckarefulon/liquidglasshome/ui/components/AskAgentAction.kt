@@ -19,19 +19,19 @@ import top.yukonga.miuix.kmp.basic.TextButton
 import top.yukonga.miuix.kmp.window.WindowDialog
 
 /**
- * 顶栏「问小岱」按钮：点了会跳到小岱并替用户发出一条消息，所以先确认一次。
- * [summary] 说清会发什么，例如「把这项作业的标题和说明发给小岱」。
+ * 顶栏「问助手」按钮：点了会跳到助手并替用户发出一条消息，所以先确认一次。
+ * [summary] 说清会发什么，例如「把这项作业的标题和说明发给助手」。
  */
 @Composable
 fun AskAgentAction(summary: String, onConfirm: () -> Unit) {
     var confirming by remember { mutableStateOf(false) }
     IconButton(onClick = { confirming = true }) {
-        Icon(Icons.Default.SmartToy, contentDescription = "问小岱")
+        Icon(Icons.Default.SmartToy, contentDescription = "问助手")
     }
     WindowDialog(
         show = confirming,
-        title = "问小岱",
-        summary = "$summary，并打开小岱对话。",
+        title = "问助手",
+        summary = "$summary，并打开助手对话。",
         onDismissRequest = { confirming = false },
     ) {
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {

@@ -30,8 +30,8 @@ class ShareCodeInteropJvmTest {
         grade = 2023,
         profession = "计算机类",
         department = "电信学部",
-        academy = "仲英书院",
-        campus = "兴庆校区",
+        academy = "示例书院",
+        campus = "示例校区",
         className = "计算机2301",
         province = "陕西",
     )

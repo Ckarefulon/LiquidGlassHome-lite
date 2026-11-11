@@ -14,7 +14,7 @@ class NoticeAiTagsTest {
 
     @Test fun inputIsNumberedFromOneWithSourceAndCategory() {
         val input = NoticeAiTags.input(listOf(a, b))
-        assertTrue(input.startsWith("1. [教务处（教学运行）] 竞赛报名"), input)
+        assertTrue(input.startsWith("1. [示例部门（教学运行）] 竞赛报名"), input)
         assertTrue("\n2. [电气学院] 电气学院答辩安排" in input, input)
     }
 

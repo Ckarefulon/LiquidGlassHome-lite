@@ -5,13 +5,13 @@
 //      surfaceContainerHigh，深浅色模式跟随本项目的 LocalIsDarkTheme（不是 isSystemInDarkTheme）。
 //   2. 「染色那一遍」改成每格按选中态画（不再整行 ColorFilter，徽标保持原色）；是否参与由调用方
 //      按格子指定（[GlassTab.tintExempt]）；被排除的格子在染色那一遍里只画一个同尺寸空占位，不重新创建一份
-//      内容（原版两遍都创建同一份 content，给屁岱用会跑出两个实例，见计划 §9.3 第 3 条）。
+//      内容（原版两遍都创建同一份 content，给助手用会跑出两个实例，见计划 §9.3 第 3 条）。
 //   3. 原版只接收一个 `content: @Composable RowScope.() -> Unit`，点击行为由外部各自的
 //      LiquidBottomTab(onClick = ...) 决定；这里改成显式的 `tabs: List<GlassTab>` +
 //      `onTabSelected`，点击和拖动松手都统一走这一个回调（契约 §9.3A）。
 //   4. 加了 `glass: Boolean` 开关：为 false 时完全不调用 drawBackdrop / 高光着色器，退回一个
 //      不透明胶囊（用于「界面风格：经典」，见计划 §16.1 第 5 条）。
-//   5. 加了 `exportedBackdrop`，透传给底栏本体的 drawBackdrop，供屁岱主动气泡（Y5）用
+//   5. 加了 `exportedBackdrop`，透传给底栏本体的 drawBackdrop，供助手主动气泡（Y5）用
 //      exportedBackdrop 采样「页面内容 + 底栏」合成的一层（计划 §16.6）。
 package com.ckarefulon.liquidglasshome.ui.glass
 
@@ -73,8 +73,8 @@ import kotlin.math.sign
  * 底栏的一格。
  *
  * @param key 稳定标识，一般传 tab 的枚举值本身，方便调用方在 [onTabSelected] 里反查。
- * @param tintExempt true = 滑块经过时不染色，染色那一遍里只放同尺寸的空占位——给屁岱用
- *   （见计划 §9.3 第 3 条：屁岱只有一个实例，不能被复制出第二份）。
+ * @param tintExempt true = 滑块经过时不染色，染色那一遍里只放同尺寸的空占位——给助手用
+ *   （见计划 §9.3 第 3 条：助手只有一个实例，不能被复制出第二份）。
  * @param content 格子内容（一般是图标 + 文字），`selected` 是当前是否选中这一格。
  */
 class GlassTab(
@@ -91,7 +91,7 @@ class GlassTab(
  * val backdrop = LocalAppBackdrop.current
  * if (backdrop != null) {
  *     GlassBottomTabs(
- *         tabs = BottomTab.entries.map { tab -> GlassTab(key = tab, tintExempt = tab == BottomTab.PIDAI) { selected -> ... } },
+ *         tabs = BottomTab.entries.map { tab -> GlassTab(key = tab, tintExempt = tab == BottomTab.ASSISTANT) { selected -> ... } },
  *         selectedIndex = selectedTabOrdinal,
  *         onTabSelected = { index -> ... },
  *         backdrop = backdrop,
@@ -134,7 +134,7 @@ fun GlassBottomTabs(
     val pillShape = remember { RoundedCornerShape(28.dp) }
 
     // 内容行高度 = 本体高 − 上下各 4dp 内衬。本体高取 GLASS_BAR_HEIGHT（MainScreen 的浮空占位
-    // 也按它算），滑块、染色层、屁岱真身那几层都跟着它，以后调高度只改那一个常量。
+    // 也按它算），滑块、染色层、助手真身那几层都跟着它，以后调高度只改那一个常量。
     val innerHeight = GLASS_BAR_HEIGHT - 8.dp
 
     // 只有 glass = true 才需要这一层：给滑块用，把「强调色染色」那一遍的像素录下来，
@@ -235,9 +235,9 @@ fun GlassBottomTabs(
         }
 
         // 第一遍：正常显示的那一排，点击、按住拖动都从这里发生。
-        // tintExempt 的格子（屁岱）这里只放空占位，真身画在最上面那一层（见文件末尾的 exemptOverlay）：
-        // 滑块采样的是「页面 + 染色那一遍」，染色那一遍里屁岱是空的，
-        // 屁岱要是画在滑块下面，滑块一经过就把它盖成空白（点屁岱、拖到屁岱都会这样）。
+        // tintExempt 的格子（助手）这里只放空占位，真身画在最上面那一层（见文件末尾的 exemptOverlay）：
+        // 滑块采样的是「页面 + 染色那一遍」，染色那一遍里助手是空的，
+        // 助手要是画在滑块下面，滑块一经过就把它盖成空白（点助手、拖到助手都会这样）。
         val realContent: @Composable RowScope.() -> Unit = {
             tabs.forEachIndexed { index, tab ->
                 if (tab.tintExempt) {
@@ -251,7 +251,7 @@ fun GlassBottomTabs(
         }
 
         // 第二遍：每格都按选中态画（强调色）、alpha = 0，只给滑块当采样源用。
-        // tintExempt 的格子（屁岱）在这一遍只放一个同尺寸空占位，不重新创建内容。
+        // tintExempt 的格子（助手）在这一遍只放一个同尺寸空占位，不重新创建内容。
         val tintedContent: @Composable RowScope.() -> Unit = {
             tabs.forEachIndexed { index, tab ->
                 if (tab.tintExempt) {
@@ -417,8 +417,8 @@ fun GlassBottomTabs(
             }
         }
 
-        // 最上面一层：只画 tintExempt 的格子（屁岱）的真身，其余位置是不接触摸的空占位，
-        // 触摸会落到下面那一排和滑块上。这样屁岱始终只有一份，而且永远在滑块上面。
+        // 最上面一层：只画 tintExempt 的格子（助手）的真身，其余位置是不接触摸的空占位，
+        // 触摸会落到下面那一排和滑块上。这样助手始终只有一份，而且永远在滑块上面。
         if (tabs.any { it.tintExempt }) {
             Row(
                 Modifier
@@ -430,8 +430,8 @@ fun GlassBottomTabs(
             ) {
                 tabs.forEachIndexed { index, tab ->
                     if (tab.tintExempt) {
-                        // 屁岱是当前格时滑块正压在它下面：重叠的兄弟节点只有最上面的收得到触摸，
-                        // 所以把滑块的拖动也挂在这一格上，从屁岱按住照样能拖（回调只认位移，挂哪都一样）
+                        // 助手是当前格时滑块正压在它下面：重叠的兄弟节点只有最上面的收得到触摸，
+                        // 所以把滑块的拖动也挂在这一格上，从助手按住照样能拖（回调只认位移，挂哪都一样）
                         GlassNavTabSlot(
                             onClick = tabOnClick(index),
                             modifier = if (index == currentIndex) dampedDrag.modifier else Modifier,

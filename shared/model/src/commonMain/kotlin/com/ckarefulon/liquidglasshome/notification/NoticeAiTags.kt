@@ -5,7 +5,7 @@ import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonObject
 
 /**
- * 新通知的 AI 标签（#343）：推送时让小岱给每条标一下，只加标签，不拦截推送。
+ * 新通知的 AI 标签（#343）：推送时让助手给每条标一下，只加标签，不拦截推送。
  *
  * 模型的输出只认 [ALLOWED] 里的词：通知标题是外部内容，就算里面混了要模型照做的话，
  * 也没法借这条路往通知栏写任意文字。

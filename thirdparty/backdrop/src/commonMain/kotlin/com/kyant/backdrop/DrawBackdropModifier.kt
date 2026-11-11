@@ -46,7 +46,7 @@ private val DefaultOnDrawBackdrop: DrawScope.(DrawScope.() -> Unit) -> Unit = { 
 /** 关掉采样时用的空 effects：effects 只对采样到的内容有意义，不采样时一概不跑。 */
 private val NoEffects: BackdropEffectScope.() -> Unit = {}
 
-// [岱宗盒子 vendor 扩展] `sampling = false` 的含义：
+// [本仓库 vendor 扩展] `sampling = false` 的含义：
 //   · 不录那层渲染采样源的离屏层（`drawBackdropLayer` 整段跳过）；
 //   · 不执行 `effects`（不建 blur / lens / vibrancy 的 renderEffect）；
 //   · 内容不再被压进 `CompositingStrategy.Offscreen`。

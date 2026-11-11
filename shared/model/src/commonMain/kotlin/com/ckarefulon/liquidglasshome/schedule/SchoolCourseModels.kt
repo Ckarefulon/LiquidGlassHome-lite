@@ -17,7 +17,7 @@ data class DepartmentOption(
 /** 校区选项 */
 data class CampusOption(
     val code: String,   // e.g. "1"
-    val name: String    // e.g. "兴庆校区"
+    val name: String    // e.g. "示例校区"
 )
 
 /** 校公选课类别选项 */
@@ -28,11 +28,11 @@ data class ElectiveCategoryOption(
 
 /** 两端共用的校区表。 */
 val SCHOOL_COURSE_CAMPUSES: List<CampusOption> = listOf(
-    CampusOption("1", "兴庆校区"),
-    CampusOption("2", "雁塔校区"),
+    CampusOption("1", "示例校区"),
+    CampusOption("2", "示例校区 B"),
     CampusOption("3", "曲江校区"),
     CampusOption("4", "苏州校区"),
-    CampusOption("5", "创新港校区"),
+    CampusOption("5", "示例校区 C"),
 )
 
 /** 两端共用的校公选课类别表（同上）。 */

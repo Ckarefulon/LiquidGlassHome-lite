@@ -23,7 +23,7 @@ enum class ScheduleCapability {
     /** 能查教室座位数（决定详情里「N座」那一格画不画）。 */
     SEAT_COUNT,
 
-    /** 能配思源学堂入口（决定详情里「思源学堂」那一行画不画）。 */
+    /** 能配示例课堂入口（决定详情里「示例课堂」那一行画不画）。 */
     LMS_LINK,
 
     /** 有「接下来」的作业截止（决定今日栏那一档画不画）。 */
@@ -69,7 +69,7 @@ interface ScheduleHost {
     /** 「接下来」的作业截止：只读别处写好的落盘缓存，日程页**不为作业发任何请求**。 */
     suspend fun dueHomeworks(accountId: String): List<LmsDue> = emptyList()
 
-    /** 课程详情里的下钻（思源学堂、本次考勤）。`null` = 这一端没接。 */
+    /** 课程详情里的下钻（示例课堂、本次考勤）。`null` = 这一端没接。 */
     val courseLinks: CourseLinkAccess?
 
     /** 教室座位数。`null` = 查不到（这一端没接，或这间教室没有座位表）。 */
@@ -146,7 +146,7 @@ interface CourseLinkAccess {
         userInitiated: Boolean = false,
     ): AttendanceMarks?
 
-    /** 这门课在思源学堂对应哪门；按课程号配不上就按课程名精确配，都不中返回 null。 */
+    /** 这门课在示例课堂对应哪门；按课程号配不上就按课程名精确配，都不中返回 null。 */
     suspend fun lmsCourseFor(course: CourseItem): LmsCourseSummary?
 }
 

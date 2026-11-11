@@ -37,8 +37,8 @@ data class AppService(
     val showOnHome: Boolean = true,
     val audience: AccountType? = null,
     /**
-     * 页面里的功能，写成「名称：说明」。小岱的 app_guide 照这里讲、全局搜索按名称搜；
-     * 页面里加了能单独说出名字的功能就登记在这，不然小岱会说 App 没有。
+     * 页面里的功能，写成「名称：说明」。助手的 app_guide 照这里讲、全局搜索按名称搜；
+     * 页面里加了能单独说出名字的功能就登记在这，不然助手会说 App 没有。
      */
     val features: List<String> = emptyList(),
 )
@@ -48,12 +48,12 @@ object AppServices {
         AppService(AppRoute.Schedule, "功能 A", "占位说明", ServiceCategory.CLASS, listOf("课表", "课程", "schedule", "今天", "明天"),
             features = listOf(
                 "自建日程：手动添加、编辑、删除自己的安排",
-                "小岱排日程：选一天说一句，小岱整理安排，可一键加进日程或待办",
+                "助手排日程：选一天说一句，助手整理安排，可一键加进日程或待办",
             )),
         AppService(AppRoute.EmptyRoom, "功能 B", "占位说明", ServiceCategory.STUDY, listOf("空教室", "自习", "教室"),
             features = listOf("三种数据源：此刻实况、课表 CDN、直查教务")),
-        AppService(AppRoute.Lms(), "功能 C", "占位说明", ServiceCategory.CLASS, listOf("思源学堂", "lms", "作业", "课件"),
-            features = listOf("课程公告与讨论区：按课程看公告、发帖回帖", "小岱思源待办：快截止的作业排在一起")),
+        AppService(AppRoute.Lms(), "功能 C", "占位说明", ServiceCategory.CLASS, listOf("示例课堂", "lms", "作业", "课件"),
+            features = listOf("课程公告与讨论区：按课程看公告、发帖回帖", "示例待办：快截止的作业排在一起")),
         AppService(AppRoute.SchoolCourse, "功能 D", "占位说明", ServiceCategory.CLASS, listOf("开课", "选课", "查课")),
         AppService(AppRoute.Attendance, "功能 E", "占位说明", ServiceCategory.CLASS, listOf("考勤", "考勤查询", "出勤", "迟到", "缺勤", "新考勤", "请假", "病假", "私事假", "销假", "kq")),
         AppService(AppRoute.Iclassface, "功能 F", "占位说明", ServiceCategory.CLASS, listOf("人脸考勤", "刷脸", "iclassface"), showOnHome = false, audience = AccountType.UNDERGRADUATE),
@@ -66,11 +66,11 @@ object AppServices {
         AppService(AppRoute.Library, "功能 K", "占位说明", ServiceCategory.STUDY, listOf("图书", "借书", "座位", "自习室"),
             features = listOf(
                 "座位热力图：按区域看拥挤程度，找好坐的空座",
-                "小岱荐座：按偏好挑座位，仅供参考",
+                "助手荐座：按偏好挑座位，仅供参考",
                 "收藏座位：长按座位收藏",
             )),
         AppService(AppRoute.Zyxf, "功能 L", "占位说明", ServiceCategory.STUDY, listOf("学辅", "仲英学辅", "历年卷", "真题", "复习资料", "课件", "笔记"),
-            features = listOf("小岱找资料：说要找什么，小岱帮你挑")),
+            features = listOf("助手找资料：说要找什么，助手帮你挑")),
         AppService(AppRoute.DegreeProgress, "功能 M", "占位说明", ServiceCategory.CLASS, listOf("培养方案", "毕业进度", "毕业要求", "学分", "还差多少学分", "方案树", "转专业"), audience = AccountType.UNDERGRADUATE),
         AppService(AppRoute.Transcript, "功能 N", "占位说明", ServiceCategory.CLASS, listOf("成绩证明", "打印成绩"), showOnHome = false, audience = AccountType.UNDERGRADUATE),
         AppService(AppRoute.Browser(EnrollmentCertificate.CHINESE.url), "功能 O", "占位说明", ServiceCategory.CLASS,
@@ -80,14 +80,14 @@ object AppServices {
             listOf("在读证明", "英文证明", "学生证明"), showOnHome = false, audience = AccountType.UNDERGRADUATE,
             features = listOf("中英文在读证明：打开学校工作流申请与下载")),
         AppService(AppRoute.Notification, "功能 Q", "占位说明", ServiceCategory.LIFE, listOf("通知", "公告", "教务"),
-            features = listOf("小岱通知精选：从多个来源里挑出和你相关的")),
+            features = listOf("助手通知精选：从多个来源里挑出和你相关的")),
         AppService(AppRoute.Faculty, "功能 R", "占位说明", ServiceCategory.STUDY, listOf("教师", "老师", "导师", "博导", "硕导", "研究方向", "teacher", "faculty")),
 
         AppService(AppRoute.CampusCard, "功能 S", "占位说明", ServiceCategory.LIFE, listOf("一卡通", "余额"),
             features = listOf(
                 "消费分析：全年流水、食堂分布、吃饭节奏",
                 "干饭人账单：消费分析里按吃饭习惯出一张海报，可存图分享",
-                "小岱今天吃啥：按课表和位置推荐去哪吃",
+                "助手今天吃啥：按课表和位置推荐去哪吃",
             )),
         AppService(AppRoute.PaymentCode, "功能 T", "占位说明", ServiceCategory.LIFE, listOf("付款", "扫码")),
         AppService(AppRoute.Coupon, "功能 U", "占位说明", ServiceCategory.LIFE, listOf("加餐", "餐券", "食堂"), showOnHome = false),
@@ -96,10 +96,10 @@ object AppServices {
             features = listOf("我的订单：查看、支付、取消订单", "验证码自动识别：预订时自动滑过滑块验证码")),
         AppService(AppRoute.Fitness, "功能 X", "占位说明", ServiceCategory.LIFE, listOf("体测", "体育", "体能", "fitness")),
         AppService(AppRoute.YellowPage, "功能 Y", "占位说明", ServiceCategory.LIFE, listOf("黄页", "电话", "分机")),
-        AppService(AppRoute.CampusBus, "功能 Z", "占位说明", ServiceCategory.LIFE, listOf("校车", "班车", "通勤车", "创新港班车", "兴庆班车", "bus")),
+        AppService(AppRoute.CampusBus, "功能 Z", "占位说明", ServiceCategory.LIFE, listOf("校车", "班车", "通勤车", "示例校区 C 班车", "示例校区班车", "bus")),
 
         AppService(AppRoute.WebVpnConverter, "功能 A2", "占位说明", ServiceCategory.TOOL, listOf("vpn", "webvpn")),
-        AppService(AppRoute.Agent, "功能 B2", "占位说明", ServiceCategory.TOOL, listOf("问小岱", "屁岱", "ai", "助手")),
+        AppService(AppRoute.Agent, "功能 B2", "占位说明", ServiceCategory.TOOL, listOf("问助手", "助手", "ai", "助手")),
         AppService(AppRoute.Community, "功能 C2", "占位说明", ServiceCategory.TOOL, listOf("社区讨论", "讨论", "论坛", "交流", "建议", "github")),
 
         AppService(AppRoute.Games, "功能 D2", "占位说明", ServiceCategory.PLAY, listOf("游戏", "小游戏", "五子棋", "围棋", "象棋", "2048", "合成", "方块", "俄罗斯方块", "跳一跳", "摸鱼")),

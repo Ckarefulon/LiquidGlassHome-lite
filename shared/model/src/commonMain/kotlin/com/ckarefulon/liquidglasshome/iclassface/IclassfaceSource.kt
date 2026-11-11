@@ -11,7 +11,7 @@ data class CheckinRecord(
     val type: String        // "电子班牌刷卡" / "电子班牌人脸识别"
 )
 
-/** 人脸识别签到（`iclassface.xjtu.edu.cn`）的取数端口。 */
+/** 人脸识别签到 的取数端口。 */
 interface IclassfaceSource {
 
     /** 查询指定日期的签到记录。 */

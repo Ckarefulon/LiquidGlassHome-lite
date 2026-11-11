@@ -42,7 +42,7 @@ object ToolReply {
         if (options.isNotEmpty()) append("; options: ${options.joinToString(", ")}")
     }
 
-    /** 查询成功但没有数据。[scope] 写清查的是什么范围，如 `exams` / `2025-09-01 兴庆校区`。 */
+    /** 查询成功但没有数据。[scope] 写清查的是什么范围，如 `exams` / `2025-09-01 示例校区`。 */
     fun empty(scope: String) = "result: empty; scope: $scope"
 
     fun failed(action: String, reason: String?) =

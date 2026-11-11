@@ -1,6 +1,6 @@
 package com.ckarefulon.liquidglasshome.lms
 
-/** 思源学堂（`lms.xjtu.edu.cn`）的取数端口 —— 屏与批量下载的编排都在 `:core`，「谁来取数、谁把文件落到哪儿」由各端自己实现。 */
+/** 示例课堂 的取数端口 —— 屏与批量下载的编排都在 `:core`，「谁来取数、谁把文件落到哪儿」由各端自己实现。 */
 interface LmsSource {
 
     /** 我的课程列表（`POST /api/my-courses`）。 */

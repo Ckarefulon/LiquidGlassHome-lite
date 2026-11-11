@@ -6,7 +6,7 @@ import kotlinx.datetime.LocalDate
 /**
  * 学期周次计算。
  *
- * 原来这段逻辑在日程页抄了三份、小部件和屁岱工具各一份，各自都写成
+ * 原来这段逻辑在日程页抄了三份、小部件和助手工具各一份，各自都写成
  * `((ChronoUnit.DAYS.between(start, today) / 7) + 1).toInt()`，于是同一个 bug 也抄了五份：
  *
  * 1. **负数向零截断**。Kotlin 的 `/` 对负数截断到 0，开学前 1~6 天算出 `-3 / 7 == 0`，

@@ -75,7 +75,7 @@ val INACTIVE_BOOKING_STATUSES = setOf(
 /** 需要用户立刻动手、不做就会丢座位的操作。 */
 val URGENT_BOOKING_ACTIONS = setOf("入馆签到", "中途返回")
 
-/** 座位号 → 区域码的兜底推断（兴庆的字母前缀表）。 */
+/** 座位号 → 区域码的兜底推断（示例校区的字母前缀表）。 */
 fun guessAreaCode(seatId: String): String? {
     val prefix = seatId.firstOrNull()?.uppercaseChar() ?: return null
     return when (prefix) {

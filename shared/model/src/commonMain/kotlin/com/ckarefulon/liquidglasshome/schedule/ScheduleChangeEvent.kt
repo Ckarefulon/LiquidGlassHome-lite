@@ -1,7 +1,7 @@
 package com.ckarefulon.liquidglasshome.schedule
 
 /**
- * 一条调课/停课/补课记录，来自教务 `xsdkkc.do`（见 [JwxtChanges]），供屁岱回答「最近调了什么课」。
+ * 一条调课/停课/补课记录，来自教务 `xsdkkc.do`（见 [JwxtChanges]），供助手回答「最近调了什么课」。
  * 课表本身已经合并过这些记录，这里只是给人看的说明。
  */
 @kotlinx.serialization.Serializable

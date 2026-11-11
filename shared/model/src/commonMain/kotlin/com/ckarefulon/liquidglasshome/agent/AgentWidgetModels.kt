@@ -90,11 +90,11 @@ data class CardWidget(
 ) : AgentWidget
 
 /**
- * 仲英学辅资料站的检索结果。
+ * 示例资料站的检索结果。
  *
- * 和其它卡片不同，这张是**可操作**的：点文件就下载，点目录就让屁岱继续往里翻。
+ * 和其它卡片不同，这张是**可操作**的：点文件就下载，点目录就让助手继续往里翻。
  * 检索结果天然是"给你一串候选，你挑一个"，纯文本把文件名和 ID 抄一遍再让用户
- * 复述给屁岱，中间那几步毫无意义。
+ * 复述给助手，中间那几步毫无意义。
  */
 @Serializable
 data class ZyxfWidget(val query: String = "", val items: List<ZyxfEntryRef> = emptyList(), val display: WidgetDisplay = WidgetDisplay()) : AgentWidget
@@ -115,7 +115,7 @@ data class BusWidgetItem(
 )
 
 /**
- * 思源某个活动的附件入口。只存 id 不存下载地址：地址带登录态也会过期，要用的时候现取，
+ * 示例某个活动的附件入口。只存 id 不存下载地址：地址带登录态也会过期，要用的时候现取，
  * 也不接受模型写的链接，只能选工具真正查到的文件。
  */
 @Serializable
@@ -182,7 +182,7 @@ data class CampusMapWidget(
 ) : AgentWidget
 
 /**
- * 小岱提议的安排：从对话或材料里理出的日程、待办，用户逐条点「加入」才写入。
+ * 助手提议的安排：从对话或材料里理出的日程、待办，用户逐条点「加入」才写入。
  * [date] 为 yyyy-MM-dd，[start]/[end] 为 HH:mm；待办的 [start] 是该办完的时刻，可空（当天截止）。
  */
 @Serializable

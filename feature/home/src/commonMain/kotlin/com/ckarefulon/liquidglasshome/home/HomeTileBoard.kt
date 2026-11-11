@@ -871,7 +871,7 @@ internal fun HomeTileFaceBox(
                     // 整块卡面走下面那个 `sampling = false` 分支），所以下面这几层都真跑
                     //
                     // 采样范围往外扩一圈，折射与模糊在轮廓边上也有真实内容可混、不变弱
-                    // （和底栏胶囊、屁岱气泡同一手法）
+                    // （和底栏胶囊、助手气泡同一手法）
                     padding = maxOf(padding, 12.dp.toPx())
                     vibrancy()
                     if (blurGlass) blur(8.dp.toPx())

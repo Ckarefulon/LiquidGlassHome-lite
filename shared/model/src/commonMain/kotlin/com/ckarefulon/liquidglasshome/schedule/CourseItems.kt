@@ -51,7 +51,7 @@ data class CourseItem(
         return idx in weekBits.indices && weekBits[idx] == '1'
     }
 
-    /** 用户自己建的日程（日程页手动添加、屁岱代加），不是教务排的课。 */
+    /** 用户自己建的日程（日程页手动添加、助手代加），不是教务排的课。 */
     val isUserCreated: Boolean get() = courseCode.startsWith(CUSTOM_COURSE_CODE_PREFIX)
 
     /** 这一条在某套作息下的真实起止（距 00:00 的分钟，结束不含）。 */
@@ -64,13 +64,13 @@ data class CourseItem(
             val end = endSection.coerceIn(start, MAX_SECTIONS)
             return (DAY_START_HOUR + start - 1) * 60 to (DAY_START_HOUR + end) * 60
         }
-        val sections = XjtuTime.getAllTimes(summer)
+        val sections = CampusTime.getAllTimes(summer)
         val first = sections.first().first
         val last = sections.last().first
         val start = startSection.coerceIn(first, last)
         val end = endSection.coerceIn(start, last)
-        val startTime = XjtuTime.getClassTime(start, summer)!!.start
-        val endTime = XjtuTime.getClassTime(end, summer)!!.end
+        val startTime = CampusTime.getClassTime(start, summer)!!.start
+        val endTime = CampusTime.getClassTime(end, summer)!!.end
         return startTime.hour * 60 + startTime.minute to endTime.hour * 60 + endTime.minute
     }
 

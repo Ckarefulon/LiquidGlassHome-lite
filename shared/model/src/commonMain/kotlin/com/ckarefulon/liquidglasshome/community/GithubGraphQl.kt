@@ -26,7 +26,7 @@ fun interface GithubHttpTransport {
 fun githubHeaders(token: String?): Map<String, String> = buildMap {
     put("Accept", "application/vnd.github+json")
     put("X-GitHub-Api-Version", "2022-11-28")
-    put("User-Agent", "XJTUToolbox-Community")
+    put("User-Agent", "LiquidGlassHome-Community")
     if (token != null) put("Authorization", "Bearer $token")
 }
 

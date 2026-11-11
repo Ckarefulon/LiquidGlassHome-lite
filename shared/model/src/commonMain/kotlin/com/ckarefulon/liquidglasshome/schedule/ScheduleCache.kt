@@ -99,7 +99,7 @@ object ScheduleCache {
             // （见 [ScheduleColorSeen]）。只记不读，读不到课表时什么也不发生。
             ?.also { courses -> ScheduleColorSeen.note(courses.map { it.courseName }) }
 
-    /** 本学期的课表和开学日期：首页、屁岱、桌面小组件共用。 */
+    /** 本学期的课表和开学日期：首页、助手、桌面小组件共用。 */
     data class TermSchedule(val code: String, val courses: List<CourseItem>, val start: LocalDate?)
 
     fun readCurrentTermSchedule(cache: ScheduleCacheStore): TermSchedule? {

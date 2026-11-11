@@ -24,13 +24,13 @@ class WebVpnDeniedTest {
     @Test
     fun 目标站点连不上和正常页面都不算拒绝() {
         assertFalse(WebVpnDenied.isDeniedPage(unreachableBody))
-        assertFalse(WebVpnDenied.isDeniedPage("<html><title>思源学堂</title></html>"))
+        assertFalse(WebVpnDenied.isDeniedPage("<html><title>示例课堂</title></html>"))
         assertFalse(WebVpnDenied.isDeniedPage(""))
     }
 
     @Test
     fun 申请入口指向事务中心() {
-        assertTrue(WebVpnDenied.APPLY_URL.startsWith("https://workflow.xjtu.edu.cn/"))
+        assertTrue(WebVpnDenied.APPLY_URL.startsWith("https://workflow.example.edu/"))
         assertTrue("app_id=326" in WebVpnDenied.APPLY_URL)
     }
 }

@@ -2,7 +2,7 @@ package com.ckarefulon.liquidglasshome.jwapp
 
 import com.ckarefulon.liquidglasshome.score.ReportedGrade
 
-/** 移动教务（`jwapp.xjtu.edu.cn`）的取数端口：屏与 ViewModel 都在 `:core`，两端各自填实现。 */
+/** 移动教务 的取数端口：屏与 ViewModel 都在 `:core`，两端各自填实现。 */
 interface JwappScoreSource {
 
     /** 本端能不能拿「一门课的分项成绩」（[getScoreDetail]）。 */
@@ -18,7 +18,7 @@ interface JwappScoreSource {
     suspend fun reAuthenticate() {}
 }
 
-/** 教务（`jwxt.xjtu.edu.cn`）那半的补充取数端口 —— 成绩屏的第二、第三条上游。 */
+/** 教务 那半的补充取数端口 —— 成绩屏的第二、第三条上游。 */
 interface JwxtScoreSupplement {
 
     /** `xscjcx.do` 的全部有效成绩（自动分页），按学期 + 课程名替换 jwapp 的粗分。 */

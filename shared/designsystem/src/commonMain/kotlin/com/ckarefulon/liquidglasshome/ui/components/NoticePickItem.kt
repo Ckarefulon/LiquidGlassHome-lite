@@ -18,7 +18,7 @@ import top.yukonga.miuix.kmp.basic.Icon
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 
-/** 通知页「屁岱精选」和对话结果共用一条通知，来源信息始终从原始通知取得。 */
+/** 通知页「助手精选」和对话结果共用一条通知，来源信息始终从原始通知取得。 */
 @Composable
 fun NoticePickItem(
     title: String, metadata: String, why: String = "", level: Int = 1,

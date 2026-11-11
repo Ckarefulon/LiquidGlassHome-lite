@@ -103,7 +103,7 @@ import com.ckarefulon.liquidglasshome.ui.components.HeroForestBackground
 import com.ckarefulon.liquidglasshome.ui.components.HeroForestScrim
 import com.ckarefulon.liquidglasshome.ui.components.HeroPixelBackground
 import com.ckarefulon.liquidglasshome.ui.components.HeroPixelScrim
-import com.ckarefulon.liquidglasshome.ui.components.JiaoxiaoxiAvatar
+import com.ckarefulon.liquidglasshome.ui.components.PlaceholderAvatar
 import com.ckarefulon.liquidglasshome.ui.components.LiquidBackground
 import com.ckarefulon.liquidglasshome.ui.components.LocalPageVisible
 import com.ckarefulon.liquidglasshome.ui.components.enterOnce
@@ -160,7 +160,7 @@ fun HomeCardGroupScreen(
      * 顶栏最左侧那个按钮（`:app` 是「扫一扫」）；null = 这一端没有。
      *
      * 打开「功能按钮统一右对齐」（`SettingsStore.homeTopActionsRight`，默认开）时这一端改成
-     * 改造前的顶栏——左侧换成「交小西」头像、不画居中标题，所以这个槽位在那时不被调用；
+     * 改造前的顶栏——左侧换成「占位头像」、不画居中标题，所以这个槽位在那时不被调用；
      * 关掉才按本分支的排法画（扫码靠左、标题居中）。
      */
     topLeading: (@Composable () -> Unit)? = null,
@@ -189,7 +189,7 @@ fun HomeCardGroupScreen(
     val grid = remember(revision) { layoutStore.grid }
     val liquid = remember(settingsRevision) { settings.homeLiquidGlass }
     // 液态玻璃的折射子项：只在 liquid 为真时有意义，关掉省一层离屏位移采样（见 HomeLayoutStore）
-    // 顶栏排法：开（默认）= 改造前那套（左侧「交小西」头像、三个圆钮统一在右、不画居中标题）；
+    // 顶栏排法：开（默认）= 改造前那套（左侧「占位头像」、三个圆钮统一在右、不画居中标题）；
     // 关 = 本分支那套（扫码靠左、标题绝对居中、右侧只留搜索与通知）
     // 顶栏排法只有一种（左右各一排圆钮）：模板不再读 homeTopActionsRight，等价于永远「关」
     val topActionsRight = false
@@ -1248,7 +1248,6 @@ fun HomeCardGroupScreen(
                         // 手上的草稿原样留着，关掉抽屉接着摆（§31）
                         host.onOpenHomeSettings()
                     },
-                    alignWithGreeting = masthead,
                     // 「功能按钮统一右对齐」开着 = 整个顶栏回到改造前那套（头像 / 三钮 / 无居中标题）
                     devTopBar = topActionsRight,
                 )
@@ -1497,7 +1496,7 @@ val LocalHomeBarBackdrop = compositionLocalOf<Backdrop?> { null }
  * 首页的折叠顶栏，叠在滚动内容上面，两套排法：
  *
  * - [devTopBar] = true（主页设置「功能按钮统一右对齐」开着，默认）：**改造前那套**——
- *   左侧「交小西」头像（随上滑淡入放大）、三个功能圆钮全在右侧、**不画居中标题**；
+ *   左侧「占位头像」（随上滑淡入放大）、三个功能圆钮全在右侧、**不画居中标题**；
  * - false：本分支那套——扫码靠左（宿主给的 [leading]）、标题绝对居中、右侧只留搜索与通知。
  *
  * 往上滑过刊头后玻璃底色浮出来，底边柔和淡出。编辑态两套排法一律换成三个纯图标：
@@ -1520,7 +1519,6 @@ private fun HomeCollapsingBar(
     onCancelEdit: () -> Unit,
     onSaveEdit: () -> Unit,
     onHomeSettings: () -> Unit,
-    alignWithGreeting: Boolean = false,
     devTopBar: Boolean = false,
 ) {
     val collapsed by remember { derivedStateOf { progress() > 0.5f } }
@@ -1563,7 +1561,7 @@ private fun HomeCollapsingBar(
                 contentAlignment = Alignment.Center,
             ) {
                 Text(
-                    if (editing) "首页调整设置" else "岱宗盒子",
+                    if (editing) "首页调整设置" else "本模板",
                     fontSize = 17.sp,
                     fontWeight = FontWeight.SemiBold,
                     color = MiuixTheme.colorScheme.onSurface,
@@ -1572,6 +1570,9 @@ private fun HomeCollapsingBar(
             }
         }
 
+        // 圆钮**不做任何位移**：曾经按 `progress` 在展开时上抬 BUTTON_LIFT，滚回最顶端时
+        // 就会看到图标自己往上跳一下。这条位移只在「顶栏和刊头叠在一起」的老排法里才有意义，
+        // 而那个排法这里用不到，所以整条去掉。
         Row(
             Modifier
                 .fillMaxWidth()
@@ -1581,11 +1582,7 @@ private fun HomeCollapsingBar(
                 .padding(start = if (devTopBar) 20.dp else 16.dp, end = 16.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Box(
-                Modifier.graphicsLayer {
-                    translationY = if (alignWithGreeting) 0f else -BUTTON_LIFT.toPx() * (1f - progress())
-                },
-            ) {
+            Box {
                 when {
                     editing -> HomeBarIconButton(Icons.Default.Close, "取消编辑", barLiquidBackdrop, onCancelEdit)
                     devTopBar -> HomeBarAvatar(progress)
@@ -1593,11 +1590,7 @@ private fun HomeCollapsingBar(
                 }
             }
             Spacer(Modifier.weight(1f))
-            Box(
-                Modifier.graphicsLayer {
-                    translationY = if (alignWithGreeting) 0f else -BUTTON_LIFT.toPx() * (1f - progress())
-                },
-            ) {
+            Box {
                 if (editing) {
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
                         HomeBarIconButton(Icons.Default.Settings, "主页设置", barLiquidBackdrop, onHomeSettings)
@@ -1612,14 +1605,14 @@ private fun HomeCollapsingBar(
 }
 
 /**
- * 改造前顶栏左侧的「交小西」头像（[HomeCollapsingBar] 的 `devTopBar` 那条路专用）。
+ * 改造前顶栏左侧的「占位头像」（[HomeCollapsingBar] 的 `devTopBar` 那条路专用）。
  *
  * 和改造前一模一样的写法：随上滑淡入、由 0.78 放大到 1，停在顶部时基本看不见——
  * 那时候顶栏上只有右侧三个功能圆钮，滚起来才「浮」出个头像。
  */
 @Composable
 private fun HomeBarAvatar(progress: () -> Float) {
-    JiaoxiaoxiAvatar(
+    PlaceholderAvatar(
         Modifier.size(28.dp).graphicsLayer {
             val f = progress()
             alpha = f
@@ -1671,9 +1664,6 @@ private fun HomeBarIconButton(icon: ImageVector, label: String, liquid: Backdrop
         Icon(icon, contentDescription = label, tint = MiuixTheme.colorScheme.onSurface, modifier = Modifier.size(20.dp))
     }
 }
-
-/** 展开时圆钮比顶栏正中上移的距离：顶栏里圆钮上方正好留这么多，不会顶进状态栏。 */
-private val BUTTON_LIFT get() = (BAR_HEIGHT - 36.dp) / 2 - 2.dp
 
 /** 顶栏渐变遮罩的高度：96dp（比顶栏本身高，才能往内容里多淡一段）。 */
 private val TOP_BAR_SCRIM_HEIGHT = 96.dp

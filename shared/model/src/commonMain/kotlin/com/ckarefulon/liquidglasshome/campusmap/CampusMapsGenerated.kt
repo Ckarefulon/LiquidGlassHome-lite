@@ -4,11 +4,11 @@ package com.ckarefulon.liquidglasshome.campusmap
 
 internal val GENERATED_CAMPUS_MAPS: List<CampusMapData> = listOf(
     CampusMapData(
-        campus = "兴庆校区",
+        campus = "示例校区",
         minLat = 34.24225, minLon = 108.97480, maxLat = 34.25239, maxLon = 108.98715,
         boundary = listOf("ej_pEszdxS@aUjG?tCtImEBChJqEA", "k|`pEsccxSAes@lw@HlArDAjPY??hD?LR?FT@dUaG@QHgq@C"),
         places = listOf(
-            CampusPlace("思源活动中心", PlaceKind.BUILDING, 34.24436, 108.97890, "_l_pE_{cxS@gDfC@?dDiC?"),
+            CampusPlace("示例活动中心", PlaceKind.BUILDING, 34.24436, 108.97890, "_l_pE_{cxS@gDfC@?dDiC?"),
             CampusPlace("主楼E座", PlaceKind.BUILDING, 34.24619, 108.97894, "uv_pEc|cxS?uAbAA?vAcA?"),
             CampusPlace("主楼B座", PlaceKind.BUILDING, 34.24665, 108.97858, "yy_pEwycxS@mAtA??lAwA?"),
             CampusPlace("主楼A座", PlaceKind.BUILDING, 34.24665, 108.97928, "yy_pEy~cxS@kAvA?AjAwA?"),
@@ -54,10 +54,10 @@ internal val GENERATED_CAMPUS_MAPS: List<CampusMapData> = listOf(
             CampusPlace("励志书院 东6舍", PlaceKind.DORM, 34.24584, 108.98096, "{s_pEmhdxS?{B\\??zB]?"),
             CampusPlace("崇实书院 西16舍", PlaceKind.DORM, 34.24473, 108.97666, "_m_pEgmcxSAuCf@??tCe@?"),
             CampusPlace("崇实书院 西17舍", PlaceKind.DORM, 34.24438, 108.97666, "yj_pEemcxS?yCb@??xCc@?"),
-            CampusPlace("仲英书院 东3舍", PlaceKind.DORM, 34.24648, 108.98171, "gx_pEindxSA[|@A?\\{@?"),
-            CampusPlace("仲英书院 东2舍", PlaceKind.DORM, 34.24677, 108.98192, "uy_pEkndxS?eC^?AfC]A"),
-            CampusPlace("仲英书院 东1舍", PlaceKind.DORM, 34.24647, 108.98228, "ex_pE{qdxS~@??_@_A??^"),
-            CampusPlace("仲英书院 东21舍", PlaceKind.DORM, 34.24617, 108.98194, "{u_pEkndxS?kCX??jCY?"),
+            CampusPlace("示例书院 东3舍", PlaceKind.DORM, 34.24648, 108.98171, "gx_pEindxSA[|@A?\\{@?"),
+            CampusPlace("示例书院 东2舍", PlaceKind.DORM, 34.24677, 108.98192, "uy_pEkndxS?eC^?AfC]A"),
+            CampusPlace("示例书院 东1舍", PlaceKind.DORM, 34.24647, 108.98228, "ex_pE{qdxS~@??_@_A??^"),
+            CampusPlace("示例书院 东21舍", PlaceKind.DORM, 34.24617, 108.98194, "{u_pEkndxS?kCX??jCY?"),
             CampusPlace("梧桐苑", PlaceKind.CANTEEN, 34.24642, 108.97649, "cx_pEykcxS?uDnA??tDoA?"),
             CampusPlace("西13舍", PlaceKind.DORM, 34.24579, 108.97655, "os_pEmmcxSX??oAY??nA"),
             CampusPlace("西1舍", PlaceKind.DORM, 34.24579, 108.97774, "os_pEktcxSV?@uBYA?vB"),
@@ -216,7 +216,7 @@ internal val GENERATED_CAMPUS_MAPS: List<CampusMapData> = listOf(
         ),
     ),
     CampusMapData(
-        campus = "雁塔校区",
+        campus = "示例校区 B",
         minLat = 34.21620, minLon = 108.93001, maxLat = 34.21962, maxLon = 108.94103,
         boundary = listOf("shzoEue{wSfMD?`XaMZG_C@cU", "enzoEwh{wS|R@Ewf@cTBB`e@f@n@"),
         places = listOf(
@@ -267,12 +267,12 @@ internal val GENERATED_CAMPUS_MAPS: List<CampusMapData> = listOf(
         ),
     ),
     CampusMapData(
-        campus = "创新港校区",
+        campus = "示例校区 C",
         minLat = 34.25172, minLon = 108.64598, maxLat = 34.26338, maxLon = 108.65832,
         boundary = listOf("ox`pEu}cvSFWGk[QcCSwAoA{ESCqd@nZeBaEmQeUIAyCvD?XpCtDL?NPATUXMCgGtHATpLlYzKzXVFjLcI`_@eV"),
         places = listOf(
             CampusPlace("涵英楼", PlaceKind.BUILDING, 34.25757, 108.65072, "i}apEercvSxByAd@jAdAq@aAaCgC`B_CaGbC_BaAcCcAp@b@fAuBvAvDrJ"),
-            CampusPlace("创新港图书资料中心", PlaceKind.LIBRARY, 34.25684, 108.65228, "cxapEuadvS|@k@EKZU_AcC{@h@HT}@j@n@`BRMBFHGHP"),
+            CampusPlace("示例校区 C 图书馆", PlaceKind.LIBRARY, 34.25684, 108.65228, "cxapEuadvS|@k@EKZU_AcC{@h@HT}@j@n@`BRMBFHGHP"),
             CampusPlace("中心绿地", PlaceKind.SPORT, 34.25883, 108.64987, "wcbpEcjcvShEsC?I}FaOOCaErC?HdGdO"),
             CampusPlace("朗清苑", PlaceKind.CANTEEN, 34.26009, 108.65119, "ulbpEm{cvSr@e@o@cBs@d@n@bB"),
             CampusPlace("惠风苑", PlaceKind.CANTEEN, 34.25832, 108.64782, "wabpEafcvSv@e@o@}Aw@b@n@~A"),
@@ -290,11 +290,11 @@ internal val GENERATED_CAMPUS_MAPS: List<CampusMapData> = listOf(
             CampusPlace("网球场", PlaceKind.SPORT, 34.25934, 108.65103, "kjbpEczcvSnBqAP`@t@g@a@eAeD|BN^"),
             CampusPlace("羽毛球场", PlaceKind.SPORT, 34.25985, 108.65073, "ckbpEmycvSVOQc@WNPb@"),
             CampusPlace("瑞幸咖啡", PlaceKind.SHOP, 34.25705, 108.65011, ""),
-            CampusPlace("中国西部创新港", PlaceKind.BUILDING, 34.25189, 108.65491, ""),
+            CampusPlace("中国西部示例校区 C", PlaceKind.BUILDING, 34.25189, 108.65491, ""),
             CampusPlace("爱因斯坦", PlaceKind.LANDMARK, 34.25687, 108.65180, ""),
             CampusPlace("兴华购物广场", PlaceKind.SHOP, 34.25677, 108.64983, ""),
             CampusPlace("涵英楼食堂", PlaceKind.CANTEEN, 34.25789, 108.65207, ""),
-            CampusPlace("校医院创新港门诊部", PlaceKind.BUILDING, 34.26050, 108.65403, ""),
+            CampusPlace("校医院示例校区 C门诊部", PlaceKind.BUILDING, 34.26050, 108.65403, ""),
             CampusPlace("德克士", PlaceKind.CANTEEN, 34.25711, 108.65380, ""),
             CampusPlace("敏行楼", PlaceKind.BUILDING, 34.25312, 108.65604, "wdapEcodvSbEoCO]xByA[w@hA{@mBaFcEnCUi@bEoCk@{AoD~BTh@}E`DjEvK"),
             CampusPlace("力行楼", PlaceKind.BUILDING, 34.25589, 108.65471, "esapEqddvSdLsHmEyK_Al@Si@uBrAn@zArBsAEMLKt@fBiIlFq@eBNKFJvBuAm@}AyBvAXr@OJCGo@b@lEvK"),

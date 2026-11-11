@@ -41,7 +41,7 @@ import kotlin.math.abs
 import kotlin.math.round
 
 /*
- * 三块底栏 + 一块侧栏；「屁岱那一格」的画法走 [ShellTabArt] 这条缝。
+ * 三块底栏 + 一块侧栏；「助手那一格」的画法走 [ShellTabArt] 这条缝。
  */
 
 /** 经典底栏（界面风格选「经典」时，手机 / 平板竖屏用）。格数与顺序由 [ShellNavState.tabs] 说。 */
@@ -108,7 +108,7 @@ fun GlassBottomBar(
         bubble()
         GlassBottomTabs(
             tabs = nav.tabs.tabs.map { tab ->
-                // 自绘那一格（屁岱）免染色：强调色是把整排再画一遍，机器人不能画出第二份
+                // 自绘那一格（助手）免染色：强调色是把整排再画一遍，机器人不能画出第二份
                 GlassTab(key = tab, tintExempt = tabArt.handles(tab)) { selected ->
                     if (tabArt.handles(tab)) {
                         tabArt.barTab(

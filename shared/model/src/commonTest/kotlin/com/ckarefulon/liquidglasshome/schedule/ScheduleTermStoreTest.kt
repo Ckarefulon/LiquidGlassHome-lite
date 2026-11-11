@@ -28,7 +28,7 @@ class ScheduleTermStoreTest {
     fun display_fallsBackToLocalOnlyWhenMcMissing() {
         val code = "2025-2026-3"
         assertEquals(
-            XjtuTime.displayTerm(code),
+            CampusTime.displayTerm(code),
             ScheduleTermStore.display(code, emptyMap(), emptyMap()),
         )
         assertEquals(

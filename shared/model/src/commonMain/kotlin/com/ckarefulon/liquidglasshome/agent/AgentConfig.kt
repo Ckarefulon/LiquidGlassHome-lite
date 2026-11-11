@@ -5,7 +5,7 @@ package com.ckarefulon.liquidglasshome.agent
  *
  * DeepSeek 的别名（`minimal`→low、`medium`/`xhigh`→high）也认：用户可能在别处见过这些
  * 写法，或者以后服务端改口径。认不出的一律回落到「自动」——下发一个服务端不认的值，
- * 整个请求会 400，表现是屁岱一句话都不说。
+ * 整个请求会 400，表现是助手一句话都不说。
  */
 fun normalizeReasoningEffort(raw: String?): String = when (raw?.trim()?.lowercase()) {
     "minimal", AgentConfig.REASONING_LOW -> AgentConfig.REASONING_LOW
@@ -18,7 +18,7 @@ fun normalizeReasoningEffort(raw: String?): String = when (raw?.trim()?.lowercas
 fun normalizeSearchEngine(raw: String?): String =
     if (raw?.trim()?.lowercase() == AgentConfig.SEARCH_OFF) AgentConfig.SEARCH_OFF else AgentConfig.SEARCH_DEEPSEEK
 
-/** 屁岱的配置：服务商、密钥、模型、助手名、联网搜索、思考开关。 */
+/** 助手的配置：服务商、密钥、模型、助手名、联网搜索、思考开关。 */
 data class AgentConfig(
     val provider: String = PROVIDER_DEEPSEEK,
     val apiKey: String = "",
@@ -69,9 +69,7 @@ data class AgentConfig(
     val isConfigured: Boolean get() = apiKey.isNotBlank() || keyConfigured
 
     companion object {
-        const val DEFAULT_ASSISTANT_NAME = "小岱"
-        /** 旧默认名：存着它的老用户等于没改过名，跟着换成新默认。 */
-        const val LEGACY_ASSISTANT_NAME = "屁岱"
+        const val DEFAULT_ASSISTANT_NAME = "助手"
         const val PROVIDER_DEEPSEEK = "deepseek"
         const val PROVIDER_OPENAI = "openai"
         const val PROVIDER_CUSTOM = "custom"

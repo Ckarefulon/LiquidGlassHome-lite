@@ -45,42 +45,42 @@ enum class NotificationSource(
     val category: SourceCategory
 ) {
     // ── 综合（校级部门） ──
-    JWC("教务处", "https://dean.xjtu.edu.cn/jxxx/jxtz2.htm", SourceCategory.GENERAL),
-    GS("研究生院", "https://gs.xjtu.edu.cn/tzgg.htm", SourceCategory.GENERAL),
-    QXS("钱学森书院", "https://bjb.xjtu.edu.cn/xydt/tzgg.htm", SourceCategory.GENERAL),
-    CY("仲英书院", "https://cy.xjtu.edu.cn/xwdt/tzgg.htm", SourceCategory.GENERAL),
-    PEC("实践教学中心", "https://pec.xjtu.edu.cn/xxgg/tzgg.htm", SourceCategory.GENERAL),
-    FTI("未来技术学院", "https://wljsxy.xjtu.edu.cn/xwgg/tzgg.htm", SourceCategory.GENERAL),
-    XSC("学生处", "https://xsc.xjtu.edu.cn/xgdt/tzgg.htm", SourceCategory.GENERAL),
-    OA("OA 通知", "https://oa.xjtu.edu.cn/zxgg_index.jsp", SourceCategory.GENERAL),
+    JWC("示例部门", "https://dept-a.example.edu/jxxx/jxtz2.htm", SourceCategory.GENERAL),
+    GS("示例研究生院", "https://dept-b.example.edu/tzgg.htm", SourceCategory.GENERAL),
+    QXS("示例书院 A", "https://dept-c.example.edu/xydt/tzgg.htm", SourceCategory.GENERAL),
+    CY("示例书院", "https://dept-d.example.edu/xwdt/tzgg.htm", SourceCategory.GENERAL),
+    PEC("实践教学中心", "https://dept-e.example.edu/xxgg/tzgg.htm", SourceCategory.GENERAL),
+    FTI("示例学院", "https://dept-f.example.edu/xwgg/tzgg.htm", SourceCategory.GENERAL),
+    XSC("学生处", "https://dept-g.example.edu/xgdt/tzgg.htm", SourceCategory.GENERAL),
+    OA("OA 通知", "https://dept-h.example.edu/zxgg_index.jsp", SourceCategory.GENERAL),
 
     // ── 工学 ──
     // 电信学部「更多」指向的 tzgg.htm 是停更栏目；首页通知条才是仍在更新的 1005 栏。
-    EIEUG("电信学部", "https://eieug.xjtu.edu.cn/", SourceCategory.ENGINEERING),
-    ME("机械学院", "https://mec.xjtu.edu.cn/index/tzgg/bks.htm", SourceCategory.ENGINEERING),
-    EE("电气学院", "https://ee.xjtu.edu.cn/jzxx/bks.htm", SourceCategory.ENGINEERING),
-    EPE("能动学院", "https://epe.xjtu.edu.cn/index/tzgg.htm", SourceCategory.ENGINEERING),
-    AERO("航天学院", "https://sae.xjtu.edu.cn/index/tzgg.htm", SourceCategory.ENGINEERING),
-    MSE("材料学院", "https://mse.xjtu.edu.cn/xwgg/tzgg1.htm", SourceCategory.ENGINEERING),
-    CLET("化工学院", "https://clet.xjtu.edu.cn/xwgg/tzgg.htm", SourceCategory.ENGINEERING),
-    HSCE("人居学院", "https://hsce.xjtu.edu.cn/xwgg/tzgg1.htm", SourceCategory.ENGINEERING),
-    SE("软件学院", "https://se.xjtu.edu.cn/xwgg/tzgg.htm", SourceCategory.ENGINEERING),
+    EIEUG("电信学部", "https://dept-i.example.edu/", SourceCategory.ENGINEERING),
+    ME("机械学院", "https://dept-j.example.edu/index/tzgg/bks.htm", SourceCategory.ENGINEERING),
+    EE("电气学院", "https://dept-k.example.edu/jzxx/bks.htm", SourceCategory.ENGINEERING),
+    EPE("能动学院", "https://dept-l.example.edu/index/tzgg.htm", SourceCategory.ENGINEERING),
+    AERO("航天学院", "https://dept-m.example.edu/index/tzgg.htm", SourceCategory.ENGINEERING),
+    MSE("材料学院", "https://dept-n.example.edu/xwgg/tzgg1.htm", SourceCategory.ENGINEERING),
+    CLET("化工学院", "https://dept-o.example.edu/xwgg/tzgg.htm", SourceCategory.ENGINEERING),
+    HSCE("人居学院", "https://dept-p.example.edu/xwgg/tzgg1.htm", SourceCategory.ENGINEERING),
+    SE("软件学院", "https://dept-q.example.edu/xwgg/tzgg.htm", SourceCategory.ENGINEERING),
 
     // ── 理学 ──
-    MATH("数学学院", "https://math.xjtu.edu.cn/index/jxjw1.htm", SourceCategory.SCIENCE),
-    PHY("物理学院", "https://phy.xjtu.edu.cn/glfw/tzgg.htm", SourceCategory.SCIENCE),
-    CHEM("化学学院", "https://chem.xjtu.edu.cn/tzgg.htm", SourceCategory.SCIENCE),
-    SLST("生命学院", "https://slst.xjtu.edu.cn/ggl/tzgg.htm", SourceCategory.SCIENCE),
+    MATH("数学学院", "https://dept-r.example.edu/index/jxjw1.htm", SourceCategory.SCIENCE),
+    PHY("物理学院", "https://dept-s.example.edu/glfw/tzgg.htm", SourceCategory.SCIENCE),
+    CHEM("化学学院", "https://dept-t.example.edu/tzgg.htm", SourceCategory.SCIENCE),
+    SLST("生命学院", "https://dept-u.example.edu/ggl/tzgg.htm", SourceCategory.SCIENCE),
 
     // ── 人文经管 ──
-    SOM("管理学院", "https://som.xjtu.edu.cn/xwgg/tzgg.htm", SourceCategory.HUMANITIES),
-    RWXY("人文学院", "https://rwxy.xjtu.edu.cn/index/tzgg.htm", SourceCategory.HUMANITIES),
-    SFS("外国语学院", "https://sfs.xjtu.edu.cn/glfw/jxjw.htm", SourceCategory.HUMANITIES),
-    LAW("法学院", "https://fxy.xjtu.edu.cn/index/tzgg.htm", SourceCategory.HUMANITIES),
-    SEF("经金学院", "https://sef.xjtu.edu.cn/rcpy/bks/jxtz1.htm", SourceCategory.HUMANITIES),
-    SPPA("公管学院", "https://sppa.xjtu.edu.cn/xwxx/bksjw.htm", SourceCategory.HUMANITIES),
-    MARX("马克思主义学院", "https://marx.xjtu.edu.cn/xwgg1/tzgg.htm", SourceCategory.HUMANITIES),
-    XMTXY("新媒体学院", "https://xmtxy.xjtu.edu.cn/xwgg/tzgg.htm", SourceCategory.HUMANITIES);
+    SOM("管理学院", "https://dept-v.example.edu/xwgg/tzgg.htm", SourceCategory.HUMANITIES),
+    RWXY("人文学院", "https://dept-w.example.edu/index/tzgg.htm", SourceCategory.HUMANITIES),
+    SFS("外国语学院", "https://dept-x.example.edu/glfw/jxjw.htm", SourceCategory.HUMANITIES),
+    LAW("法学院", "https://dept-y.example.edu/index/tzgg.htm", SourceCategory.HUMANITIES),
+    SEF("经金学院", "https://dept-z.example.edu/rcpy/bks/jxtz1.htm", SourceCategory.HUMANITIES),
+    SPPA("公管学院", "https://dept-aa.example.edu/xwxx/bksjw.htm", SourceCategory.HUMANITIES),
+    MARX("示例学院 B", "https://dept-ab.example.edu/xwgg1/tzgg.htm", SourceCategory.HUMANITIES),
+    XMTXY("新媒体学院", "https://dept-ac.example.edu/xwgg/tzgg.htm", SourceCategory.HUMANITIES);
 
     companion object {
         fun byCategory(cat: SourceCategory): List<NotificationSource> =

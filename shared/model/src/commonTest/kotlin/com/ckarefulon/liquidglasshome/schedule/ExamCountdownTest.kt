@@ -9,7 +9,7 @@ import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
 
 /**
- * 考试状态的契约单测（plan2 第 0 步）。日程页、屁岱气泡、今日栏都按这里的规则判断，
+ * 考试状态的契约单测（plan2 第 0 步）。日程页、助手气泡、今日栏都按这里的规则判断，
  * 规则一变，这几处会一起变，所以先把边界钉死。
  */
 class ExamCountdownTest {

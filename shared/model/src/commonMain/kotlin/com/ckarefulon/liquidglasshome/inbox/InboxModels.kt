@@ -36,7 +36,7 @@ data class InboxItem(
     /**
      * 用户自选的图标色（ARGB）。null = 用 [InboxCategories.argb] 给这一类的默认色。
      *
-     * 只有「自建待办」会填：收纳里的其他条目都是学校 / 思源那边的投影，没有可挑色的地方。
+     * 只有「自建待办」会填：收纳里的其他条目都是学校 / 示例那边的投影，没有可挑色的地方。
      */
     val colorArgb: Int? = null,
     /** 开始后才进入待办；0 表示立即可见。 */
@@ -71,7 +71,7 @@ data class InboxData(
      */
     val importance: Map<String, Int> = emptyMap(),
     val schoolFetchedAt: Long = 0L,
-    /** 已经由小岱冒过泡的消息，不重复念。 */
+    /** 已经由助手冒过泡的消息，不重复念。 */
     val bubbled: Set<String> = emptySet(),
 )
 
@@ -97,8 +97,8 @@ object InboxCategories {
     const val NOTICE = "msg.notice"
     const val BULLETIN = "msg.bulletin"
     const val COMMUNITY = "msg.community"
-    /** 小岱的主动简报与定时任务结果。 */
-    const val PIDAI = "msg.pidai"
+    /** 助手的主动简报与定时任务结果。 */
+    const val ASSISTANT = "msg.assistant"
     private const val SCHOOL_PREFIX = "school:"
 
     val todos = listOf(
@@ -106,7 +106,7 @@ object InboxCategories {
         InboxCategory(SCHOOL_TODO, "学校事务中心"),
         InboxCategory(BOOKING, "预约中心 / 校车预约"),
         InboxCategory(LIBRARY, "图书馆座位签到 / 返回"),
-        InboxCategory(LMS, "思源学堂作业 / 测试截止"),
+        InboxCategory(LMS, "示例课堂作业 / 测试截止"),
         InboxCategory(COUPON, "加餐券"),
         InboxCategory(JUDGE, "评教未完成"),
     )
@@ -117,7 +117,7 @@ object InboxCategories {
         InboxCategory(NOTICE, "教务新通知"),
         InboxCategory(BULLETIN, "工具箱公告"),
         InboxCategory(COMMUNITY, "社区回复 / @我"),
-        InboxCategory(PIDAI, "小岱简报"),
+        InboxCategory(ASSISTANT, "助手简报"),
     )
 
     fun school(label: String) = SCHOOL_PREFIX + label
@@ -139,7 +139,7 @@ object InboxCategories {
         NOTICE -> 0xFF10B981
         BULLETIN -> 0xFF0EA5E9
         COMMUNITY -> 0xFFF59E0B
-        PIDAI -> 0xFFA855F7
+        ASSISTANT -> 0xFFA855F7
         else -> 0xFF64748B
     }.toInt()
 }
@@ -268,7 +268,7 @@ object InboxRules {
             .replace("&nbsp;", " ").replace("&lt;", "<").replace("&gt;", ">").replace("&amp;", "&")
             .lines().joinToString("\n") { it.trim() }.trim()
 
-    /** 小岱推送在通知栏和收件箱里按纯文本显示：去掉模型偶尔带出的 Markdown 标记。 */
+    /** 助手推送在通知栏和收件箱里按纯文本显示：去掉模型偶尔带出的 Markdown 标记。 */
     fun markdownToPlain(md: String): String =
         md.lines().filterNot { it.trim().matches(Regex("""[-*_=|:\s]{3,}""")) }.joinToString("\n") { line ->
             line.trim()
@@ -281,7 +281,7 @@ object InboxRules {
         }.replace(Regex("\n{3,}"), "\n\n").trim()
 
     /**
-     * 用户已经在别处（小岱气泡、系统通知）看过这件事：[ids] 和 [category] 下的消息标已读，
+     * 用户已经在别处（助手气泡、系统通知）看过这件事：[ids] 和 [category] 下的消息标已读，
      * [category] 下的待办标已看。气泡和收纳是同一件事的两个出口，不能各算各的已读。
      */
     fun acknowledge(data: InboxData, ids: Collection<String>, category: String?, now: Long): InboxData {
@@ -387,7 +387,7 @@ object InboxStore {
 
     fun markBubbled(id: String) = update(AccountContext.activeAccountId) { it.copy(bubbled = it.bubbled + id) }
 
-    /** 在收纳以外看过了（点了小岱气泡等）：对应消息标已读、待办标已看。见 [InboxRules.acknowledge]。 */
+    /** 在收纳以外看过了（点了助手气泡等）：对应消息标已读、待办标已看。见 [InboxRules.acknowledge]。 */
     fun acknowledge(ids: Collection<String> = emptyList(), category: String? = null) {
         if (ids.isEmpty() && category == null) return
         update(AccountContext.activeAccountId) { InboxRules.acknowledge(it, ids, category, Clock.System.now().toEpochMilliseconds()) }

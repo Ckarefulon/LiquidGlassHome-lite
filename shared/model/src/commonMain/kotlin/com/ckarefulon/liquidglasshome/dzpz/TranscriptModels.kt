@@ -2,7 +2,7 @@ package com.ckarefulon.liquidglasshome.dzpz
 
 import kotlinx.serialization.json.JsonObject
 
-/** 电子成绩单（`dzpz.xjtu.edu.cn`，工作流引擎里的 `workflowId = 29`）的模型 + 取数端口。 */
+/** 电子成绩单（工作流引擎里的 `workflowId = 29`）的模型 + 取数端口。 */
 
 /** 成绩单类型选项（从 `loadForm` 的 field 定义中解析）。 */
 data class TranscriptTypeOption(

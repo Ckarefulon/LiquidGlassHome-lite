@@ -81,7 +81,7 @@ class QrDecodeParityJvmTest {
 
     @Test
     fun `码被遮掉一块时两端的结论相同`() {
-        val text = "XJTU-PARITY-DAMAGE-0001-fake"
+        val text = "LIQUIDGLASS-PARITY-DAMAGE-0001-fake"
         val matrix = assertNotNull(qrCodeModules(text), "这一条夹具应当编得出码")
 
         for (cell in intArrayOf(COARSE_CELL_PIXELS, CELL_PIXELS)) {

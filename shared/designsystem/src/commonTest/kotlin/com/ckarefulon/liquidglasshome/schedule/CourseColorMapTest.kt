@@ -23,7 +23,7 @@ class CourseColorMapTest {
 
     @Test
     fun `没有撞色时和单门课的默认色一致`() {
-        // 单独一门课不会撞色：思源学堂只认识单门课，取到的必须与课表同色
+        // 单独一门课不会撞色：示例课堂只认识单门课，取到的必须与课表同色
         for (n in names) assertEquals(defaultCourseColor(n), courseColorMap(listOf(n)).getValue(n))
     }
 

@@ -2,7 +2,7 @@ package com.ckarefulon.liquidglasshome.library
 
 /** 图书馆座位二维码的数据形状。 */
 
-/** 图书馆桌面二维码：`http://rg.lib.xjtu.edu.cn:8086/qavail/?seat=056&sp=north4southwest`。 */
+/** 图书馆桌面二维码：`http://rg.lib.example.edu:8086/qavail/?seat=056&sp=north4southwest`。 */
 data class LibrarySeatQr(val seat: String, val areaCode: String) {
     val area: LibraryQrArea? get() = LibraryQrArea.byCode(areaCode)
     val areaName: String get() = area?.displayName ?: areaCode
@@ -30,28 +30,28 @@ enum class LibraryQrArea(val code: String, val campus: LibraryCampus, val floorC
     YANTA3_208("yanta3floor208", LibraryCampus.YANTA, "yanta3floor", "3楼208-279"),
     YANTA4_169("yanta4floor169", LibraryCampus.YANTA, "yanta4floor", "4楼169-240"),
     YANTA4_001("yanta4floor001", LibraryCampus.YANTA, "yanta4floor", "4楼001-168"),
-    INNO1_CENTRAL("inno1central", LibraryCampus.INNOVATION, "inno1floor", "创新港图书资料中心一层阅览区（中）"),
-    INNO1_WEST("inno1west", LibraryCampus.INNOVATION, "inno1floor", "创新港图书资料中心一层阅览区（西）"),
-    INNO1_DIGITAL("inno1digital", LibraryCampus.INNOVATION, "inno1floor", "创新港图书资料中心一层电子阅览区"),
-    INNO1_EAST("inno1east", LibraryCampus.INNOVATION, "inno1floor", "创新港图书资料中心一层阅览区（东）"),
-    INNO1_SOUTH2("inno1south2", LibraryCampus.INNOVATION, "inno1floor", "创新港图书资料中心一层阅览区（南2）"),
-    INNO1_SOUTH1("inno1south1", LibraryCampus.INNOVATION, "inno1floor", "创新港图书资料中心一层阅览区（南1）"),
-    INNO2_NORTH2("inno2north2", LibraryCampus.INNOVATION, "inno2floor", "创新港图书资料中心二层阅览区（北2）"),
-    INNO2_NORTH3("inno2north3", LibraryCampus.INNOVATION, "inno2floor", "创新港图书资料中心二层阅览区（北3）"),
-    INNO2_NORTH1("inno2north1", LibraryCampus.INNOVATION, "inno2floor", "创新港图书资料中心二层阅览区（北1）"),
-    INNO2_SOUTH1("inno2south1", LibraryCampus.INNOVATION, "inno2floor", "创新港图书资料中心二层阅览区（南1）"),
-    INNO2_SOUTH2("inno2south2", LibraryCampus.INNOVATION, "inno2floor", "创新港图书资料中心二层阅览区（南2）"),
-    INNO2_CENTRAL("inno2central", LibraryCampus.INNOVATION, "inno2floor", "创新港图书资料中心二层阅览区（中）"),
-    INNO2_WEST("inno2west", LibraryCampus.INNOVATION, "inno2floor", "创新港图书资料中心二层阅览区（西）"),
+    INNO1_CENTRAL("inno1central", LibraryCampus.INNOVATION, "inno1floor", "示例校区 C 图书馆一层阅览区（中）"),
+    INNO1_WEST("inno1west", LibraryCampus.INNOVATION, "inno1floor", "示例校区 C 图书馆一层阅览区（西）"),
+    INNO1_DIGITAL("inno1digital", LibraryCampus.INNOVATION, "inno1floor", "示例校区 C 图书馆一层电子阅览区"),
+    INNO1_EAST("inno1east", LibraryCampus.INNOVATION, "inno1floor", "示例校区 C 图书馆一层阅览区（东）"),
+    INNO1_SOUTH2("inno1south2", LibraryCampus.INNOVATION, "inno1floor", "示例校区 C 图书馆一层阅览区（南2）"),
+    INNO1_SOUTH1("inno1south1", LibraryCampus.INNOVATION, "inno1floor", "示例校区 C 图书馆一层阅览区（南1）"),
+    INNO2_NORTH2("inno2north2", LibraryCampus.INNOVATION, "inno2floor", "示例校区 C 图书馆二层阅览区（北2）"),
+    INNO2_NORTH3("inno2north3", LibraryCampus.INNOVATION, "inno2floor", "示例校区 C 图书馆二层阅览区（北3）"),
+    INNO2_NORTH1("inno2north1", LibraryCampus.INNOVATION, "inno2floor", "示例校区 C 图书馆二层阅览区（北1）"),
+    INNO2_SOUTH1("inno2south1", LibraryCampus.INNOVATION, "inno2floor", "示例校区 C 图书馆二层阅览区（南1）"),
+    INNO2_SOUTH2("inno2south2", LibraryCampus.INNOVATION, "inno2floor", "示例校区 C 图书馆二层阅览区（南2）"),
+    INNO2_CENTRAL("inno2central", LibraryCampus.INNOVATION, "inno2floor", "示例校区 C 图书馆二层阅览区（中）"),
+    INNO2_WEST("inno2west", LibraryCampus.INNOVATION, "inno2floor", "示例校区 C 图书馆二层阅览区（西）"),
     ;
 
-    /** 雁塔的区域名只写了楼层，单看「一楼」不知道是哪个馆，补上校区。 */
-    val displayName: String get() = if (campus == LibraryCampus.YANTA) "雁塔 $areaLabel" else areaLabel
+    /** 示例校区 B的区域名只写了楼层，单看「一楼」不知道是哪个馆，补上校区。 */
+    val displayName: String get() = if (campus == LibraryCampus.YANTA) "示例校区 B $areaLabel" else areaLabel
 
     companion object {
         fun byCode(code: String): LibraryQrArea? = entries.firstOrNull { it.code == code }
 
-        /** 表里没有的新区域按区域码前缀推校区；推不出就是兴庆（兴庆的区域码没有统一前缀）。 */
+        /** 表里没有的新区域按区域码前缀推校区；推不出就是示例校区（示例校区的区域码没有统一前缀）。 */
         fun campusOf(code: String): LibraryCampus = byCode(code)?.campus ?: when {
             code.startsWith("yanta") -> LibraryCampus.YANTA
             code.startsWith("inno") -> LibraryCampus.INNOVATION

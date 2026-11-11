@@ -18,11 +18,11 @@ class AgentForwardTest {
     )
 
     @Test fun everySnapshotIsMarkedAsExternalData() {
-        val course = LmsCourseSummary(id = 7, name = "高数")
+        val course = LmsCourseSummary(id = 7, name = "示例课")
         listOf(
             AgentForward.notice(notice("选课")),
             AgentForward.notices(listOf(notice("a"), notice("b"))),
-            AgentForward.inboxNotice(InboxItem(id = "notice:https://example.invalid/x", category = "notice", source = "教务处", title = "x")),
+            AgentForward.inboxNotice(InboxItem(id = "notice:https://example.invalid/x", category = "notice", source = "示例部门", title = "x")),
             AgentForward.lmsActivity(course, LmsActivity(id = 9, title = "作业一"), "作业"),
             AgentForward.webPage("标题", "https://example.invalid", "正文"),
         ).forEach { assertTrue(it.snapshot.endsWith(ToolReply.EXTERNAL_DATA), it.snapshot) }
@@ -41,13 +41,13 @@ class AgentForwardTest {
     }
 
     @Test fun inboxLinkComesFromTheId() {
-        val forward = AgentForward.inboxNotice(InboxItem(id = "notice:https://example.invalid/x", category = "notice", source = "教务处", title = "x"))
+        val forward = AgentForward.inboxNotice(InboxItem(id = "notice:https://example.invalid/x", category = "notice", source = "示例部门", title = "x"))
         assertTrue("链接：https://example.invalid/x" in forward.snapshot)
     }
 
     @Test fun lmsDescriptionLosesHtml() {
         val forward = AgentForward.lmsActivity(
-            LmsCourseSummary(id = 7, name = "高数"),
+            LmsCourseSummary(id = 7, name = "示例课"),
             LmsActivity(id = 9, title = "作业一", description = "<p>交 <b>PDF</b></p>"),
             "作业",
         )

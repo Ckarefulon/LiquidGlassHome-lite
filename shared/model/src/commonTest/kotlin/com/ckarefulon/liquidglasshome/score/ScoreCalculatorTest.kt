@@ -78,10 +78,10 @@ class ScoreCalculatorTest {
 
     @Test
     fun weightedGpa_simple() {
-        // 两门课各 3 学分：高数 90→4.0，线代 85→3.7
+        // 两门课各 3 学分：示例课 90→4.0，线代 85→3.7
         // 加权 GPA = (4.0·3 + 3.7·3) / 6 = 23.1/6 = 3.85
         val courses = listOf(
-            scoreItem(courseName = "高数", coursePoint = 3.0, score = "90", scoreValue = 90.0),
+            scoreItem(courseName = "示例课", coursePoint = 3.0, score = "90", scoreValue = 90.0),
             scoreItem(courseName = "线代", coursePoint = 3.0, score = "85", scoreValue = 85.0),
         )
         val info = ScoreCalculator.calculateGpaForCourses(courses)
@@ -94,12 +94,12 @@ class ScoreCalculatorTest {
     fun weightedGpa_skipsFailedFirstAttempt() {
         // 默认 skipFailedRetake=false：初修挂科跳过，补考挂科保留（计入学分但 gpa=null）
         val courses = listOf(
-            scoreItem(courseName = "高数", coursePoint = 4.0, score = "85", scoreValue = 85.0, examProp = "初修"),
+            scoreItem(courseName = "示例课", coursePoint = 4.0, score = "85", scoreValue = 85.0, examProp = "初修"),
             scoreItem(courseName = "线代", coursePoint = 4.0, score = "55", scoreValue = 55.0, examProp = "初修"),
             scoreItem(courseName = "大物", coursePoint = 4.0, score = "55", scoreValue = 55.0, examProp = "补考"),
         )
         val info = ScoreCalculator.calculateGpaForCourses(courses)
-        // 参与：高数 (3.7 GPA, 4 学分) + 大物 (gpa=null, 4 学分计入 totalCredits 但不参与加权)
+        // 参与：示例课 (3.7 GPA, 4 学分) + 大物 (gpa=null, 4 学分计入 totalCredits 但不参与加权)
         // 加权 gpa = 3.7*4 / 8 = 1.85
         assertEquals(1.85, info.gpa, 0.001)
         assertEquals(8.0, info.totalCredits, 0.001)

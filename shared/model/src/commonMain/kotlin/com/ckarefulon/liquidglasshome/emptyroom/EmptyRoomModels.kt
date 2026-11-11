@@ -23,24 +23,24 @@ data class RoomInfo(
     val status: List<Int> = emptyList(),  // 11 个元素，对应 1-11 节课的占用情况：0=空闲, 1=占用
 )
 
-/** 校区-教学楼映射（来自 XJTUToolBox） */
+/** 校区-教学楼映射（来自上游项目） */
 val CAMPUS_BUILDINGS = mapOf(
-    "兴庆校区" to listOf(
+    "示例校区" to listOf(
         "主楼A", "主楼B", "主楼C", "主楼D", "中2", "中3",
         "西2东", "西2西", "外文楼A", "外文楼B", "东1东", "东2",
         "仲英楼", "东1西", "教2楼", "中1", "主楼E座",
         "工程馆", "工程坊A区", "文管", "计教中心", "田家炳"
     ),
-    "雁塔校区" to listOf(
+    "示例校区 B" to listOf(
         "东配楼", "微免楼", "综合楼", "教学楼", "药学楼", "解剖楼",
         "生化楼", "病理楼", "西配楼", "一附院科教楼", "二院教学楼",
         "护理楼", "卫法楼"
     ),
     "曲江校区" to listOf("西一楼", "西五楼", "西四楼", "西六楼"),
-    "创新港校区" to listOf(
+    "示例校区 C" to listOf(
         "1号巨构", "2号巨构", "3号巨构", "4号巨构", "5号巨构",
         "9号巨构", "18号巨构", "19号巨构", "20号巨构", "21号巨构",
-        "图书馆", "2号绿楔", "3号绿楔", "主楼运动场", "工程博物馆-创新港"
+        "图书馆", "2号绿楔", "3号绿楔", "主楼运动场", "工程博物馆-示例校区 C"
     ),
     "苏州校区" to listOf("公共学院5号楼")
 )
@@ -53,7 +53,7 @@ class NoDataException(message: String) : Exception(message)
 data class LiveRoom(
     /** 教室全名，如 "东1东-303"、"1-2050"，和 CDN / 教务的教室名同一套写法。 */
     val name: String = "",
-    /** 楼名，已换成 App 里的叫法（创新港 "1" → "1号巨构"），见 [liveBuildingName]。 */
+    /** 楼名，已换成 App 里的叫法（示例校区 C "1" → "1号巨构"），见 [liveBuildingName]。 */
     val building: String = "",
     /** [LiveRoomStatus] 之一。 */
     val status: Int = 0,
@@ -92,14 +92,14 @@ data class LiveSnapshot(
 
 /** App 校区名 → 平台校区名。 */
 val LIVE_CAMPUSES: Map<String, String> = linkedMapOf(
-    "兴庆校区" to "兴庆校区",
-    "雁塔校区" to "雁塔校区",
-    "创新港校区" to "创新港",
+    "示例校区" to "示例校区",
+    "示例校区 B" to "示例校区 B",
+    "示例校区 C" to "示例校区 C",
 )
 
 /** 平台楼名 → App 楼名。 */
 fun liveBuildingName(campus: String, raw: String): String {
     val trimmed = raw.trim()
-    if (campus == "创新港校区" && trimmed.isNotEmpty() && trimmed.all { it.isDigit() }) return "${trimmed}号巨构"
+    if (campus == "示例校区 C" && trimmed.isNotEmpty() && trimmed.all { it.isDigit() }) return "${trimmed}号巨构"
     return trimmed
 }

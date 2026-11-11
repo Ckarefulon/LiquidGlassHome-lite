@@ -22,7 +22,7 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.SinkFeedback
 
 /**
- * 互斥单选用的胶囊，和屁岱卡片里的胶囊同一套样子。
+ * 互斥单选用的胶囊，和助手卡片里的胶囊同一套样子。
  *
  * 选中是主题色实底（primary + onPrimary，自选色时就是用户挑的那个色）。tertiary 是 Monet
  * 转过色相的「第三色」，不跟主题色，不能用。

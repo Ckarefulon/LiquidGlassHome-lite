@@ -42,7 +42,7 @@ data class StoredConversation(
 /** 新对话的默认标题（`AgentSessionStore.DEFAULT_TITLE` 与 `sanitizeAgentTitle` 的那份兜底同源）。 */
 const val AGENT_SESSION_DEFAULT_TITLE = "新对话"
 
-/** 多会话落盘 —— 屁岱这一屏与 ViewModel 认的那一格缝。 */
+/** 多会话落盘 —— 助手这一屏与 ViewModel 认的那一格缝。 */
 interface AgentSessionPersistence {
 
     /** 全部会话，按最近更新降序。 */

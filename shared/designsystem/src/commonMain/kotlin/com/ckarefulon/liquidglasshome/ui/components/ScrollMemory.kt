@@ -14,7 +14,7 @@ import androidx.compose.runtime.snapshotFlow
  *
  * 解决的是同一类反复出现的体验问题：从列表点进详情、看完返回，列表却回到了顶部。
  * 原因有两种，[rememberRetainedLazyListState] 对两种都有效：
- * - 页内切换（如思源学堂的课程列表 → 活动列表）：子页面 composition 被销毁重建；
+ * - 页内切换（如示例课堂的课程列表 → 活动列表）：子页面 composition 被销毁重建；
  * - 跨路由返回（如教师主页 → 内置浏览器 → 返回）：整个目的地被销毁重建。
  *
  * `rememberSaveable` 在第二种情况下也救不了——目的地离开返回栈后

@@ -10,7 +10,7 @@ import com.ckarefulon.liquidglasshome.settings.SettingsStore
  * 中间 [MIN_MIDDLE]–[MAX_MIDDLE] 格从首页上的一级功能里挑（[candidates]）。
  *
  * 存盘的是中间那几格的路由 id。格子自己的 id（ShellTab.id、默认启动页）：首页、我的，以及
- * 日程、屁岱、学辅沿用早已存盘的名字（[SettingsStore.TAB_HOME] 等），其余功能用路由 id。
+ * 日程、助手、学辅沿用早已存盘的名字（[SettingsStore.TAB_HOME] 等），其余功能用路由 id。
  */
 object BottomBarTabs {
     const val MIN_MIDDLE = 1
@@ -36,7 +36,7 @@ object BottomBarTabs {
 
     fun tabId(route: AppRoute): String = when (route) {
         AppRoute.Schedule -> SettingsStore.TAB_COURSES
-        AppRoute.Agent -> SettingsStore.TAB_PIDAI
+        AppRoute.Agent -> SettingsStore.TAB_ASSISTANT
         AppRoute.Zyxf -> SettingsStore.TAB_TOOLS
         else -> route.id
     }
@@ -59,7 +59,7 @@ object BottomBarTabs {
         SettingsStore.TAB_HOME -> "首页"
         SettingsStore.TAB_PROFILE -> "我的"
         SettingsStore.TAB_COURSES -> label(AppRoute.Schedule)
-        SettingsStore.TAB_PIDAI -> label(AppRoute.Agent)
+        SettingsStore.TAB_ASSISTANT -> label(AppRoute.Agent)
         SettingsStore.TAB_TOOLS -> label(AppRoute.Zyxf)
         else -> appRouteOf(tabId)?.let(::label) ?: tabId
     }

@@ -25,12 +25,12 @@ class ShellModelTest {
         showsAccountBadge = badge,
     )
 
-    // 与 `:app` 的 BottomTab 同序：首页 / 日程 / 屁岱 / 学辅 / 我的（角标在最后那一格）
+    // 与 `:app` 的 BottomTab 同序：首页 / 日程 / 助手 / 学辅 / 我的（角标在最后那一格）
     private val tabs = ShellTabs(
         listOf(
             tab("HOME"),
             tab("COURSES"),
-            tab("PIDAI"),
+            tab("ASSISTANT"),
             tab("TOOLS"),
             tab("PROFILE", badge = true),
         ),
@@ -48,19 +48,19 @@ class ShellModelTest {
 
     @Test
     fun `集合按 id 反查并保住顺序`() {
-        assertEquals(listOf("HOME", "COURSES", "PIDAI", "TOOLS", "PROFILE"), tabs.ids)
+        assertEquals(listOf("HOME", "COURSES", "ASSISTANT", "TOOLS", "PROFILE"), tabs.ids)
         assertEquals(5, tabs.size)
         assertEquals("HOME", tabs.first.id)
-        assertEquals(2, tabs.indexOf("PIDAI"))
+        assertEquals(2, tabs.indexOf("ASSISTANT"))
         assertEquals("TOOLS", tabs.byId("TOOLS")?.id)
         assertEquals("TOOLS", tabs[3].id)
     }
 
     @Test
     fun `认不出的 id 返回 null 与负序号（端上自己决定退到哪一格）`() {
-        assertNull(tabs.byId("PIDAI_V2"))
+        assertNull(tabs.byId("ASSISTANT_V2"))
         assertNull(tabs.byId(null))
-        assertEquals(-1, tabs.indexOf("PIDAI_V2"))
+        assertEquals(-1, tabs.indexOf("ASSISTANT_V2"))
     }
 
     @Test

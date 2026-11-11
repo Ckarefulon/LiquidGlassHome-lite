@@ -139,7 +139,7 @@ class HomeHeroTest {
     private fun due(at: LocalDateTime, title: String = "交实验报告") = InboxItem(
         id = "todo",
         category = "todo",
-        source = "思源学堂",
+        source = "示例课堂",
         title = title,
         expiresAt = at.toInstant(CampusTimeZone).toEpochMilliseconds(),
     )
@@ -153,7 +153,7 @@ class HomeHeroTest {
         assertEquals("07:30", lead?.timeLabel)
         assertEquals("截止", lead?.timeCaption)
         assertEquals("30分钟后", lead?.eta)
-        assertEquals("思源学堂", lead?.detail)
+        assertEquals("示例课堂", lead?.detail)
         assertEquals(AppRoute.Inbox, lead?.route)
 
         assertNull(HomeHero.dueLead(course, due(LocalDateTime(2026, 10, 12, 9, 0)), now), "截止在上课之后 ⇒ 课仍是下一项")

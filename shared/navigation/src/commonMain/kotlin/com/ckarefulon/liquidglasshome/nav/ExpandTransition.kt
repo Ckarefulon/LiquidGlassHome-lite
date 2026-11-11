@@ -84,7 +84,7 @@ object ExpandOrigins {
 
     /**
      * 按页面类型记。转场是按类型注册的（`entry<T>(transition = …)`），拿不到具体的路由值；
-     * 同一类型同时在栈里出现两份的情况（比如两个不同课程的思源学堂）实际不会从首页格子触发。
+     * 同一类型同时在栈里出现两份的情况（比如两个不同课程的示例课堂）实际不会从首页格子触发。
      */
     private val byType = mutableMapOf<KClass<out AppRoute>, Origin>()
 

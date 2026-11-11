@@ -1,7 +1,7 @@
 package com.ckarefulon.liquidglasshome.faculty
 
 /**
- * 教师主页（faculty.xjtu.edu.cn / gr.xjtu.edu.cn）的数据模型。
+ * 教师主页的数据模型。
  *
  * 数据来源分两层，字段不要混：
  * - [FacultyMember]：来自 advancesearch.jsp 的 JSON，**全校 4173 人都有**，是主数据。

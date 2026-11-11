@@ -1,6 +1,6 @@
 package com.ckarefulon.liquidglasshome.fitness
 
-import com.ckarefulon.liquidglasshome.schedule.XjtuTime
+import com.ckarefulon.liquidglasshome.schedule.CampusTime
 import kotlin.math.round
 
 /** 体测模型 + 学年排序/解析工具。 */
@@ -47,7 +47,7 @@ fun FitnessYear.yearValue(): Int? =
 /** 体测系统会把尚未开测的下一学年也列在最前，[checked] 也经常指到那一档。 */
 fun orderedFitnessYears(
     years: List<FitnessYear>,
-    academicYear: Int = XjtuTime.currentAcademicYear(),
+    academicYear: Int = CampusTime.currentAcademicYear(),
 ): List<FitnessYear> {
     val ranked = years.sortedByDescending { it.yearValue() ?: Int.MIN_VALUE }
     val eligible = ranked.filter { (it.yearValue() ?: Int.MAX_VALUE) <= academicYear }
@@ -67,7 +67,7 @@ fun parseFitnessAcademicYear(raw: String?): Int? {
 fun pickFitnessYear(
     years: List<FitnessYear>,
     yearKey: String?,
-    academicYear: Int = XjtuTime.currentAcademicYear(),
+    academicYear: Int = CampusTime.currentAcademicYear(),
 ): FitnessYear? {
     val ordered = orderedFitnessYears(years, academicYear)
     val want = parseFitnessAcademicYear(yearKey) ?: return ordered.firstOrNull()

@@ -12,7 +12,7 @@ import com.ckarefulon.liquidglasshome.inbox.InboxItem
 import com.ckarefulon.liquidglasshome.schedule.CourseItem
 import com.ckarefulon.liquidglasshome.schedule.TermWeeks
 import com.ckarefulon.liquidglasshome.nav.AppRoute
-import com.ckarefulon.liquidglasshome.schedule.XjtuTime
+import com.ckarefulon.liquidglasshome.schedule.CampusTime
 import com.ckarefulon.liquidglasshome.schedule.civilFromEpochDay
 import com.ckarefulon.liquidglasshome.util.CampusTimeZone
 import com.ckarefulon.liquidglasshome.util.nowOnCampus
@@ -78,7 +78,7 @@ object HomeHero {
             val isHoliday = holidayDates.contains(targetDate)
             val targetWeek = TermWeeks.weekOf(start, targetDate)
             if (targetWeek <= 0) continue
-            val isSummer = XjtuTime.isSummerTime(targetDate.month.ordinal + 1)
+            val isSummer = CampusTime.isSummerTime(targetDate.month.ordinal + 1)
             val dayCourses = courses
                 .filter { it.dayOfWeek == targetDate.dayOfWeek.ordinal + 1 && it.isInWeek(targetWeek) }
                 .filter { !isHoliday || it.isUserCreated }
@@ -137,17 +137,17 @@ object HomeHero {
         )
     }
 
-    /** 自建日程给的是分钟；教务课程按作息表换算（见 [XjtuTime.getClassTime]）。 */
+    /** 自建日程给的是分钟；教务课程按作息表换算（见 [CampusTime.getClassTime]）。 */
     private fun CourseItem.resolveStartMinute(isSummer: Boolean): Int? {
         if (startMinuteOfDay in 0 until 24 * 60) return startMinuteOfDay
-        val startTime = XjtuTime.getClassTime(startSection, isSummer)?.start ?: return null
+        val startTime = CampusTime.getClassTime(startSection, isSummer)?.start ?: return null
         return startTime.hour * 60 + startTime.minute
     }
 
     /** 同上，取结束那一边；没有结束节次与分钟时返回 null（Hero 上就显示日期而不是「至 HH:MM」）。 */
     private fun CourseItem.resolveEndMinute(isSummer: Boolean): Int? {
         if (endMinuteOfDay in 1..(24 * 60)) return endMinuteOfDay
-        val endTime = XjtuTime.getClassTime(endSection, isSummer)?.end ?: return null
+        val endTime = CampusTime.getClassTime(endSection, isSummer)?.end ?: return null
         return endTime.hour * 60 + endTime.minute
     }
 

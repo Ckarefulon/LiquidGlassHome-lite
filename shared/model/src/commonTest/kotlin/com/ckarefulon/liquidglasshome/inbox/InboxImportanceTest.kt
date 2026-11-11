@@ -14,7 +14,7 @@ class InboxImportanceTest {
     private fun item(id: String, expiresAt: Long = 0L) = InboxItem(
         id = id,
         category = InboxCategories.LMS,
-        source = "高数",
+        source = "示例课",
         title = "作业",
         time = now,
         expiresAt = expiresAt,

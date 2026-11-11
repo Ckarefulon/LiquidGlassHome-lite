@@ -1,6 +1,6 @@
 package com.ckarefulon.liquidglasshome.jiaocai1
 
-/** 教材全文库（`jiaocai1.lib.xjtu.edu.cn`）的模型。 */
+/** 教材全文库 的模型。 */
 
 /** 中图法分类节点。[id] 即检索参数 `cls`，如 `0O109101`。 */
 @kotlinx.serialization.Serializable

@@ -41,10 +41,10 @@ sealed interface AppRoute : NavKey {
         override val offlineCapable get() = true
     }
 
-    /** 屁岱，没网也能进。 */
+    /** 助手，没网也能进。 */
     @Serializable data object Agent : AppRoute { override val id get() = "agent" }
 
-    /** 仲英学辅资料站。 */
+    /** 示例资料站。 */
     @Serializable data object Zyxf : AppRoute { override val id get() = "zyxf" }
 
     // ── 覆盖层：付款码盖在当前页上面，不进返回栈 ──
@@ -101,7 +101,7 @@ sealed interface AppRoute : NavKey {
     }
     @Serializable data object DownloadManager : AppRoute { override val id get() = "download_manager" }
 
-    /** 思源学堂；课程及活动 ID 可用于从待办直达作业详情。 */
+    /** 示例课堂；课程及活动 ID 可用于从待办直达作业详情。 */
     @Serializable data class Lms(val courseId: Int? = null, val activityId: Int? = null) : AppRoute {
         override val id get() = buildString {
             append("lms")
@@ -153,7 +153,7 @@ sealed interface AppRoute : NavKey {
     /** [then] 非空时，[url] 先加载完并走完登录，再自动跳到 [then]（支付页要先过一遍登录）。 */
     @Serializable data class Browser(val url: String = "", val then: String = "") : AppRoute {
         override val id get() = "browser?url=${encode(url)}" + if (then.isEmpty()) "" else "&then=${encode(then)}"
-        override val loginType get() = LoginType.DZPZ.takeIf { url.startsWith("https://dzpz.xjtu.edu.cn/") }
+        override val loginType get() = LoginType.DZPZ.takeIf { url.startsWith("https://workflow.example.edu/") }
     }
     @Serializable data object Settings : AppRoute { override val id get() = "settings" }
     /** 消息收纳：待办与消息。 */

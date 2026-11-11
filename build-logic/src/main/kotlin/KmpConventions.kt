@@ -74,7 +74,7 @@ internal fun Project.configureKmpLibrary() {
         if (name == "jvmTest") {
             val root = layout.buildDirectory.dir("testStoreRoot")
             doFirst { root.get().asFile.deleteRecursively() }
-            systemProperty("xjtu.toolbox.keyValueRoot", root.get().asFile.absolutePath)
+            systemProperty("liquidglass.keyValueRoot", root.get().asFile.absolutePath)
         }
     }
 }

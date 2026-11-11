@@ -8,7 +8,7 @@ import com.kyant.backdrop.backdrops.LayerBackdrop
  * 整个主界面共用的玻璃采样源。
  *
  * `MainScreen` 在内容根上挂一次 `Modifier.layerBackdrop(backdrop)`，再用这个 Local 往下传；
- * 底栏、搜索浮层、屁岱气泡这些玻璃都从这里采样背后的页面内容。
+ * 底栏、搜索浮层、助手气泡这些玻璃都从这里采样背后的页面内容。
  *
  * **为 null 的含义是「不要玻璃」**：用户选了「经典」界面风格，或者当前界面根本没有提供采样源
  * （比如二级页里）。拿到 null 的组件一律退回原来的不透明样式，不要自己另建一个采样源凑合——

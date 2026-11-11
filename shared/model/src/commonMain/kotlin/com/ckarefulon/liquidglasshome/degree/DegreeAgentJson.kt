@@ -12,7 +12,7 @@ import kotlinx.serialization.json.put
 import kotlinx.serialization.json.putJsonArray
 
 /**
- * 给小岱的 JSON。原始响应太大又带学号，但方案树各专业写法不一，精简不能丢信息：
+ * 给助手的 JSON。原始响应太大又带学号，但方案树各专业写法不一，精简不能丢信息：
  * - 总览：每个节点都在，不按专业写死字段，放不下的只给数量，并说明怎么展开；
  * - 展开：该组的原始字段全部透传（只剔除隐私和空值），模型自己读。
  */

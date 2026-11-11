@@ -11,7 +11,7 @@ import com.ckarefulon.liquidglasshome.platform.keyValueStore
  * 看得见它们 —— 所以把课名记下来，颜色怎么算交给 designsystem 的 `CourseColors`。
  *
  * 记两处，都只在真实数据到手时：
- * - 读到课表缓存时（[ScheduleCache.readCourses]：首页统计、日程页、屁岱都走它）；
+ * - 读到课表缓存时（[ScheduleCache.readCourses]：首页统计、日程页、助手都走它）；
  * - 用户加 / 改自建日程时（日程页的 `ScheduleViewModel`；自建日程不在课表缓存里）。
  *
  * 只增不减（上限 [LIMIT] 个课名），跨学期留着 —— 换回去还能接着挑同几个色。

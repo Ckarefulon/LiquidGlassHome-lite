@@ -11,7 +11,7 @@ object WebVpnDenied {
     const val MESSAGE = "学校 WebVPN 没给你的账号开通这项权限：连上校园网就能直接用，不在校园网时请先申请 WebVPN"
 
     /** 事务中心里的「WebVPN 权限申请」。和一网通办同一套统一认证，带着登录态进去不用再登。 */
-    const val APPLY_URL = "https://workflow.xjtu.edu.cn/fe/taskCenter/one/application?app_id=326&platform_id=33"
+    const val APPLY_URL = "https://workflow.example.edu/fe/taskCenter/one/application?app_id=326&platform_id=33"
 
     private val DENIED_TITLE = Regex("""<title>\s*访问被拒绝\s*</title>""")
 

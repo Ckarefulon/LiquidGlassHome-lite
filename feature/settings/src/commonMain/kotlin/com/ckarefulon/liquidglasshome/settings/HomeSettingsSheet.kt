@@ -151,7 +151,7 @@ private fun HomeSettingsBody(onDismiss: () -> Unit, showTopBarStyle: Boolean) {
         onLoaded = { text ->
             // 内容对不对交给编解码判定：解不出来就当这次没导，错误只说人话、不抛格式细节
             val parsed = HomeLayoutCodec.decode(text)
-            if (parsed == null) showBriefMessage("这个文件不是岱宗盒子的布局") else pendingImport = parsed
+            if (parsed == null) showBriefMessage("这个文件不是本模板的布局") else pendingImport = parsed
         },
         onError = { showBriefMessage(it.ifEmpty { "读不出这个文件" }) },
     )
@@ -440,7 +440,7 @@ private fun HomeSettingsBody(onDismiss: () -> Unit, showTopBarStyle: Boolean) {
  * 从同一个位置挑回来最省事；真要留多份，用户自己在文件管理器里改名就行了。
  * 内容就是 `HomeLayoutCodec` 的落盘格式，`.txt` 保险（各家文件管理器都认得、能直接看）。
  */
-private const val HOME_LAYOUT_FILE_NAME = "xjtu-toolbox-home-layout.txt"
+private const val HOME_LAYOUT_FILE_NAME = "liquidglass-home-layout.txt"
 
 /**
  * 主页设置里所有滑动条的**唯一**写法：直接用 MIUIX 自带的 [SliderPreference]。

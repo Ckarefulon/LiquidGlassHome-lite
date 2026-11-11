@@ -5,8 +5,8 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 
 /**
- * 思源学堂数据模型
- * 从 XJTUToolBox Python 版 LMSUtil 移植
+ * 示例课堂数据模型
+ * 从 上游项目 Python 版 LMSUtil 移植
  *
  * 课程列表和活动列表会落盘（见 [LmsPageCache]），它们用到的类都要 @Serializable。
  */

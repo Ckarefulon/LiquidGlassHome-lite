@@ -50,7 +50,7 @@ import kotlin.math.PI
 import kotlin.math.cos
 
 /*
- * 全 App 共用的动效零件。规矩和屁岱页一致，新加的效果都照这几条来：
+ * 全 App 共用的动效零件。规矩和助手页一致，新加的效果都照这几条来：
  *
  * 1. 动画值只在绘制阶段读（graphicsLayer { } / drawBehind { }），只触发重画、不触发重组。
  *    唯一的例外是数字滚动——Text 要的是字符串，只能在组合阶段读，所以限定 ≤700ms、只在值变化时播。

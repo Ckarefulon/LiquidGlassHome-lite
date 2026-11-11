@@ -10,7 +10,7 @@ val COURSE_COLORS = listOf(
     Color(0xFFD84315),
 )
 
-/** 课名的默认色：按课名稳定哈希取色。思源学堂那边只认识单门课，用的就是它。 */
+/** 课名的默认色：按课名稳定哈希取色。示例课堂那边只认识单门课，用的就是它。 */
 fun defaultCourseColor(courseName: String): Color =
     COURSE_COLORS[(courseName.trim().hashCode() and Int.MAX_VALUE) % COURSE_COLORS.size]
 

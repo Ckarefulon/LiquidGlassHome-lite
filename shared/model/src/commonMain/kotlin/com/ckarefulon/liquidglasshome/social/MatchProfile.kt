@@ -48,7 +48,7 @@ object MatchProfile {
     const val DAYS = 7
 
     /**
-     * 每天 11 节。这个数要跟 [com.ckarefulon.liquidglasshome.schedule.XjtuTime] 的作息表对齐——
+     * 每天 11 节。这个数要跟 [com.ckarefulon.liquidglasshome.schedule.CampusTime] 的作息表对齐——
      * 之前写的 12 会凭空多出一列谁都没课的格子，把"共同空闲"整体抬高 1/12。
      */
     const val SECTIONS = 11
@@ -129,7 +129,7 @@ object MatchProfile {
         /** 校区。是硬门槛而不是加分项，见 [compare]。 */
         val campus: String = "",
         val className: String = "",
-        /** 生源地省份，从学号推——见 [com.ckarefulon.liquidglasshome.account.ProvinceCode]，跟屁岱画像同一份映射。 */
+        /** 生源地省份，从学号推——见 [com.ckarefulon.liquidglasshome.account.ProvinceCode]，跟助手画像同一份映射。 */
         val province: String = "",
     ) {
         val courseCodes: Set<String> get() = courses.map { it.code }.toSet()
@@ -439,7 +439,7 @@ object MatchProfile {
         /** 工作日里两人同楼上课的时段。 */
         val encounters: List<Encounter> = emptyList(),
         /**
-         * 拦路的硬条件，比如不同校区。不并进百分比——共同空闲 90% 但一个兴庆一个创新港，
+         * 拦路的硬条件，比如不同校区。不并进百分比——共同空闲 90% 但一个示例校区一个示例校区 C，
          * 该说的是"约不上"，不是给这个数打个折。
          */
         val blocker: String? = null,

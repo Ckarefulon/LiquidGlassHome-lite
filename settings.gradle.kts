@@ -1,5 +1,5 @@
 pluginManagement {
-    // 约定插件：toolbox.kmp.library / toolbox.kmp.compose（与上游 xjtu-toolbox-android 同一套）
+    // 约定插件：toolbox.kmp.library / toolbox.kmp.compose（与上游项目同一套）
     includeBuild("build-logic")
     repositories {
         google {

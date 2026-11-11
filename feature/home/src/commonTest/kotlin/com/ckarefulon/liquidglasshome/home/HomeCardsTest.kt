@@ -110,8 +110,8 @@ class HomeCardsTest {
             ),
             todos = mapOf(
                 "作业" to listOf(
-                    InboxItem(id = "t1", category = "作业", source = "思源", title = "交第三章作业", expiresAt = now + 86_400_000),
-                    InboxItem(id = "t2", category = "作业", source = "思源", title = "交第四章作业", expiresAt = now + 7 * 86_400_000),
+                    InboxItem(id = "t1", category = "作业", source = "示例", title = "交第三章作业", expiresAt = now + 86_400_000),
+                    InboxItem(id = "t2", category = "作业", source = "示例", title = "交第四章作业", expiresAt = now + 7 * 86_400_000),
                 ),
             ),
             readAt = mapOf("m1" to now, "m2" to now),

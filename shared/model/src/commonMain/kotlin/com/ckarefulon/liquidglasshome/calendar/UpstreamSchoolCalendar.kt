@@ -10,7 +10,7 @@ import kotlinx.datetime.LocalDate
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonObject
 
-/** 校历上游（`workflow.xjtu.edu.cn/selectpage/site/calendar/getData`）的纯解析。 */
+/** 校历上游（工作流引擎 `selectpage/site/calendar/getData`）的纯解析。 */
 fun parseUpstreamSchoolCalendar(body: String): List<SchoolTerm> {
     val json = AppJson.parseToJsonElement(body).jsonObject
     val code = json.get("e")?.intValue ?: -1

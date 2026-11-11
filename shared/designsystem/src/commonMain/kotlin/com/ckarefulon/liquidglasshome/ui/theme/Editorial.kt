@@ -33,7 +33,7 @@ object Editorial {
     /** 栏目标题，如「01 上课」里的「上课」。 */
     val section = TextStyle(fontWeight = FontWeight.Bold, fontSize = 19.sp, lineHeight = 24.sp, letterSpacing = 1.5.sp)
 
-    /** 大号数字，等高数字对齐。 */
+    /** 大号数字，等示例课字对齐。 */
     val figure = TextStyle(fontWeight = FontWeight.Bold, fontSize = 20.sp, lineHeight = 24.sp, fontFeatureSettings = "lnum")
 
     /** 期号、栏目序号这类西文小字：大写、拉开字距。 */

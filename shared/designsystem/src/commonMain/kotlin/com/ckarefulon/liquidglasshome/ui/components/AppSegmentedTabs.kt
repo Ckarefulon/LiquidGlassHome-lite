@@ -40,7 +40,7 @@ fun AppSegmentedTabs(
             } else {
                 TabRowDefaults.tabRowColors()
             },
-            // miuix 默认每格至少 62dp，手机上 5 格（兴庆/雁塔/曲江/创新港/苏州）放不下就变成横滑，
+            // miuix 默认每格至少 62dp，手机上 5 格（示例校区/示例校区 B/曲江/示例校区 C/苏州）放不下就变成横滑，
             // 最后一格被截掉、看不出能滑。放宽到 44dp（三个汉字的宽度），常见格数都能一屏排满。
             minWidth = 44.dp,
             modifier = Modifier

@@ -40,8 +40,8 @@ object CampusMaps {
 
     /** OSM 上没有、但坐标查得实的地点（WGS-84），按校区并进 [all]。 */
     private val SUPPLEMENTS = mapOf(
-        // OSM way 1411003625「科教楼」（雁塔西路 277 号，一附院院内），在校区边界外，生成时被滤掉
-        "雁塔校区" to listOf(CampusPlace("一附院科教楼", PlaceKind.BUILDING, 34.22206, 108.93377)),
+        // OSM way 1411003625「科教楼」（示例校区 B西路 277 号，一附院院内），在校区边界外，生成时被滤掉
+        "示例校区 B" to listOf(CampusPlace("一附院科教楼", PlaceKind.BUILDING, 34.22206, 108.93377)),
     )
 
     val all: List<CampusMapData> by lazy {
@@ -67,15 +67,15 @@ object CampusMaps {
         "工程坊A区" to "工程坊", "计教中心" to "计算机教学实验中心",
         "图书馆" to "钱学森图书馆", "钱图" to "钱学森图书馆",
         "外文楼A" to "外国语学院", "外文楼B" to "外国语学院", "外文楼" to "外国语学院",
-        "创新港图书馆" to "创新港图书资料中心",
+        "示例校区 C图书馆" to "示例校区 C 图书馆",
     )
 
-    /** 只在某个校区成立的别名，压过 [ALIASES]。创新港巨构编号 ↔ 楼名见创新港入学指南。 */
+    /** 只在某个校区成立的别名，压过 [ALIASES]。示例校区 C巨构编号 ↔ 楼名见示例校区 C入学指南。 */
     private val CAMPUS_ALIASES = mapOf(
-        "创新港校区" to mapOf(
+        "示例校区 C" to mapOf(
             "1号巨构" to "敏行楼", "2号巨构" to "力行楼", "3号巨构" to "躬行楼", "4号巨构" to "泓理楼",
             "5号巨构" to "涵英楼", "20号巨构" to "泓德楼",
-            "图书馆" to "创新港图书资料中心", "工程博物馆" to "高等工程教育博物馆",
+            "图书馆" to "示例校区 C 图书馆", "工程博物馆" to "高等工程教育博物馆",
         ),
     )
 

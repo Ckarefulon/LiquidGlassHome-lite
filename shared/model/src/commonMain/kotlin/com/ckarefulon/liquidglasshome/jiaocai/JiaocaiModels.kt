@@ -2,7 +2,7 @@ package com.ckarefulon.liquidglasshome.jiaocai
 
 import com.ckarefulon.liquidglasshome.schedule.TextbookItem
 
-/** 教材中心（`jiaocai.lib.xjtu.edu.cn`）的模型。 */
+/** 教材中心 的模型。 */
 data class JiaocaiBook(
     val id: String = "",          // general_55258665
     val appId: Int = 0,

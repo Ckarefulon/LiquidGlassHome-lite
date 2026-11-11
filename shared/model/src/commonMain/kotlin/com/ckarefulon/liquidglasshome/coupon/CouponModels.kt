@@ -9,7 +9,7 @@ import com.ckarefulon.liquidglasshome.util.safeInt
 import com.ckarefulon.liquidglasshome.util.safeString
 import com.ckarefulon.liquidglasshome.util.safeStringOrNull
 
-private const val COUPON_BASE_URL = "https://egc.xjtu.edu.cn"
+private const val COUPON_BASE_URL = "https://example.edu"
 
 enum class CouponFilter(
     val label: String,

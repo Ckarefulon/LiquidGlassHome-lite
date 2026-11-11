@@ -16,7 +16,7 @@ class AppRouteTest {
             assertEquals(route, appRouteOf(route.id))
             assertEquals(com.ckarefulon.liquidglasshome.auth.LoginType.DZPZ, route.loginType)
         }
-        assertNull(AppRoute.Browser("https://dzpz.xjtu.edu.cn.example.org/").loginType)
+        assertNull(AppRoute.Browser("https://workflow.example.edu/").loginType)
     }
 
     @Test
@@ -34,7 +34,7 @@ class AppRouteTest {
     }
 
     @Test
-    fun `思源学堂带不带课程号都认`() {
+    fun `示例课堂带不带课程号都认`() {
         assertEquals(AppRoute.Lms(null), appRouteOf("lms"))
         assertEquals(AppRoute.Lms(123), appRouteOf("lms?courseId=123"))
         assertEquals("lms?courseId=123", AppRoute.Lms(123).id)
