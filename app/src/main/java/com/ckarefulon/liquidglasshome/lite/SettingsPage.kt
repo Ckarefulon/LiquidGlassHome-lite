@@ -80,9 +80,7 @@ fun SettingsPage(
             color = MiuixTheme.colorScheme.onSurfaceVariantSummary,
         )
         Spacer(Modifier.height(20.dp))
-        TextButton(onClick = onOpenSettings) {
-            Text("打开主页设置", color = MiuixTheme.colorScheme.primary)
-        }
+        TextButton(text = "打开主页设置", onClick = onOpenSettings)
         Spacer(Modifier.height(24.dp))
         Text(
             "主题色默认：亮色 " + SettingsStore.DEFAULT_THEME_COLOR_LIGHT +

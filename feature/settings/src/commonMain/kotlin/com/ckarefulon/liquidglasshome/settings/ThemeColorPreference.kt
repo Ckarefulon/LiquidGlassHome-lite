@@ -2,6 +2,7 @@ package com.ckarefulon.liquidglasshome.settings
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -108,7 +109,11 @@ private fun ThemeColorRow(title: String, hex: String, onPick: () -> Unit) {
     Row(
         Modifier
             .fillMaxWidth()
-            .clickable(onClick = onPick)
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null,
+                onClick = onPick,
+            )
             .padding(horizontal = 16.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -136,13 +141,7 @@ private fun ResetThemeColorRow(onReset: () -> Unit) {
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text("恢复默认主题色", style = MiuixTheme.textStyles.body1, modifier = Modifier.weight(1f))
-        TextButton(onClick = onReset) {
-            Text(
-                "恢复",
-                style = MiuixTheme.textStyles.footnote1,
-                color = MiuixTheme.colorScheme.primary,
-            )
-        }
+        TextButton(text = "恢复", onClick = onReset)
     }
 }
 
@@ -194,18 +193,25 @@ private fun ThemeColorPickerDialog(
                                 .padding(end = 10.dp)
                                 .size(36.dp)
                                 .background(parseHex(p) ?: Color.Gray, CircleShape)
-                                .clickable { text = p },
+                                .clickable(
+                                    interactionSource = remember { MutableInteractionSource() },
+                                    indication = null,
+                                    onClick = { text = p },
+                                ),
                         )
                     }
                 }
             }
             Spacer(Modifier.height(8.dp))
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                TextButton(onClick = onDismiss) { Text("取消") }
-                TextButton(onClick = {
-                    val normalized = SettingsStore.normalizeThemeColor(text)
-                    if (normalized.isNotEmpty()) onConfirm(normalized)
-                }) { Text("确定") }
+                TextButton(text = "取消", onClick = onDismiss)
+                TextButton(
+                    text = "确定",
+                    onClick = {
+                        val normalized = SettingsStore.normalizeThemeColor(text)
+                        if (normalized.isNotEmpty()) onConfirm(normalized)
+                    },
+                )
             }
         }
     }
