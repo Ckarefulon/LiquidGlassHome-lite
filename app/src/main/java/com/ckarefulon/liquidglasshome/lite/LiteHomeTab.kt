@@ -12,7 +12,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.QrCodeScanner
-import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.outlined.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -57,50 +57,78 @@ fun LiteHomeTab(
         contentTopPadding = insets.contentTopPadding,
         contentTopShift = insets.contentTopShift,
         topLeading = {
-            // 左边只有「扫码」
-            HomeRoundAction(onClick = { onNavigate(AppRoute.Notification) }) {
-                Icon(
-                    Icons.Filled.QrCodeScanner,
-                    contentDescription = "扫一扫",
-                    tint = MiuixTheme.colorScheme.onSurface,
-                    modifier = Modifier.size(21.dp),
-                )
-            }
+            // 左边只有「扫码」（对排法关闭时的位置，与上游一致）
+            HomeScanAction(onScan = { onNavigate(AppRoute.Notification) })
         },
         topActions = {
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                // 右边两颗：搜索 + 通知（通知红点默认挂 1 个）
-                HomeRoundAction(onClick = { onNavigate(AppRoute.Notification) }) {
-                    Icon(
-                        Icons.Filled.Search,
-                        contentDescription = "搜索",
-                        tint = MiuixTheme.colorScheme.onSurface,
-                        modifier = Modifier.size(21.dp),
-                    )
-                }
-                Box {
-                    HomeRoundAction(onClick = { onNavigate(AppRoute.Notification) }) {
-                        Icon(
-                            Icons.Filled.Notifications,
-                            contentDescription = "通知",
-                            tint = MiuixTheme.colorScheme.onSurface,
-                            modifier = Modifier.size(22.dp),
-                        )
-                    }
-                    // 未读数角标：**液态玻璃小圆**里固定显示数字 1（不是纯圆点）。
-                    // 画在圆钮外面这一层：圆钮本身的玻璃会把内容裁成圆形。
-                    CountBadge(
-                        count = 1,
-                        modifier = Modifier
-                            .align(Alignment.TopEnd)
-                            .offset(x = 4.dp, y = (-2).dp),
-                    )
-                }
-            }
+            // 右边：搜索 + 通知（与上游 HomeTopActions 同一套写法，withScan = false）
+            HomeTopActions(
+                onInbox = { onNavigate(AppRoute.Notification) },
+                onSearch = { onNavigate(AppRoute.Notification) },
+            )
         },
+    )
+}
+
+/** 「扫一扫」圆钮（与上游 MainScreen 同款）。 */
+@Composable
+private fun HomeScanAction(onScan: () -> Unit) {
+    HomeRoundAction(onClick = onScan) {
+        Icon(
+            Icons.Filled.QrCodeScanner,
+            contentDescription = "扫一扫",
+            tint = MiuixTheme.colorScheme.onSurface,
+            modifier = Modifier.size(21.dp),
+        )
+    }
+}
+
+/**
+ * 首页顶栏右侧那一排：搜索 + 通知（与上游 MainScreen 的 `HomeTopActions` 同款）。
+ *
+ * 通知角标用的是上游同一个组件 `CountBadge`：**液态玻璃小圆里显示数字**，
+ * 不是纯红圆点。角标画在圆钮外面这一层——圆钮本身的玻璃会把内容裁成圆形。
+ */
+@Composable
+private fun HomeTopActions(
+    onInbox: () -> Unit,
+    onSearch: () -> Unit,
+) {
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        HomeRoundAction(onClick = onSearch) {
+            Icon(
+                Icons.Outlined.Search,
+                contentDescription = "搜索",
+                tint = MiuixTheme.colorScheme.onSurface,
+                modifier = Modifier.size(21.dp),
+            )
+        }
+        Box {
+            HomeRoundAction(onClick = onInbox) {
+                Icon(
+                    Icons.Filled.Notifications,
+                    contentDescription = "通知",
+                    tint = MiuixTheme.colorScheme.onSurface,
+                    modifier = Modifier.size(22.dp),
+                )
+            }
+            // 未读角标：固定 1（模板没有真收件箱），红底液态玻璃
+            CountBadge(
+                count = 1,
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .offset(x = (-2).dp, y = 4.dp),
+                accent = UnreadAccent,
+            )
+        }
+    }
+}
+
+/** 未读角标的品牌红（与上游 `UnreadAccent` 同一个值）。 */
+private val UnreadAccent = Color(0xFFE8453A)
     )
 }
 

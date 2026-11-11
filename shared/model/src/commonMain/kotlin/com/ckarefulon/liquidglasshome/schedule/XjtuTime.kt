@@ -7,7 +7,7 @@ import kotlinx.datetime.LocalTime
 /**
  * 西安交通大学作息时间表
  * 冬季（10月-次年4月）和夏季（5月-9月）时间不同
- * 作息时间表（历史遗留数据）
+ * 移植自 XJTUToolBox 的 xjtu_time.py
  */
 object XjtuTime {
 

@@ -8,7 +8,7 @@ import com.ckarefulon.liquidglasshome.home.HomeInboxSummary
 import com.ckarefulon.liquidglasshome.home.HomeNextUp
 import com.ckarefulon.liquidglasshome.home.HomeStat
 import com.ckarefulon.liquidglasshome.home.HomeStatusLine
-import com.ckarefulon.liquidglasshome.home.PlaceholderServices
+import com.ckarefulon.liquidglasshome.home.AppServices
 import com.ckarefulon.liquidglasshome.nav.AppRoute
 
 /**
@@ -51,7 +51,7 @@ class LiteHomeHost(
     override val quickEditable: Boolean = false
 
     /** 每个占位功能带一行占位状态（宫格里那块小字）。 */
-    override val stats: Map<String, HomeStat> = PlaceholderServices.all.associate {
+    override val stats: Map<String, HomeStat> = AppServices.all.associate {
         it.route.id to HomeStat("占位状态")
     }
 

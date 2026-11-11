@@ -86,6 +86,7 @@ import com.kyant.backdrop.effects.blur
 import com.kyant.backdrop.effects.lens
 import com.kyant.backdrop.effects.vibrancy
 import com.kyant.backdrop.highlight.Highlight
+import com.ckarefulon.liquidglasshome.bulletin.BulletinNoticePanel
 import com.ckarefulon.liquidglasshome.nav.AppRoute
 import com.ckarefulon.liquidglasshome.platform.BackHandler
 import com.ckarefulon.liquidglasshome.settings.SettingsStore
@@ -141,7 +142,7 @@ import top.yukonga.miuix.kmp.window.WindowDialog
  * 合并时从小组件那套搬过来的能力：材质四态里的纯色 / 渐变薄底（§1）、
  * 一镜到底接线（`HomeTileBoard` 的 `tileOpen`、本文件的 `rowOf` 里 `onSeamlessClick`）、
  * 校园卡大卡的付款码（`HomeTileBoard` 的 `PaymentCodeOverlay`）。
- * 只剩卡片组这一套（原「小组件」那套已并进它，经典分类卡在本仓库整条移除）；入口在 [HomeScreen]。
+ * 只剩「经典分类卡」作为回落，见 [HomeClassicScreen]；入口分派在 [HomeScreen]。
  */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -167,10 +168,8 @@ fun HomeCardGroupScreen(
     topActions: (@Composable () -> Unit)? = null,
 ) {
     val honored = host.honoredCards
-    // 模板用**占位目录**驱动宫格：名称 / 副标题 / 图标都是中性的占位词，
-    // 颜色统一取主题色。换成自己的目录时，把这里改成你的 List<AppService> 即可，
-    // 下面的 UI 一行都不用改。
-    val catalog = remember(host.audience) { PlaceholderServices.homeFor().toAppServices() }
+    // 用目录全量：图标配色按它在目录里的下标取，过滤会让配色挪位。
+    val catalog = remember(host.audience) { AppServices.homeFor(host.audience) }
     // 配色随应用主题变化，不能放进 remember。
     val colorByKey = catalog.associate { it.route.id to serviceColor(it.route.id) }
 
@@ -181,9 +180,7 @@ fun HomeCardGroupScreen(
     // 背景不透明度才是卡片组独有的，留在 `HomeLayoutStore` 里。
     val settings = remember { SettingsStore() }
     val settingsRevision = SettingsRevision.current
-    // 布局与主页设置共用同一个计数器（合并前是 `home.HomeLayoutRevision` 与
-    // `settings.HomeLayoutRevision` 两个对象，只有前者被写、后者被读，等于改了设置首页不重读）
-    val revision = settingsRevision
+    val revision = HomeLayoutRevision.current
     val editing = remember { HomeEditState() }
     val stored = remember(revision, host.audience, host.quickRoutes) {
         layoutStore.load(host.audience, host.quickRoutes)
@@ -194,7 +191,8 @@ fun HomeCardGroupScreen(
     // 液态玻璃的折射子项：只在 liquid 为真时有意义，关掉省一层离屏位移采样（见 HomeLayoutStore）
     // 顶栏排法：开（默认）= 改造前那套（左侧「交小西」头像、三个圆钮统一在右、不画居中标题）；
     // 关 = 本分支那套（扫码靠左、标题绝对居中、右侧只留搜索与通知）
-    // 顶栏排法只有一种（左右各一排圆钮）：模板不再读 `homeTopActionsRight`，等价于永远「关」
+    // 顶栏排法只有一种（左右各一排圆钮）：模板不再读 homeTopActionsRight，等价于永远「关」
+    val topActionsRight = false
     // 背景样式：主题底色 / 主题色渐变 / 自定义图片（取值与经典版同一套字符串）
     val backgroundMode = remember(settingsRevision) { settings.homeBackground }
     // 只有自定义图片这一档才去读那串 Base64（完整壁纸能有几百 KB）：其余两档读了也没人用，
@@ -238,10 +236,10 @@ fun HomeCardGroupScreen(
     // 卡片在纯色 / 渐变上（或壁纸已糊成色块）不采样：`drawBackdrop(sampling = false)` 跳过「录采样层」
     // 那一段、也不建离屏层，这一档就是为省性能（见 `HomeTileFaceBox`）。
     //
-    // 但**编辑态要录**：组标题行右侧那颗删除圆钮（以及添加悬浮条）采的就是这一层，
-    // 默认背景是渐变、没有壁纸细节，不录的话它们只能退成薄色底——用户看到的就是
-    // 「组名右边的叉没有液态玻璃了」。编辑态本来就是低频操作，多这一整屏离屏渲染可以接受。
-    val recordTileLayer = liquid && (glassHasDetail || editing.on)
+    // 2026-11 这一档**去掉了 `|| editing.on`**：以前编辑态为了组标题行那个 30dp 的删除圆钮、
+    // 还有拖拽幽灵块能糊一下，在没有壁纸细节的背景上也强行录这一层——等于为了几个小圆钮每帧
+    // 多渲染一整屏。现在它们跟卡片同一条规则：没细节可糊就走薄色兜底（编辑态因此少了一整屏离屏渲染）。
+    val recordTileLayer = liquid && glassHasDetail
 
     /** 改当前布局：编辑态改草稿（点「对勾」才落盘），其余情况直接落盘。 */
     fun update(block: (HomeLayout) -> HomeLayout) {
@@ -284,7 +282,7 @@ fun HomeCardGroupScreen(
         val id = service.route.id
         return HomeServiceRow(
             key = service.route.id,
-            icon = PlaceholderIcons.of(catalog.indexOfFirst { it.route.id == id }),
+            icon = HomeIcons.of(service.route),
             title = service.title,
             subtitle = service.subtitle,
             color = colorByKey[id] ?: Color.Unspecified,
@@ -334,12 +332,10 @@ fun HomeCardGroupScreen(
     }
     // 有宿主给的按钮才有折叠顶栏（桌面、Web 的壳有自己的顶栏）
     val collapsible = topActions != null || topLeading != null
-    // 刊头默认不画（模板只留功能宫格），只有宿主真的声明了 GREETING 才腾出那一栏高度
     val masthead = HomeCard.GREETING in honored
     val barPx = with(LocalDensity.current) { BAR_HEIGHT.toPx() }
     var mastheadPx by remember { mutableIntStateOf(0) }
-    // 刊头先让出一栏高度、再画在顶栏下面，所以滑完整个刊头才算折叠完成；
-    // 没有刊头时折叠范围就只有顶栏本身，别拿 0 去当高度
+    // 刊头先让出一栏高度、再画在顶栏下面，所以滑完整个刊头才算折叠完成
     val rangePx = if (masthead && mastheadPx > 0) mastheadPx.toFloat().coerceAtLeast(barPx) else barPx
     val progress = { (scroll.value / rangePx).coerceIn(0f, 1f) }
     // 背景层的主题底色（没有壁纸时顶栏与卡片透出来的就是它）
@@ -1089,10 +1085,19 @@ fun HomeCardGroupScreen(
                     .verticalScroll(scroll)
             ) {
                 Spacer(Modifier.height(contentTopPadding))
-                // 刊头（问候 / 日期 / 教学周 / 状态行）与头卡默认都不画：模板不提供具体项目语义，
-                // 页面上只留功能宫格。想加回来就把 GREETING / NEXT_UP / GLANCE / INBOX 放进
-                // HomeHost.honoredCards，并在宿主里给对应数据。
-                if (collapsible) {
+                if (masthead) {
+                    // 顶栏那一排按钮先占住最上面，刊头大字从它下面开始
+                    if (collapsible) Spacer(Modifier.height(BAR_HEIGHT))
+                    EditorialMasthead(
+                        greeting = Greeting.of(),
+                        name = host.greetingName,
+                        dateLabel = host.dateLabel,
+                        weekNumber = if (HomeCard.WEEK_NUMBER in honored) host.weekNumber else 0,
+                        status = host.statusLine,
+                        onStatus = host::onOpenStatus,
+                        modifier = Modifier.enterOnce(0).onSizeChanged { mastheadPx = it.height },
+                    )
+                } else if (collapsible) {
                     Spacer(Modifier.height(BAR_HEIGHT))
                 }
 
@@ -1100,8 +1105,18 @@ fun HomeCardGroupScreen(
                     Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp)
-                        .padding(top = 8.dp)
+                        .padding(top = if (masthead) 6.dp else 8.dp)
                 ) {
+                    if (HomeCard.BULLETIN_BAR in honored && host.bulletins.isNotEmpty()) {
+                        BulletinNoticePanel(
+                            bulletins = host.bulletins,
+                            onTap = host::onBulletinTap,
+                            // 「查看详情」走一镜到底：面板自己登记起点矩形，宿主决定走 KIT 还是 Compose 放大
+                            onDetail = host::onBulletinDetail,
+                            onDismiss = host::onBulletinDismiss,
+                        )
+                        Spacer(Modifier.height(SECTION_GAP))
+                    }
                     EditorialFrontPage(
                         modifier = Modifier.enterOnce(0),
                         host = host,
@@ -1235,7 +1250,7 @@ fun HomeCardGroupScreen(
                     },
                     alignWithGreeting = masthead,
                     // 「功能按钮统一右对齐」开着 = 整个顶栏回到改造前那套（头像 / 三钮 / 无居中标题）
-                    devTopBar = false,
+                    devTopBar = topActionsRight,
                 )
             }
         }
@@ -1548,7 +1563,7 @@ private fun HomeCollapsingBar(
                 contentAlignment = Alignment.Center,
             ) {
                 Text(
-                    if (editing) "首页调整设置" else "液态玻璃",
+                    if (editing) "首页调整设置" else "岱宗盒子",
                     fontSize = 17.sp,
                     fontWeight = FontWeight.SemiBold,
                     color = MiuixTheme.colorScheme.onSurface,
@@ -1692,6 +1707,61 @@ private fun themeBackgroundGradient(surface: Color, primary: Color, dark: Boolea
 private fun Modifier.liquidPaper(radius: Dp = EDITORIAL_RADIUS): Modifier =
     squircleClip(radius)
 
+/** 刊头：问候与名字合成一行大字（与操作钮同高），下行日期、教学周与连接状态。 */
+@Composable
+private fun EditorialMasthead(
+    greeting: String,
+    name: String,
+    dateLabel: String,
+    weekNumber: Int,
+    status: HomeStatusLine?,
+    onStatus: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val ink = MiuixTheme.colorScheme.onSurface
+    val muted = MiuixTheme.colorScheme.onSurfaceVariantSummary
+    val headline = if (name.isBlank()) greeting else "$greeting，$name"
+    Row(
+        modifier.fillMaxWidth()
+            .padding(horizontal = 20.dp)
+            .padding(top = 8.dp, bottom = 20.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Column(Modifier.weight(1f)) {
+            Row(
+                Modifier.fillMaxWidth().height(40.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    headline,
+                    style = Editorial.masthead.copy(fontSize = 30.sp, lineHeight = 38.sp),
+                    color = ink,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }
+            Spacer(Modifier.height(6.dp))
+            Row(Modifier.fillMaxWidth().height(20.dp), verticalAlignment = Alignment.CenterVertically) {
+                Text(dateLabel, fontSize = 12.sp, color = muted, maxLines = 1)
+                if (weekNumber in 1..MAX_TEACHING_WEEK) {
+                    Text("  ", fontSize = 12.sp, color = muted.copy(alpha = 0.5f))
+                    Text(
+                        "第 $weekNumber 周",
+                        fontSize = 12.sp,
+                        color = if (LocalIsDarkTheme.current) lerp(HomeSeal.Red, ink, 0.35f) else HomeSeal.Red,
+                        maxLines = 1,
+                    )
+                }
+                if (status != null) {
+                    Spacer(Modifier.width(12.dp))
+                    Box(Modifier.weight(1f), contentAlignment = Alignment.CenterEnd) {
+                        HeroStatusLine(status, onStatus)
+                    }
+                }
+            }
+        }
+    }
+}
 
 /** 今日安排只放时间相关的信息；所有功能及其状态统一放在下面的卡片组里。 */
 @Composable
@@ -2295,7 +2365,7 @@ private fun TilePickerDialog(
                     modifier = Modifier.padding(8.dp),
                 )
             }
-            candidates.forEachIndexed { index, service ->
+            candidates.forEach { service ->
                 Row(
                     Modifier.fillMaxWidth()
                         .clip(RoundedCornerShape(12.dp))
@@ -2308,7 +2378,7 @@ private fun TilePickerDialog(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Icon(
-                        PlaceholderIcons.of(index),
+                        HomeIcons.of(service.route),
                         contentDescription = null,
                         tint = serviceColor(service.route.id),
                         modifier = Modifier.size(20.dp),

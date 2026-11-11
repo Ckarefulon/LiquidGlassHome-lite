@@ -36,13 +36,13 @@ data class HomeInboxSummary(
 /** 首页的卡片模型 + 聚合。 */
 object HomeCards {
 
-    /** 首页的分类卡（模板用占位目录，和宫格同一份）。 */
+    /** 首页的分类卡。 */
     fun groups(
         accountType: AccountType,
         stats: Map<String, HomeStat>,
         onlyRouteIds: Set<String>? = null,
     ): List<HomeCardGroup> {
-        val services = PlaceholderServices.homeFor().toAppServices()
+        val services = AppServices.homeFor(accountType)
             .filter { onlyRouteIds == null || it.route.id in onlyRouteIds }
         return ServiceCategory.entries.mapNotNull { category ->
             val items = services.filter { it.category == category }

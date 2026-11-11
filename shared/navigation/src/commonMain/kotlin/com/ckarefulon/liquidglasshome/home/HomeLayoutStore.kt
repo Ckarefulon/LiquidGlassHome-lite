@@ -7,7 +7,6 @@ import com.ckarefulon.liquidglasshome.auth.AccountType
 import com.ckarefulon.liquidglasshome.nav.AppRoute
 import com.ckarefulon.liquidglasshome.platform.KeyValueStore
 import com.ckarefulon.liquidglasshome.platform.keyValueStore
-import com.ckarefulon.liquidglasshome.settings.HomeLayoutRevision
 import com.ckarefulon.liquidglasshome.settings.SettingsStore
 
 /**
@@ -43,20 +42,13 @@ object HomeLayoutDefaults {
     fun of(accountType: AccountType, quickRoutes: List<AppRoute> = emptyList()): HomeLayout {
         val groups = mutableListOf<HomeGroup>()
 
-        // 模板不预置「常用功能」组：占位目录里没有用户习惯可言，空组在常规态不画，
-        // 进编辑态仍然出现，用户可以自己往里摆。
         val quick = pack(
             groupId = QUICK_GROUP,
             items = quickRoutes.distinctBy { it.id }.map { DefaultSlot(it.id, 1, 1) },
         )
-        if (quick.isNotEmpty()) {
-            groups += HomeGroup(id = QUICK_GROUP, title = "常用功能", tiles = quick)
-        }
+        groups += HomeGroup(id = QUICK_GROUP, title = "常用功能", tiles = quick)
 
-        // 用**占位目录**分组，尺寸规则与上游一致：前三个给 2×2（最常看），
-        // 信息型的给 2×1（放得下一行状态），其余 1×1。占位条目也在 FEATURED / INFORMATIONAL
-        // 里按 id 命中，所以默认排布的密度和原来那套一模一样。
-        PlaceholderServices.homeFor()
+        AppServices.homeFor(accountType)
             .groupBy { it.category }
             .forEach { (category, services) ->
                 val tiles = pack(
@@ -167,7 +159,7 @@ class HomeLayoutStore(
     private fun migrateFromWidgetLayout(accountType: AccountType): HomeLayout? {
         val lines = store.getString(KEY_LEGACY_WIDGETS)?.split('\n')?.filter { it.isNotBlank() }
         if (lines.isNullOrEmpty()) return null
-        val available = PlaceholderServices.homeFor().map { it.route.id }.toSet()
+        val available = AppServices.homeFor(accountType).map { it.route.id }.toSet()
         val migrated = HomeWidgetMigration.decode(lines, available) ?: return null
         val normalized = migrated.withoutEmptyGroups()
         store.putString(KEY_LAYOUT, HomeLayoutCodec.encode(normalized))
@@ -339,8 +331,8 @@ class HomeLayoutStore(
         const val CARD_CORNER_MAX = 40
         const val CARD_CORNER_DEFAULT = 22
 
-        // 注意键名：`home_layout` 键上曾存过**模式**（classic / widgets / cards），本仓库只剩
-        // 卡片组一套、那个键已不再读写；这里存的是卡片组那一整页的分组
+        // 注意键名：`SettingsStore.homeLayout` 也用「首页布局」这个意思，但存的是**模式**
+        // （classic / widgets / cards）落在 `home_layout` 上；这里存的是卡片组那一整页的分组
         // 与格位快照，必须换个键，否则两边会互相覆盖（合并 dev 时踩到过）。
         private const val KEY_LAYOUT = "home_cards_layout"
 
@@ -357,6 +349,19 @@ private const val KEY_CARD_CORNER = "home_card_corner"
         private const val KEY_BACKGROUND_IMAGE = "home_background_image"
         private const val KEY_BACKGROUND_BLUR = "home_background_blur"
         private const val KEY_BACKGROUND_OPACITY = "home_background_opacity"
+    }
+}
+
+/**
+ * 首页布局改过之后的进程内信号（和 `HeroAppearanceRevision` 一个套路）：
+ * 主页设置面板、编辑态、首页自己各持一份状态，靠它一起重读，不依赖谁还留在组合里。
+ */
+object HomeLayoutRevision {
+    var current by mutableIntStateOf(0)
+        private set
+
+    internal fun bump() {
+        current++
     }
 }
 

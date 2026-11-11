@@ -30,7 +30,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.ckarefulon.liquidglasshome.home.PlaceholderServices
+import com.ckarefulon.liquidglasshome.home.AppServices
 import com.ckarefulon.liquidglasshome.nav.AppRoute
 import com.ckarefulon.liquidglasshome.shell.AppShell
 import com.ckarefulon.liquidglasshome.shell.ShellNavState
@@ -72,7 +72,7 @@ fun LiteMainScreen(glassStyle: Boolean) {
     val haptics = rememberHaptics()
 
     val onNavigate: (AppRoute) -> Unit = { route ->
-        overlay = LiteOverlay(PlaceholderServices.titleOfRoute(route))
+        overlay = LiteOverlay(AppServices.all.firstOrNull { it.route.id == route.id }?.title ?: route.id)
     }
     // 注意：这几个回调**不要**用 remember 包住。remember 会把第一次组合的 lambda 记下来，
     // 里面写 showSettings 时捕获的是旧快照，于是点了「没反应」。

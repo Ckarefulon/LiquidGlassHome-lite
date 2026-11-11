@@ -18,7 +18,7 @@ class BottomBarTabsTest {
     @Test
     fun `候选是首页上的一级功能，付款码这种弹层除外`() {
         val routes = BottomBarTabs.candidates(ug).map { it.route }
-        assertEquals(PlaceholderServices.homeFor().map { it.route } - AppRoute.PaymentCode, routes)
+        assertEquals(AppServices.homeFor(ug).map { it.route } - AppRoute.PaymentCode, routes)
         assertTrue(AppRoute.Library in routes && AppRoute.Games in routes)
         assertFalse(AppRoute.Settings in routes, "设置不在首页上")
     }

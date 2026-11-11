@@ -23,7 +23,7 @@ data class RoomInfo(
     val status: List<Int> = emptyList(),  // 11 个元素，对应 1-11 节课的占用情况：0=空闲, 1=占用
 )
 
-/** 校区-教学楼映射（历史遗留数据） */
+/** 校区-教学楼映射（来自 XJTUToolBox） */
 val CAMPUS_BUILDINGS = mapOf(
     "兴庆校区" to listOf(
         "主楼A", "主楼B", "主楼C", "主楼D", "中2", "中3",

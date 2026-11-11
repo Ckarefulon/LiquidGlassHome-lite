@@ -13,7 +13,7 @@ package com.ckarefulon.liquidglasshome.library
  *   兴庆那张表能手抄是因为有人一个个点过，雁塔、创新港没人点，抄不出来也不该抄——
  *   学校改个区域名，写死的表就又要发版。
  *
- * 校区 ID / 楼层码来自对 `/seatui` floor-selector 的实测
+ * 校区 ID / 楼层码取自 yan-xiaoo/XJTUToolBox 对 `/seatui` floor-selector 的实测
  * （见该仓库 `library/seats.py`）。
  */
 enum class LibraryCampus(
