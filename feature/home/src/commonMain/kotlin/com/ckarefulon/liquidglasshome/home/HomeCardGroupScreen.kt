@@ -228,18 +228,20 @@ fun HomeCardGroupScreen(
      * 卡片与幽灵块采的是**背景层**，所以这个值同时决定「糊不糊」与「折不折」——**没有用户开关**
      * （2026-11 维护者把「开启折射」那项整个删了）：有细节就一整套上，没有就不采样，
      * 免得把「省电」这件事交给用户去猜。
-     * 顶栏圆钮、悬浮球、组删除钮采的是**内容层**（卡片、文字都在里面），那里永远有东西可折，
-     * 所以它们恒采样 + 恒折射（见 `orbGlass` / `GroupDeleteButton`）。
+     * 顶栏圆钮、添加悬浮条采的是**内容层**（卡片、文字都在里面），那里永远有东西可折，
+     * 所以它们恒采样 + 恒折射（见 `orbGlass`）；组删除钮采的仍是**背景层**（[recordTileLayer]），
+     * 但它浮在内容上面，同样恒采样 + 恒折射（见 `GroupDeleteButton`）。
      */
     val glassHasDetail = hasWallpaper && !wallpaperBlurredOut
     // 背景层的离屏层：**只在真有人要采时才录**（`layerBackdrop` 是一次整屏离屏渲染）。
     // 卡片在纯色 / 渐变上（或壁纸已糊成色块）不采样：`drawBackdrop(sampling = false)` 跳过「录采样层」
     // 那一段、也不建离屏层，这一档就是为省性能（见 `HomeTileFaceBox`）。
     //
-    // 2026-11 这一档**去掉了 `|| editing.on`**：以前编辑态为了组标题行那个 30dp 的删除圆钮、
-    // 还有拖拽幽灵块能糊一下，在没有壁纸细节的背景上也强行录这一层——等于为了几个小圆钮每帧
-    // 多渲染一整屏。现在它们跟卡片同一条规则：没细节可糊就走薄色兜底（编辑态因此少了一整屏离屏渲染）。
-    val recordTileLayer = liquid && glassHasDetail
+    // 但**编辑态必须录**：组标题行右侧那颗删除圆钮（`GroupDeleteButton`）的 `backdrop` 就是这一层，
+    // 不录的话它是 null，只能退成一片 12% 的薄色底——用户看到的就是「组名右边的叉没有液态玻璃」。
+    // 默认背景是主题底色 / 渐变，`glassHasDetail` 恒为假，所以光靠它这一档永远录不上。
+    // 编辑态是低频操作，多这一整屏离屏渲染可以接受（正常浏览态照旧只在有壁纸细节时才录）。
+    val recordTileLayer = liquid && (glassHasDetail || editing.on)
 
     /** 改当前布局：编辑态改草稿（点「对勾」才落盘），其余情况直接落盘。 */
     fun update(block: (HomeLayout) -> HomeLayout) {
