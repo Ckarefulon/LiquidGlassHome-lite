@@ -6,8 +6,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import org.jetbrains.compose.resources.painterResource
-import xjtutoolbox.shared.designsystem.generated.resources.Res
-import xjtutoolbox.shared.designsystem.generated.resources.hero_forest
+import liquidglasshome.shared.designsystem.generated.resources.Res
+import liquidglasshome.shared.designsystem.generated.resources.hero_forest
 
 @Composable
 actual fun HeroForestBackground(modifier: Modifier) {
