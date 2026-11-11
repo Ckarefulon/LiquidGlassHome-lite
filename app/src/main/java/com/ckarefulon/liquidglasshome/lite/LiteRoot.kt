@@ -8,7 +8,7 @@ import com.ckarefulon.liquidglasshome.settings.SettingsStore
 import com.ckarefulon.liquidglasshome.ui.LocalIsWideLayout
 import com.ckarefulon.liquidglasshome.ui.calculateIsWideLayout
 import com.ckarefulon.liquidglasshome.ui.glass.LocalGlassStyle
-import com.ckarefulon.liquidglasshome.ui.theme.XJTUToolBoxTheme
+import com.ckarefulon.liquidglasshome.ui.theme.LiquidGlassHomeTheme
 
 /** 主题 + 全局 Local。 */
 @Composable
@@ -22,7 +22,7 @@ fun LiteRoot() {
     val customLight = remember(revision) { store.customColorHex(dark = false) }
     val customDark = remember(revision) { store.customColorHex(dark = true) }
     val useCustom = remember(revision) { store.customColorEnabled }
-    XJTUToolBoxTheme(
+    LiquidGlassHomeTheme(
         darkModeOverride = darkMode,
         customColorHex = if (useCustom) customLight else "",
         customDarkColorHex = if (useCustom) customDark else "",

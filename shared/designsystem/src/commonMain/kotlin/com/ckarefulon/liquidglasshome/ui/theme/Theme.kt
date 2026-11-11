@@ -22,7 +22,7 @@ import top.yukonga.miuix.kmp.theme.ThemeController
  * @param customDarkColorHex 深色模式的自选主题色；空串表示没单独选过，跟着 [customColorHex] 走
  */
 @Composable
-fun XJTUToolBoxTheme(
+fun LiquidGlassHomeTheme(
     darkModeOverride: String = "system",
     dynamicColor: Boolean = false,
     customColorHex: String = "",
