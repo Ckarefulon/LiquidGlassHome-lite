@@ -2,12 +2,16 @@ package com.ckarefulon.liquidglasshome.home
 
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.ckarefulon.liquidglasshome.auth.AccountType
+import com.ckarefulon.liquidglasshome.bulletin.Bulletin
 import com.ckarefulon.liquidglasshome.nav.AppRoute
 import com.ckarefulon.liquidglasshome.nav.SeamlessCardSource
 import kotlinx.datetime.LocalDateTime
 
 /** 首页上的每一块：各端声明自己那一份的词汇表。 */
 enum class HomeCard {
+    /** 顶部那条公告堆叠条（`:core` 的 `BulletinNoticePanel`）。 */
+    BULLETIN_BAR,
+
     /** 问候与日期（`:core` 的 `Greeting` + 宿主给的日期文案）。 */
     GREETING,
 
@@ -85,6 +89,9 @@ interface HomeHost {
     /** Hero 上那一行状态（网络环境 + 子系统就绪数）；null = 这一端不判定，不画。 */
     val statusLine: HomeStatusLine? get() = null
 
+    /** 顶部公告条的内容（空 = 不画）。 */
+    val bulletins: List<Bulletin> get() = emptyList()
+
     /** 「下一项安排」的内容；null = 这一端算不出来（不画）。 */
     val nextUp: HomeNextUp? get() = null
 
@@ -120,6 +127,19 @@ interface HomeHost {
 
     /** 「我的」那一屏。 */
     fun onProfile() {}
+    /** 点一下公告条里的某条公告。 */
+    fun onBulletinTap(bulletin: Bulletin) {}
+
+    /**
+     * 点公告条里的「查看详情」：默认仍走 [onBulletinTap]（桌面 / Web 不接管），
+     * Android 宿主改成「卡片 → 公告详情」的无缝转场（ROM 支持走 KIT，其余走 Compose 转场）。
+     */
+    fun onBulletinDetail(bulletin: Bulletin, source: SeamlessCardSource?) {
+        onBulletinTap(bulletin)
+    }
+
+    /** 关掉公告条里的某条公告。 */
+    fun onBulletinDismiss(bulletin: Bulletin) {}
 
     /** 点开「子系统连接状态」的明细（那一层弹窗是各端自己的画法，所以是槽位）。 */
     fun onOpenStatus() {}
