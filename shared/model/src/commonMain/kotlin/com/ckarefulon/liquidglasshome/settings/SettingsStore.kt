@@ -38,17 +38,24 @@ class SettingsStore(private val store: KeyValueStore = keyValueStore(APP_SETTING
         get() = normalizeThemeColor(store.getString("custom_color_hex").orEmpty())
         set(value) = store.putString("custom_color_hex", normalizeThemeColor(value))
 
+    /**
+     * 是否启用自选主题色。
+     *
+     * **本模板默认开启**：开箱就用 [DEFAULT_THEME_COLOR_LIGHT] / [DEFAULT_THEME_COLOR_DARK]
+     * 这一对主题色（功能图标背景也取它），用户可以在「主页设置 → 主题色」里换或关掉。
+     */
     var customColorEnabled: Boolean
-        get() = store.getBoolean("custom_color_enabled", false)
+        get() = store.getBoolean("custom_color_enabled", true)
         set(value) = store.putBoolean("custom_color_enabled", value)
 
     /**
-     * 浅色 / 深色各存一份自选主题色。没单独选过的那一档回退到旧键 [customColorHex]：
-     * 老版本只存了一个色，升级后两档都该还是那个色，而不是深色突然跑回默认配色。
+     * 浅色 / 深色各存一份自选主题色；**没存过时返回模板默认的那一档**，而不是空串。
+     * 空串只代表用户主动清空（那一档就没有主题色）。
      */
     fun customColorHex(dark: Boolean): String =
         normalizeThemeColor(store.getString(if (dark) "custom_color_hex_dark" else "custom_color_hex_light").orEmpty())
             .ifEmpty { customColorHex }
+            .ifEmpty { if (dark) DEFAULT_THEME_COLOR_DARK else DEFAULT_THEME_COLOR_LIGHT }
 
     fun setCustomColorHex(dark: Boolean, value: String) =
         store.putString(if (dark) "custom_color_hex_dark" else "custom_color_hex_light", normalizeThemeColor(value))
@@ -206,6 +213,12 @@ class SettingsStore(private val store: KeyValueStore = keyValueStore(APP_SETTING
         }
         /** 非敏感的应用设置（外观、协议、更新……），普通 SharedPreferences。 */
         const val APP_SETTINGS_FILE = "app_settings"
+
+        /** 模板默认主题色：浅色档。 */
+        const val DEFAULT_THEME_COLOR_LIGHT = "#24F0EA"
+
+        /** 模板默认主题色：深色档（功能图标的背景也取它）。 */
+        const val DEFAULT_THEME_COLOR_DARK = "#5D4EA8"
 
         /**
          * 历史值：`home_layout` 键上曾经出现过的取值。本仓库只剩卡片组一套布局，

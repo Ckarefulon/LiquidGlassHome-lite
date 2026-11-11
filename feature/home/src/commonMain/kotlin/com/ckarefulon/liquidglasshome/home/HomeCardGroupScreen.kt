@@ -167,8 +167,10 @@ fun HomeCardGroupScreen(
     topActions: (@Composable () -> Unit)? = null,
 ) {
     val honored = host.honoredCards
-    // 用目录全量：图标配色按它在目录里的下标取，过滤会让配色挪位。
-    val catalog = remember(host.audience) { AppServices.homeFor(host.audience) }
+    // 模板用**占位目录**驱动宫格：名称 / 副标题 / 图标都是中性的占位词，
+    // 颜色统一取主题色。换成自己的目录时，把这里改成你的 List<AppService> 即可，
+    // 下面的 UI 一行都不用改。
+    val catalog = remember(host.audience) { PlaceholderServices.homeFor().toAppServices() }
     // 配色随应用主题变化，不能放进 remember。
     val colorByKey = catalog.associate { it.route.id to serviceColor(it.route.id) }
 
@@ -282,7 +284,7 @@ fun HomeCardGroupScreen(
         val id = service.route.id
         return HomeServiceRow(
             key = service.route.id,
-            icon = HomeIcons.of(service.route),
+            icon = PlaceholderIcons.of(catalog.indexOfFirst { it.route.id == id }),
             title = service.title,
             subtitle = service.subtitle,
             color = colorByKey[id] ?: Color.Unspecified,
@@ -332,10 +334,12 @@ fun HomeCardGroupScreen(
     }
     // 有宿主给的按钮才有折叠顶栏（桌面、Web 的壳有自己的顶栏）
     val collapsible = topActions != null || topLeading != null
+    // 刊头默认不画（模板只留功能宫格），只有宿主真的声明了 GREETING 才腾出那一栏高度
     val masthead = HomeCard.GREETING in honored
     val barPx = with(LocalDensity.current) { BAR_HEIGHT.toPx() }
     var mastheadPx by remember { mutableIntStateOf(0) }
-    // 刊头先让出一栏高度、再画在顶栏下面，所以滑完整个刊头才算折叠完成
+    // 刊头先让出一栏高度、再画在顶栏下面，所以滑完整个刊头才算折叠完成；
+    // 没有刊头时折叠范围就只有顶栏本身，别拿 0 去当高度
     val rangePx = if (masthead && mastheadPx > 0) mastheadPx.toFloat().coerceAtLeast(barPx) else barPx
     val progress = { (scroll.value / rangePx).coerceIn(0f, 1f) }
     // 背景层的主题底色（没有壁纸时顶栏与卡片透出来的就是它）
@@ -1085,19 +1089,10 @@ fun HomeCardGroupScreen(
                     .verticalScroll(scroll)
             ) {
                 Spacer(Modifier.height(contentTopPadding))
-                if (masthead) {
-                    // 顶栏那一排按钮先占住最上面，刊头大字从它下面开始
-                    if (collapsible) Spacer(Modifier.height(BAR_HEIGHT))
-                    EditorialMasthead(
-                        greeting = Greeting.of(),
-                        name = host.greetingName,
-                        dateLabel = host.dateLabel,
-                        weekNumber = if (HomeCard.WEEK_NUMBER in honored) host.weekNumber else 0,
-                        status = host.statusLine,
-                        onStatus = host::onOpenStatus,
-                        modifier = Modifier.enterOnce(0).onSizeChanged { mastheadPx = it.height },
-                    )
-                } else if (collapsible) {
+                // 刊头（问候 / 日期 / 教学周 / 状态行）与头卡默认都不画：模板不提供具体项目语义，
+                // 页面上只留功能宫格。想加回来就把 GREETING / NEXT_UP / GLANCE / INBOX 放进
+                // HomeHost.honoredCards，并在宿主里给对应数据。
+                if (collapsible) {
                     Spacer(Modifier.height(BAR_HEIGHT))
                 }
 
@@ -1105,7 +1100,7 @@ fun HomeCardGroupScreen(
                     Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp)
-                        .padding(top = if (masthead) 6.dp else 8.dp)
+                        .padding(top = 8.dp)
                 ) {
                     EditorialFrontPage(
                         modifier = Modifier.enterOnce(0),
@@ -2355,7 +2350,7 @@ private fun TilePickerDialog(
                     modifier = Modifier.padding(8.dp),
                 )
             }
-            candidates.forEach { service ->
+            candidates.forEachIndexed { index, service ->
                 Row(
                     Modifier.fillMaxWidth()
                         .clip(RoundedCornerShape(12.dp))
@@ -2368,7 +2363,7 @@ private fun TilePickerDialog(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Icon(
-                        HomeIcons.of(service.route),
+                        PlaceholderIcons.of(index),
                         contentDescription = null,
                         tint = serviceColor(service.route.id),
                         modifier = Modifier.size(20.dp),

@@ -2,23 +2,20 @@ package com.ckarefulon.liquidglasshome.lite
 
 import android.app.Activity
 import android.widget.Toast
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.exclude
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.union
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.MenuBook
-import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.filled.Circle
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.SmartToy
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
@@ -32,7 +29,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.ckarefulon.liquidglasshome.home.AppServices
+import com.ckarefulon.liquidglasshome.home.PlaceholderServices
 import com.ckarefulon.liquidglasshome.nav.AppRoute
 import com.ckarefulon.liquidglasshome.shell.AppShell
 import com.ckarefulon.liquidglasshome.shell.ShellNavState
@@ -45,39 +42,37 @@ import com.ckarefulon.liquidglasshome.ui.rememberHaptics
 import top.yukonga.miuix.kmp.basic.TopAppBar
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 
-/** 底栏五格（与上游默认排布一致）：首页 / 日程 / 小岱 / 学辅 / 我的；除首页外都是占位页。 */
+/**
+ * 底栏四格：**主页 / 占位 / 占位 / 设置**。
+ *
+ * 模板刻意只留四个位置：一个真页面 + 两个占位 + 一个设置页，使用方把自己的页面填进
+ * 那两个占位格里即可（改这个 enum + `page` 分支）。
+ */
 private enum class LiteTab(val label: String, val icon: ImageVector, val iconSize: Dp, val target: ShellTarget) {
-    HOME("首页", Icons.Filled.Home, 24.dp, ShellTarget.App(AppRoute.Main)),
-    COURSES("日程", Icons.Filled.CalendarMonth, 23.dp, ShellTarget.App(AppRoute.Schedule)),
-    PIDAI("助手", Icons.Filled.SmartToy, 27.dp, ShellTarget.Custom("pidai")),
-    TOOLS("学辅", Icons.AutoMirrored.Filled.MenuBook, 22.dp, ShellTarget.Custom("zyxf")),
-    PROFILE("我的", Icons.Filled.Person, 27.dp, ShellTarget.Custom("profile"));
-
-    fun shellTab() = ShellTab(id = name, label = label, icon = icon, iconSize = iconSize, target = target)
+    HOME("主页", Icons.Filled.Home, 24.dp, ShellTarget.App(AppRoute.Main)),
+    SLOT_A("占位一", Icons.Filled.Circle, 22.dp, ShellTarget.Custom("slot_a")),
+    SLOT_B("占位二", Icons.Filled.Star, 22.dp, ShellTarget.Custom("slot_b")),
+    SETTINGS("设置", Icons.Filled.Settings, 22.dp, ShellTarget.Custom("settings"));
 }
 
-/** 盖满整屏的占位浮层：首页点开的功能入口、扫一扫、搜索都落在这里。 */
+/** 盖满整屏的占位浮层：主页点开的功能入口都落在这里。 */
 private data class LiteOverlay(val title: String)
 
 @Composable
 fun LiteMainScreen(glassStyle: Boolean) {
-    val tabs = remember { ShellTabs(LiteTab.entries.map { it.shellTab() }) }
+    val tabs = remember { ShellTabs(LiteTab.entries.map { it.shellTabFor() }) }
     var selectedId by rememberSaveable { mutableStateOf(LiteTab.HOME.name) }
     val selected = tabs.byId(selectedId) ?: tabs.first
     var overlay by remember { mutableStateOf<LiteOverlay?>(null) }
     var lastBackPressTime by remember { mutableLongStateOf(0L) }
+    var showSettings by remember { mutableStateOf(false) }
     val context = LocalContext.current
     val haptics = rememberHaptics()
 
     val onNavigate: (AppRoute) -> Unit = remember {
-        { route -> overlay = LiteOverlay(titleOf(route)) }
+        { route -> overlay = LiteOverlay(PlaceholderServices.titleOfRoute(route)) }
     }
-    val onOpenPlaceholder: (String) -> Unit = remember {
-        { title -> overlay = LiteOverlay(title) }
-    }
-    val onProfile: () -> Unit = remember {
-        { selectedId = LiteTab.PROFILE.name }
-    }
+    val onOpenSettings: () -> Unit = remember { { showSettings = true } }
 
     val nav = ShellNavState(
         tabs = tabs,
@@ -88,6 +83,9 @@ fun LiteMainScreen(glassStyle: Boolean) {
         },
     )
 
+    // 主页设置抽屉挂在这里：顶栏齿轮与「设置」格打开的是同一个抽屉
+    HomeSettingsHost(show = showSettings, onDismiss = { showSettings = false })
+
     AppShell(
         nav = nav,
         glassStyle = glassStyle,
@@ -97,13 +95,12 @@ fun LiteMainScreen(glassStyle: Boolean) {
                 WindowInsets.displayCutout.exclude(WindowInsets.displayCutout.only(WindowInsetsSides.Start)),
             )
         } else {
-            // 手机：内容铺到屏幕底边，从小白条和玻璃底栏下面滚过；末尾净空由各页自己补
             WindowInsets.systemBars
                 .union(WindowInsets.displayCutout)
                 .only(WindowInsetsSides.Top + WindowInsetsSides.Horizontal)
         },
         topBar = { _, _ ->
-            // 首页没有顶栏（刊头在页面里）；其余各格画一个大标题顶栏
+            // 首页自带顶栏（左右各一排圆钮），其余各格用大标题顶栏
             if (selected.id != LiteTab.HOME.name) {
                 TopAppBar(
                     color = if (glassStyle) Color.Transparent else MiuixTheme.colorScheme.surface,
@@ -116,6 +113,7 @@ fun LiteMainScreen(glassStyle: Boolean) {
         onBack = {
             when {
                 overlay != null -> overlay = null
+                showSettings -> showSettings = false
                 selectedId != LiteTab.HOME.name -> selectedId = LiteTab.HOME.name
                 else -> {
                     val now = System.currentTimeMillis()
@@ -136,8 +134,13 @@ fun LiteMainScreen(glassStyle: Boolean) {
                 LiteTab.HOME.name -> LiteHomeTab(
                     insets = insets,
                     onNavigate = onNavigate,
-                    onOpenPlaceholder = onOpenPlaceholder,
-                    onProfile = onProfile,
+                    onOpenSettings = onOpenSettings,
+                )
+                // 「设置」格：直接是一个占位页 + 一个进入主页设置抽屉的入口
+                LiteTab.SETTINGS.name -> SettingsPage(
+                    bottomReserve = insets.bottomBarReserve,
+                    contentTopPadding = insets.contentTopPadding,
+                    onOpenSettings = onOpenSettings,
                 )
                 else -> PlaceholderPage(
                     title = shellPage.tab?.label.orEmpty(),
@@ -149,6 +152,6 @@ fun LiteMainScreen(glassStyle: Boolean) {
     )
 }
 
-/** 功能入口的占位页标题：服务目录里有名字就用目录的，没有就用路由 id。 */
-private fun titleOf(route: AppRoute): String =
-    AppServices.all.firstOrNull { it.route.id == route.id }?.title ?: route.id
+/** 底栏格 → 壳的 tab。 */
+private fun LiteTab.shellTabFor() =
+    ShellTab(id = name, label = label, icon = icon, iconSize = iconSize, target = target)

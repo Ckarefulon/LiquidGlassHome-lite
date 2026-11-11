@@ -228,6 +228,12 @@ private fun HomeSettingsBody(onDismiss: () -> Unit, showTopBarStyle: Boolean) {
             )
         }
 
+        // ── 主题色 ──
+        SmallTitle("主题色")
+        HomeSettingsCard {
+            ThemeColorPreference(startAction = { SettingsIcon(Icons.Default.WaterDrop, cTeal) })
+        }
+
         // ── 顶栏 ──
         // 排法只有 :app 真的画得出两种（桌面 / web 的首页顶栏在外壳里，`showTopBarStyle` 为假）
         if (showTopBarStyle) {
@@ -236,9 +242,9 @@ private fun HomeSettingsBody(onDismiss: () -> Unit, showTopBarStyle: Boolean) {
                 SwitchPreference(
                     title = "功能按钮统一右对齐",
                     summary = if (topActionsRight) {
-                        "三个圆钮都在右侧，左侧是头像、不画标题（旧版顶栏）"
+                        "三颗圆钮都在右侧、左侧是头像、不画标题（旧版顶栏）"
                     } else {
-                        "扫码靠左、标题居中，右侧只留搜索与通知"
+                        "左右各一排圆钮，中间不画标题（默认）"
                     },
                     checked = topActionsRight,
                     startAction = { SettingsIcon(Icons.Default.SwapHoriz, cPurple) },

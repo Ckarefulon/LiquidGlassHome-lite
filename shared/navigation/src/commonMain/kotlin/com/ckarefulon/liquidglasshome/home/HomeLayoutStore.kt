@@ -43,25 +43,23 @@ object HomeLayoutDefaults {
     fun of(accountType: AccountType, quickRoutes: List<AppRoute> = emptyList()): HomeLayout {
         val groups = mutableListOf<HomeGroup>()
 
+        // 模板不预置「常用功能」组：占位目录里没有用户习惯可言，空组在常规态不画，
+        // 进编辑态仍然出现，用户可以自己往里摆。
         val quick = pack(
             groupId = QUICK_GROUP,
             items = quickRoutes.distinctBy { it.id }.map { DefaultSlot(it.id, 1, 1) },
         )
-        groups += HomeGroup(id = QUICK_GROUP, title = "常用功能", tiles = quick)
+        if (quick.isNotEmpty()) {
+            groups += HomeGroup(id = QUICK_GROUP, title = "常用功能", tiles = quick)
+        }
 
-        AppServices.homeFor(accountType)
+        // 用**占位目录**分组：每个占位统一 1×1，排出来就是一格一格的干净宫格。
+        PlaceholderServices.homeFor()
             .groupBy { it.category }
             .forEach { (category, services) ->
                 val tiles = pack(
                     groupId = category.name,
-                    items = services.map { service ->
-                        val id = service.route.id
-                        when {
-                            id in FEATURED -> DefaultSlot(id, 2, 2)
-                            id in INFORMATIONAL -> DefaultSlot(id, 2, 1)
-                            else -> DefaultSlot(id, 1, 1)
-                        }
-                    },
+                    items = services.map { DefaultSlot(it.route.id, 1, 1) },
                 )
                 groups += HomeGroup(id = category.name, title = category.title, tiles = tiles)
             }
