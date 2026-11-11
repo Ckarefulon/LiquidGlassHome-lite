@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 自绘简易图标（玻璃方块 + 水滴），不使用上游应用的授权形象。 -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <group
+        android:scaleX="2.2"
+        android:scaleY="2.2"
+        android:translateX="27.6"
+        android:translateY="27.6">
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M12,3c-3.5,4.2 -6,7.4 -6,10.2c0,3.3 2.7,6 6,6s6,-2.7 6,-6C18,10.4 15.5,7.2 12,3z" />
+    </group>
+</vector>

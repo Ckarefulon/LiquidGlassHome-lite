@@ -1,0 +1,22 @@
+*.iml
+/.idea/
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.cxx
+local.properties
+/.vscode/
+.kotlin/
+# Gradle
+.gradle/
+build/
+# APK
+*.apk
+*.ap_
+*.aab
+# Dex metadata
+*.dm
+# Generated files
+output.json
+output-metadata.json
