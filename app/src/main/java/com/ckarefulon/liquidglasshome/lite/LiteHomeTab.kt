@@ -129,8 +129,6 @@ private fun HomeTopActions(
 
 /** 未读角标的品牌红（与上游 `UnreadAccent` 同一个值）。 */
 private val UnreadAccent = Color(0xFFE8453A)
-    )
-}
 
 private val HomeTopActionSize = 44.dp
 
