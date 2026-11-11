@@ -49,7 +49,7 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
 private enum class LiteTab(val label: String, val icon: ImageVector, val iconSize: Dp, val target: ShellTarget) {
     HOME("首页", Icons.Filled.Home, 24.dp, ShellTarget.App(AppRoute.Main)),
     COURSES("日程", Icons.Filled.CalendarMonth, 23.dp, ShellTarget.App(AppRoute.Schedule)),
-    PIDAI("小岱", Icons.Filled.SmartToy, 27.dp, ShellTarget.Custom("pidai")),
+    PIDAI("助手", Icons.Filled.SmartToy, 27.dp, ShellTarget.Custom("pidai")),
     TOOLS("学辅", Icons.AutoMirrored.Filled.MenuBook, 22.dp, ShellTarget.Custom("zyxf")),
     PROFILE("我的", Icons.Filled.Person, 27.dp, ShellTarget.Custom("profile"));
 

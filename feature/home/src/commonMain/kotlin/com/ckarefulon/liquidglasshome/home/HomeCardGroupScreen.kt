@@ -1553,7 +1553,7 @@ private fun HomeCollapsingBar(
                 contentAlignment = Alignment.Center,
             ) {
                 Text(
-                    if (editing) "首页调整设置" else "岱宗盒子",
+                    if (editing) "首页调整设置" else "液态玻璃",
                     fontSize = 17.sp,
                     fontWeight = FontWeight.SemiBold,
                     color = MiuixTheme.colorScheme.onSurface,

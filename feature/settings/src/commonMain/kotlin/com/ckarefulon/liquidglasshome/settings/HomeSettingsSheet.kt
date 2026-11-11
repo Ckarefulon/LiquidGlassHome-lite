@@ -147,7 +147,7 @@ private fun HomeSettingsBody(onDismiss: () -> Unit, showTopBarStyle: Boolean) {
         onLoaded = { text ->
             // 内容对不对交给编解码判定：解不出来就当这次没导，错误只说人话、不抛格式细节
             val parsed = HomeLayoutCodec.decode(text)
-            if (parsed == null) showBriefMessage("这个文件不是岱宗盒子的布局") else pendingImport = parsed
+            if (parsed == null) showBriefMessage("这个文件不是主页布局") else pendingImport = parsed
         },
         onError = { showBriefMessage(it.ifEmpty { "读不出这个文件" }) },
     )
@@ -236,7 +236,7 @@ private fun HomeSettingsBody(onDismiss: () -> Unit, showTopBarStyle: Boolean) {
                 SwitchPreference(
                     title = "功能按钮统一右对齐",
                     summary = if (topActionsRight) {
-                        "三个圆钮都在右侧，左侧是交小西头像、不画标题（改造前的顶栏）"
+                        "三个圆钮都在右侧，左侧是头像、不画标题（旧版顶栏）"
                     } else {
                         "扫码靠左、标题居中，右侧只留搜索与通知"
                     },
