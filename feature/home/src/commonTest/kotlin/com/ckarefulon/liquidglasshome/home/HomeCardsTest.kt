@@ -27,7 +27,7 @@ class HomeCardsTest {
     fun `分类卡按目录里的分类顺序出，空分类不下发`() {
         val groups = HomeCards.groups(AccountType.UNDERGRADUATE, emptyMap())
         val expected = ServiceCategory.entries.filter { category ->
-            AppServices.homeFor(AccountType.UNDERGRADUATE).any { it.category == category }
+            PlaceholderServices.homeFor().toAppServices().any { it.category == category }
         }
         assertEquals(expected, groups.map { it.category })
         assertTrue(groups.all { it.rows.isNotEmpty() }, "空分类不该出现在首页上")
@@ -36,7 +36,7 @@ class HomeCardsTest {
     @Test
     fun `每一类里的行序与目录序一致`() {
         val groups = HomeCards.groups(AccountType.UNDERGRADUATE, emptyMap())
-        val catalog = AppServices.homeFor(AccountType.UNDERGRADUATE)
+        val catalog = PlaceholderServices.homeFor().toAppServices()
         groups.forEach { group ->
             assertEquals(
                 catalog.filter { it.category == group.category }.map { it.route.id },

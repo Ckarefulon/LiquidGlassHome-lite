@@ -51,7 +51,7 @@ object HomeHero {
     /** 待办顶上「下一项」时的图标。 */
     private val DUE_ICON: ImageVector get() = Icons.Default.TaskAlt
 
-    /** 考试倒计时那一格用的图标（与 `HomeIcons.of(AppRoute.SchoolCalendar)` 同一个）。 */
+    /** 考试倒计时那一格用的图标（与日程卡同一个）。 */
     val EXAM_ICON: ImageVector get() = Icons.AutoMirrored.Filled.EventNote
 
     /** 教学周。 */

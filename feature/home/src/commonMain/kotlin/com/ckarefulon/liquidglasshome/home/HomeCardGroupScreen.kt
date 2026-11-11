@@ -238,10 +238,10 @@ fun HomeCardGroupScreen(
     // 卡片在纯色 / 渐变上（或壁纸已糊成色块）不采样：`drawBackdrop(sampling = false)` 跳过「录采样层」
     // 那一段、也不建离屏层，这一档就是为省性能（见 `HomeTileFaceBox`）。
     //
-    // 2026-11 这一档**去掉了 `|| editing.on`**：以前编辑态为了组标题行那个 30dp 的删除圆钮、
-    // 还有拖拽幽灵块能糊一下，在没有壁纸细节的背景上也强行录这一层——等于为了几个小圆钮每帧
-    // 多渲染一整屏。现在它们跟卡片同一条规则：没细节可糊就走薄色兜底（编辑态因此少了一整屏离屏渲染）。
-    val recordTileLayer = liquid && glassHasDetail
+    // 但**编辑态要录**：组标题行右侧那颗删除圆钮（以及添加悬浮条）采的就是这一层，
+    // 默认背景是渐变、没有壁纸细节，不录的话它们只能退成薄色底——用户看到的就是
+    // 「组名右边的叉没有液态玻璃了」。编辑态本来就是低频操作，多这一整屏离屏渲染可以接受。
+    val recordTileLayer = liquid && (glassHasDetail || editing.on)
 
     /** 改当前布局：编辑态改草稿（点「对勾」才落盘），其余情况直接落盘。 */
     fun update(block: (HomeLayout) -> HomeLayout) {
@@ -1692,61 +1692,6 @@ private fun themeBackgroundGradient(surface: Color, primary: Color, dark: Boolea
 private fun Modifier.liquidPaper(radius: Dp = EDITORIAL_RADIUS): Modifier =
     squircleClip(radius)
 
-/** 刊头：问候与名字合成一行大字（与操作钮同高），下行日期、教学周与连接状态。 */
-@Composable
-private fun EditorialMasthead(
-    greeting: String,
-    name: String,
-    dateLabel: String,
-    weekNumber: Int,
-    status: HomeStatusLine?,
-    onStatus: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    val ink = MiuixTheme.colorScheme.onSurface
-    val muted = MiuixTheme.colorScheme.onSurfaceVariantSummary
-    val headline = if (name.isBlank()) greeting else "$greeting，$name"
-    Row(
-        modifier.fillMaxWidth()
-            .padding(horizontal = 20.dp)
-            .padding(top = 8.dp, bottom = 20.dp),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Column(Modifier.weight(1f)) {
-            Row(
-                Modifier.fillMaxWidth().height(40.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Text(
-                    headline,
-                    style = Editorial.masthead.copy(fontSize = 30.sp, lineHeight = 38.sp),
-                    color = ink,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
-            }
-            Spacer(Modifier.height(6.dp))
-            Row(Modifier.fillMaxWidth().height(20.dp), verticalAlignment = Alignment.CenterVertically) {
-                Text(dateLabel, fontSize = 12.sp, color = muted, maxLines = 1)
-                if (weekNumber in 1..MAX_TEACHING_WEEK) {
-                    Text("  ", fontSize = 12.sp, color = muted.copy(alpha = 0.5f))
-                    Text(
-                        "第 $weekNumber 周",
-                        fontSize = 12.sp,
-                        color = if (LocalIsDarkTheme.current) lerp(HomeSeal.Red, ink, 0.35f) else HomeSeal.Red,
-                        maxLines = 1,
-                    )
-                }
-                if (status != null) {
-                    Spacer(Modifier.width(12.dp))
-                    Box(Modifier.weight(1f), contentAlignment = Alignment.CenterEnd) {
-                        HeroStatusLine(status, onStatus)
-                    }
-                }
-            }
-        }
-    }
-}
 
 /** 今日安排只放时间相关的信息；所有功能及其状态统一放在下面的卡片组里。 */
 @Composable

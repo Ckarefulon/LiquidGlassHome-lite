@@ -26,7 +26,7 @@ enum class HomeCard {
     /** 分类卡里每个功能此刻的状态（`:app` 那份落盘摘要 / 别的端自己算）。 */
     CATEGORY_STATS,
 
-    /** 分类卡里的功能宫格（入口本身，目录来自 [AppServices]）。 */
+    /** 分类卡里的功能宫格（入口本身，目录来自 [PlaceholderServices]）。 */
     SERVICE_GRID,
 
     /** 「待办与消息」那一格（[HomeCards.inboxSummary]）。 */
@@ -70,7 +70,7 @@ interface HomeHost {
     /** 这一端**真会照着办**的那些块（见 [HomeCard]）。 */
     val honoredCards: Set<HomeCard>
 
-    /** 这一端当前身份。目录（[AppServices]）按它筛：研究生看不到成绩单那几项。 */
+    /** 这一端当前身份（模板里只有一个档位，占位用）。 */
     val audience: AccountType
 
     /** 问候里的名字（空 = 只问候，不写名字）。 */

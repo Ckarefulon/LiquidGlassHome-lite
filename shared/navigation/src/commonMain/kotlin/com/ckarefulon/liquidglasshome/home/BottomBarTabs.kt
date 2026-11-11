@@ -22,7 +22,7 @@ object BottomBarTabs {
 
     /** 能放进底栏的功能：首页上显示的一级功能，按首页目录的顺序。 */
     fun candidates(accountType: AccountType): List<AppService> =
-        AppServices.homeFor(accountType).filter { it.route !in EXCLUDED }
+        PlaceholderServices.homeFor().toAppServices().filter { it.route !in EXCLUDED }
 
     /** 存盘串 → 中间几格：丢掉认不得的、不在候选里的和重复的，超出的截掉，一格不剩时回默认。 */
     fun middleOf(raw: String?, accountType: AccountType): List<AppRoute> {
@@ -51,7 +51,7 @@ object BottomBarTabs {
     /** 底栏格上的字：用首页目录的名字，学辅沿用底栏一直以来的短名。 */
     fun label(route: AppRoute): String = when (route) {
         AppRoute.Zyxf -> "学辅"
-        else -> AppServices.all.firstOrNull { it.route == route }?.title ?: route.id
+        else -> PlaceholderServices.titleOfRoute(route)
     }
 
     /** 格子 id 对应的字（设置里列默认启动页用）。 */

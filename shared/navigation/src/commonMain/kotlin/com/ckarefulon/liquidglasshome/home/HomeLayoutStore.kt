@@ -53,13 +53,22 @@ object HomeLayoutDefaults {
             groups += HomeGroup(id = QUICK_GROUP, title = "常用功能", tiles = quick)
         }
 
-        // 用**占位目录**分组：每个占位统一 1×1，排出来就是一格一格的干净宫格。
+        // 用**占位目录**分组，尺寸规则与上游一致：前三个给 2×2（最常看），
+        // 信息型的给 2×1（放得下一行状态），其余 1×1。占位条目也在 FEATURED / INFORMATIONAL
+        // 里按 id 命中，所以默认排布的密度和原来那套一模一样。
         PlaceholderServices.homeFor()
             .groupBy { it.category }
             .forEach { (category, services) ->
                 val tiles = pack(
                     groupId = category.name,
-                    items = services.map { DefaultSlot(it.route.id, 1, 1) },
+                    items = services.map { service ->
+                        val id = service.route.id
+                        when {
+                            id in FEATURED -> DefaultSlot(id, 2, 2)
+                            id in INFORMATIONAL -> DefaultSlot(id, 2, 1)
+                            else -> DefaultSlot(id, 1, 1)
+                        }
+                    },
                 )
                 groups += HomeGroup(id = category.name, title = category.title, tiles = tiles)
             }
@@ -158,7 +167,7 @@ class HomeLayoutStore(
     private fun migrateFromWidgetLayout(accountType: AccountType): HomeLayout? {
         val lines = store.getString(KEY_LEGACY_WIDGETS)?.split('\n')?.filter { it.isNotBlank() }
         if (lines.isNullOrEmpty()) return null
-        val available = AppServices.homeFor(accountType).map { it.route.id }.toSet()
+        val available = PlaceholderServices.homeFor().map { it.route.id }.toSet()
         val migrated = HomeWidgetMigration.decode(lines, available) ?: return null
         val normalized = migrated.withoutEmptyGroups()
         store.putString(KEY_LAYOUT, HomeLayoutCodec.encode(normalized))

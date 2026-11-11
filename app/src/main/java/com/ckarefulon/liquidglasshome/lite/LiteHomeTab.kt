@@ -10,8 +10,8 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.QrCodeScanner
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -47,16 +47,20 @@ fun LiteHomeTab(
     onNavigate: (AppRoute) -> Unit,
     onOpenSettings: () -> Unit,
 ) {
+    // 不用 remember 包 host：remember 会记住第一次组合的闭包，里面捕获的 onOpenSettings /
+    // onNavigate 是旧快照，于是「点齿轮没反应」。构造 host 很便宜，每次组合新建即可。
+    val host = LiteHomeHost(onNavigate = onNavigate, onOpenSettings = onOpenSettings)
     HomeScreen(
-        host = remember { LiteHomeHost(onNavigate = onNavigate, onOpenSettings = onOpenSettings) },
+        host = host,
         extraBottomPadding = insets.bottomBarReserve,
         contentTopPadding = insets.contentTopPadding,
         contentTopShift = insets.contentTopShift,
         topLeading = {
-            HomeRoundAction(onClick = onOpenSettings) {
+            // 左边只有「扫码」
+            HomeRoundAction(onClick = { onNavigate(AppRoute.Notification) }) {
                 Icon(
-                    Icons.Filled.Menu,
-                    contentDescription = "菜单",
+                    Icons.Filled.QrCodeScanner,
+                    contentDescription = "扫一扫",
                     tint = MiuixTheme.colorScheme.onSurface,
                     modifier = Modifier.size(21.dp),
                 )
@@ -67,6 +71,7 @@ fun LiteHomeTab(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
+                // 右边两颗：搜索 + 通知（通知红点默认挂 1 个）
                 HomeRoundAction(onClick = { onNavigate(AppRoute.Notification) }) {
                     Icon(
                         Icons.Filled.Search,
@@ -75,7 +80,6 @@ fun LiteHomeTab(
                         modifier = Modifier.size(21.dp),
                     )
                 }
-                // 通知：只有一个，红点画在圆钮外面这一层（圆钮的玻璃会把内容裁成圆形）
                 Box {
                     HomeRoundAction(onClick = { onNavigate(AppRoute.Notification) }) {
                         Icon(
@@ -85,6 +89,7 @@ fun LiteHomeTab(
                             modifier = Modifier.size(22.dp),
                         )
                     }
+                    // 未读数：默认 1
                     Box(
                         Modifier
                             .align(Alignment.TopEnd)
